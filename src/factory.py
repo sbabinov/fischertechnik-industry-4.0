@@ -1,5 +1,7 @@
-from stages import *
+from .stages import *
+from .singleton import singleton
 
+@singleton
 class Factory:
     """ Class for controlling the Fischertechnik factory layout. """
 
