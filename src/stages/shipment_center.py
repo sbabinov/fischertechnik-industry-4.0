@@ -1,2 +1,4 @@
-class ShipmentCenter:
+from .stage import Stage
+
+class ShipmentCenter(Stage):
     ...

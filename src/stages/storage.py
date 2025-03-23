@@ -1,2 +1,4 @@
-class Storage:
+from .stage import Stage
+
+class Storage(Stage):
     ...
