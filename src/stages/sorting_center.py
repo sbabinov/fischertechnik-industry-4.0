@@ -9,7 +9,34 @@ class SortingCenter(Stage):
 
     def sort(self) -> None:
       """ Determine the color of the cargo and sort it """
-      ...
+      sensorIn = self._stage.output(1)
+      sensorOut = self._stage.output(2)
+      colorSensor = self._stage.output(3)
+
+      while sensorIn == 1000:
+        pass
+
+      conveyor = self._stage.motor(1)
+      conveyor.setSpeed(-512)
+      conveyor.setDistance(1000)
+
+      minColorValue = 2000
+      while sensorOut == 1000:
+        minColorValue = min(minColorValue, colorSensor)
+
+      compressor = self._stage.motor(4)
+      compressor.setSpeed(-512)
+      compressor.setDistance(1000)
+
+      if minColorValue > 1600:
+        ...
+        self.__blueCount += 1
+      elif minColorValue > 1200:
+        ...
+        self.__redCount += 1
+      else:
+        ...
+        self.__whiteCount += 1
 
     def decWhite(self) -> None:
       """ Reduce the number of white goods """
