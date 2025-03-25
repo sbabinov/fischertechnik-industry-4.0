@@ -11,19 +11,19 @@ class SortingCenter(Stage):
       ...
 
     def decWhite(self) -> None:
-      ...
+      self.__whiteCount -= 1
 
     def decBlue(self) -> None:
-      ...
+      self.__blueCount -= 1
 
     def decRed(self) -> None:
-      ...
+      self.__redCount -= 1
 
     def getWhite(self) -> int:
-      ...
+      return self.__whiteCount
 
     def getBlue(self) -> int:
-      ...
+      return self.__blueCount
 
     def getRed(self) -> int:
-      ...
+      return self.__redCount
