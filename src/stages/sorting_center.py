@@ -40,8 +40,7 @@ class SortingCenter(Stage):
             conveyor.setDistance(3)
             whiteCount += 1
 
-        while not conveyor.finished():
-            self._stage.updateWait()
+        self._wait(conveyor)
 
         compressor = self._stage.motor(4)
         compressor.setSpeed(-512)
