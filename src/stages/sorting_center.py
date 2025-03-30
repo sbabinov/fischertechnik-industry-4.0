@@ -51,7 +51,6 @@ class SortingCenter(Stage):
         out.setLevel(0)
         compressor.stop()
 
-
     def decWhite(self) -> None:
         """ Reduce the number of white goods """
         self.__whiteCount -= 1
