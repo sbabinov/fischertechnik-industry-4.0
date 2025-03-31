@@ -12,8 +12,6 @@ vert_motor.setDistance(100)
 while not vert_motor.finished():
     txt.updateWait()
 
-horiz_motor = txt.motor(3)
-
 
 class Storage(Stage):
     def __init__(self, host: str, port: int = 65000):
@@ -68,7 +66,7 @@ class Storage(Stage):
         vertical_speed = 400
         rail_speed = 400
 
-        self.__push_manipulator()
+        self.__pull_manipulator()
 
         self._vert_motor.setSpeed(vertical_speed)
         self._vert_motor.setDistance(2000)
