@@ -2,7 +2,26 @@ from .stage import Stage
 
 class Crane(Stage):
     def calibrate(self) -> None:
-        ...
+        """ Calibrates all crane motors. """
+        for i in 1, 2, 3:
+            sensor = self._stage.resistor(i)
+            while sensor.value() == 0:
+                sensor = self._stage.resistor(i)
+            motor = self._stage.motor(i)
+            motor.setSpeed(512)
+            motor.setDistance(10000)
+
+            while not motor.finished():
+                if sensor.value() != 15000:
+                    motor.stop()
+                    break
+                sensor = self._stage.resistor(i)
+                self._stage.updateWait()
+
+        motor = self._stage.motor(1)
+        motor.setSpeed(-512)
+        motor.setDistance(925)
+        self._stage.wait(motor)
 
     def takeFromStorage(self) -> None:
         motor1 = self._stage.motor(1)
