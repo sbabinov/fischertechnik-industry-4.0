@@ -14,7 +14,7 @@ class Crane(Stage):
         self.arm_x.move(distances[2])
         self.arm_z.move(distances[1])
 
-    def __move_back(self, distances: Tuple) -> None:
+    def __moveBack(self, distances: Tuple) -> None:
         self.arm_z.move(-distances[1])
         self.arm_x.move(-distances[2])
         self.tower.move(-distances[0])
@@ -35,7 +35,7 @@ class Crane(Stage):
         out = self._stage.output(8)
         out.setLevel(512)
         time.sleep(2)
-        self.__move_back(distances)
+        self.__moveBack(distances)
 
     def takeFromSortingCenter(self, color) -> None:
         """ The crane takes a cargo from the sorting center and returns to the calibrated position. """
@@ -52,7 +52,7 @@ class Crane(Stage):
         out = self._stage.output(8)
         out.setLevel(512)
         time.sleep(2)
-        self.__move_back(distances)
+        self.__moveBack(distances)
 
     def putInStorage(self) -> None:
         """ The crane puts a cargo in the storage and returns to the calibrated position. """
@@ -61,7 +61,7 @@ class Crane(Stage):
 
         self.__move(distances)
         generator.stop()
-        self.__move_back(distances)
+        self.__moveBack(distances)
 
     def putInPaintingCenter(self) -> None:
         """ The crane puts a cargo in the painting center and returns to the calibrated position. """
@@ -70,4 +70,4 @@ class Crane(Stage):
 
         self.__move(distances)
         generator.stop()
-        self.__move_back(distances)
+        self.__moveBack(distances)
