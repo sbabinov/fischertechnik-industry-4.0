@@ -10,7 +10,7 @@ class Stage:
         """ Returns True if stage is in process, otherwise False. """
         return self._isRunning
 
-    def wait(self, motor) -> None:
+    def _wait(self, motor) -> None:
         """ Wait until motor is finished. """
         while not motor.finished():
             self._stage.updateWait()
