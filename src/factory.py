@@ -6,11 +6,11 @@ class Factory:
     """ Class for controlling the Fischertechnik factory layout. """
 
     def __init__(self):
-        self.storage = Storage('')
-        self.crane = Crane('')
-        self.paintingCenter = PaintingCenter('')
-        self.shipmentCenter = ShipmentCenter('')
-        self.sortingCenter = SortingCenter('')
+        self.__storage = Storage('')
+        self.__crane = Crane('')
+        self.__paintingCenter = PaintingCenter('')
+        self.__shipmentCenter = ShipmentCenter('')
+        self.__sortingCenter = SortingCenter('')
 
     def calibrate(self) -> None:
         """ Calibrates all components. """
