@@ -1,5 +1,10 @@
 import ftrobopy
 
+class Cargo:
+    WHITE = 1
+    RED = 2
+    BLUE = 3
+
 class Stage:
     """ Abstract class for stages. """
     def __init__(self, host: str, port: int = 65000):
