@@ -9,6 +9,7 @@ class Crane(Stage):
         Motor(self._stage, 1).move(-925)
 
     def takeFromStorage(self) -> None:
+        """ The crane takes a cargo from the storage and returns to the calibrated position. """
         distances = (-475, -250, -195)
 
         tower = Motor(self._stage, 1)
@@ -29,6 +30,7 @@ class Crane(Stage):
         tower.move(-distances[0])
 
     def takeFromSortingCenter(self, color) -> None:
+        """ The crane takes a cargo from the sorting center and returns to the calibrated position. """
         if color == Cargo.WHITE:
             distances = (465, -855, -375)
         elif color == Cargo.RED:
@@ -54,6 +56,7 @@ class Crane(Stage):
         tower.move(-distances[0])
 
     def putInStorage(self) -> None:
+        """ The crane puts a cargo in the storage and returns to the calibrated position. """
         distances = (-475, -250, -195)
 
         tower = Motor(self._stage, 1)
@@ -71,6 +74,7 @@ class Crane(Stage):
         tower.move(-distances[0])
 
     def putInPaintingCenter(self) -> None:
+        """ The crane puts a cargo in the painting center and returns to the calibrated position. """
         distances = (5, -600, -835)
 
         tower = Motor(self._stage, 1)
