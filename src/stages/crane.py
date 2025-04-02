@@ -1,4 +1,5 @@
-from .stage import Stage
+import time
+from .stage import Stage, Cargo
 
 class Motor:
     def __init__(self, stage, motor_id):
@@ -19,7 +20,7 @@ class Motor:
             sensor = self.__stage.resistor(self.__motor_id)
             self.__stage.updateWait()
 
-    def move(self, distance: int, speed: int = 512, wait: bool = True) -> None:
+    def move(self, distance: int = 100_000, speed: int = 512, wait: bool = True) -> None:
         speed = -speed if distance < 0 else speed
         self.__motor.setSpeed(speed)
         self.__motor.setDistance(distance)
@@ -65,8 +66,30 @@ class Crane(Stage):
     def takeFromPaintingCenter(self) -> None:
         ...
 
-    def takeFromSortingCenter(self) -> None:
-        ...
+    def takeFromSortingCenter(self, color) -> None:
+        if color == Cargo.WHITE:
+            distances = (465, -855, -375)
+        elif color == Cargo.RED:
+            distances = (545, -855, -420)
+        else:
+            distances = (615, -855, -600)
+
+        tower = Motor(self._stage, 1)
+        arm_z = Motor(self._stage, 2)
+        arm_x = Motor(self._stage, 3)
+        generator = Motor(self._stage, 4)
+
+        tower.move(distances[0])
+        arm_x.move(distances[2])
+        arm_z.move(distances[1])
+        generator.move(wait=False)
+        out = self._stage.output(8)
+        out.setLevel(512)
+        time.sleep(2)
+
+        arm_z.move(-distances[1])
+        arm_x.move(-distances[2])
+        tower.move(-distances[0])
 
     def putInStorage(self) -> None:
         ...
