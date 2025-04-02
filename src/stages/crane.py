@@ -31,9 +31,6 @@ class Crane(Stage):
         out.setLevel(512)
         self.wait(motor4)
 
-    def takeFromPaintingCenter(self) -> None:
-        ...
-
     def takeFromSortingCenter(self, color) -> None:
         if color == Cargo.WHITE:
             distances = (465, -855, -375)
