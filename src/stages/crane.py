@@ -76,6 +76,19 @@ class Crane(Stage):
         arm_x.move(-distances[2])
         tower.move(-distances[0])
 
-
     def putInPaintingCenter(self) -> None:
-        ...
+        distances = (5, -600, -835)
+
+        tower = Motor(self._stage, 1)
+        arm_z = Motor(self._stage, 2)
+        arm_x = Motor(self._stage, 3)
+        generator = Motor(self._stage, 4)
+
+        tower.move(distances[0])
+        arm_x.move(distances[2])
+        arm_z.move(distances[1])
+        generator.stop()
+
+        arm_z.move(distances[1])
+        arm_x.move(distances[2])
+        tower.move(distances[0])
