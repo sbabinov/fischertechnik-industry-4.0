@@ -15,3 +15,18 @@ class Factory:
     def calibrate(self) -> None:
         """ Calibrates all components. """
         ...
+
+    def sort(self) -> None:
+        """ Sort storage cargo. """
+        ...
+
+    def unsort(self) -> None:
+        """ Unsort storage cargo. """
+        ...
+
+    def getStorage(self, row, column) -> str:
+        """ Get information about cargo in storage cell:
+            empty - cell is empty;
+            unknown - cargo inside, but color is undefined;
+            white, blue, red - cargo of this color inside. """
+        ...
