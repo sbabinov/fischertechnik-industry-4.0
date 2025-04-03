@@ -4,6 +4,8 @@ class Cargo:
     WHITE = 1
     RED = 2
     BLUE = 3
+    UNDEFINED = 4
+    EMPTY = 5
 
 class Motor:
     def __init__(self, stage, motor_id):
