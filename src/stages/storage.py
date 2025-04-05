@@ -79,28 +79,37 @@ class Storage(Stage):
             pass
         self._horiz_motor.stop()
 
-    def __move_rail(self, distance: int):
-        speed = -512
-        if distance < 0:
-            speed = 512
-        self._rail_motor.setSpeed(speed)
-        self._rail_motor.setDistance(abs(distance))
-        while not self._rail_motor.finished():
-            if distance < 0 and self.__should_rail_stop():
-                break
+    def __move_delta(self, x:int, y:int):
+        rail_speed = -512
+        vert_speed = -512
+        if x < 0:
+            rail_speed = 512
+        if y < 0:
+            vert_speed = 512
+
+        rail_stopped = True
+        vert_stopped = True
+        if x != 0:
+            self._rail_motor.setSpeed(rail_speed)
+            self._rail_motor.setDistance(abs(x))
+            rail_stopped = False
+        if y != 0:
+            self._vert_motor.setSpeed(vert_speed)
+            self._vert_motor.setDistance(abs(y))
+            vert_stopped = False
+
+        motors_stopped = rail_stopped and vert_stopped
+        while not motors_stopped:
+            if x < 0 and self.__should_rail_stop():
+                self._rail_motor.stop()
+                rail_stopped = True
+            if y < 0 and self.__should_vertical_stop():
+                self._vert_motor.stop()
+                vert_stopped = True
+            rail_stopped = rail_stopped or self._rail_motor.finished()
+            vert_stopped = vert_stopped or self._vert_motor.finished()
+            motors_stopped = rail_stopped and vert_stopped
         self._rail_motor.stop()
-
-    def __move_vert(self, distance: int):
-        speed = -512
-        if distance < 0:
-            speed = 512
-
-        self._vert_motor.setSpeed(speed)
-        self._vert_motor.setDistance(abs(distance))
-        while not self._vert_motor.finished():
-            if distance < 0 and self.__should_vertical_stop():
-                break
-        self._vert_motor.stop()
 
     def __deliver_cargo(self):
         if self._stage.resistor(4).value() != 15000:
@@ -114,19 +123,16 @@ class Storage(Stage):
 
     def get_cargo(self, x: int, y: int):
         coords = self._coords_map.get((x, y))
-        self.__move_rail(coords[0])
-        self.__move_vert(coords[1])
+        self.__move_delta(coords[0], coords[1])
         self.__push_manipulator()
-        self.__move_vert(-100)
+        self.__move_delta(0, -100)
         self.__pull_manipulator()
-        self.__move_rail(-coords[0])
-        self.__move_vert(750 - coords[1])
+        self.__move_delta(-coords[0], 750 - coords[1])
         self.__push_manipulator()
-        self.__move_vert(200)
+        self.__move_delta(0, 200)
         self.__deliver_cargo()
         self.calibrate()
 
     def calibrate(self):
         self.__pull_manipulator()
-        self.__move_rail(-2000)
-        self.__move_vert(-2000)
+        self.__move_delta(-2000, -2000)
