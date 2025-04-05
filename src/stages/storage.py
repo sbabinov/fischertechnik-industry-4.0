@@ -23,15 +23,15 @@ class Storage(Stage):
         self._rail_motor = self._stage.motor(2)
         self._delivery_motor = self._stage.motor(1)
         self._coords_map = dict()
-        self._coords_map.update({(1, 1): (780, 0)})
-        self._coords_map.update({(2, 1): (1370, 0)})
-        self._coords_map.update({(3, 1): (1985, 0)})
-        self._coords_map.update({(1, 2): (780, 380)})
-        self._coords_map.update({(2, 2): (1370, 380)})
-        self._coords_map.update({(3, 2): (1985, 380)})
-        self._coords_map.update({(1, 3): (780, 770)})
-        self._coords_map.update({(2, 3): (1370, 770)})
-        self._coords_map.update({(3, 3): (1985, 770)})
+        self._coords_map.update({(1, 1): (780, 100)})
+        self._coords_map.update({(2, 1): (1370, 100)})
+        self._coords_map.update({(3, 1): (1985, 100)})
+        self._coords_map.update({(1, 2): (780, 480)})
+        self._coords_map.update({(2, 2): (1370, 480)})
+        self._coords_map.update({(3, 2): (1985, 480)})
+        self._coords_map.update({(1, 3): (780, 870)})
+        self._coords_map.update({(2, 3): (1370, 870)})
+        self._coords_map.update({(3, 3): (1985, 870)})
         self.__reset_sensors()
 
     def __reset_sensors(self):
@@ -62,6 +62,8 @@ class Storage(Stage):
             return True
 
     def __push_manipulator(self):
+        if self.__should_horizont_forward_stop():
+            return
         self._horiz_motor.setSpeed(-512)
         self._horiz_motor.setDistance(512)
         while not self.__should_horizont_forward_stop():
@@ -69,6 +71,8 @@ class Storage(Stage):
         self._horiz_motor.stop()
 
     def __pull_manipulator(self):
+        if self.__should_horizont_backward_stop():
+            return
         self._horiz_motor.setSpeed(512)
         self._horiz_motor.setDistance(512)
         while not self.__should_horizont_backward_stop():
@@ -76,8 +80,6 @@ class Storage(Stage):
         self._horiz_motor.stop()
 
     def __move_rail(self, distance: int):
-        if distance == 0:
-            return
         speed = -512
         if distance < 0:
             speed = 512
@@ -89,8 +91,6 @@ class Storage(Stage):
         self._rail_motor.stop()
 
     def __move_vert(self, distance: int):
-        if distance == 0:
-            return
         speed = -512
         if distance < 0:
             speed = 512
@@ -116,17 +116,17 @@ class Storage(Stage):
         coords = self._coords_map.get((x, y))
         self.__move_rail(coords[0])
         self.__move_vert(coords[1])
-        self.__move_vert(100)
         self.__push_manipulator()
         self.__move_vert(-100)
-        self.calibrate()
+        self.__pull_manipulator()
+        self.__move_rail(-coords[0])
+        self.__move_vert(750 - coords[1])
         self.__push_manipulator()
-        self.__move_vert(800)
+        self.__move_vert(200)
         self.__deliver_cargo()
         self.calibrate()
 
     def calibrate(self):
         self.__pull_manipulator()
-
         self.__move_rail(-2000)
         self.__move_vert(-2000)
