@@ -21,6 +21,7 @@ class Storage(Stage):
         self._horiz_motor = self._stage.motor(3)
         self._vert_motor = self._stage.motor(4)
         self._rail_motor = self._stage.motor(2)
+        self._delivery_motor = self._stage.motor(1)
         self.__reset_sensors()
 
     def __reset_sensors(self):
@@ -93,6 +94,16 @@ class Storage(Stage):
                 pass
         self._vert_motor.stop()
 
+    def __deliver_cargo(self):
+        if self._stage.resistor(4).value() != 15000:
+            return
+
+        self._delivery_motor.setSpeed(-512)
+        self._delivery_motor.setDistance(1)
+        while not self._stage.resistor(1).value() == 15000:
+            pass
+        self._delivery_motor.stop()
+
     def move_down(self):
         self._vert_motor.setSpeed(-512)
         self._vert_motor.setDistance(200)
@@ -100,13 +111,10 @@ class Storage(Stage):
             self._stage.updateWait()
 
     def move_up(self):
-        self._vert_motor.setSpeed(512)
-        self._vert_motor.setDistance(200)
-        while not self._vert_motor.finished():
-            self._stage.updateWait()
+        self.__deliver_cargo()
 
     def move_left(self):
-        self.__pull_manipulator(100)
+        self.__pull_manipulator()
         time.sleep(1)
         self.__push_manipulator()
 
@@ -121,8 +129,8 @@ class Storage(Stage):
         self.__move_rail(-780)
         self.__push_manipulator()
         self.__move_vert(800)
+        self.__deliver_cargo()
         self.calibrate()
-
 
     def calibrate(self):
         self.__reset_sensors()
