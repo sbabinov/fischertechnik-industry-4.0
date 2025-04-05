@@ -121,27 +121,30 @@ class Storage(Stage):
             pass
         self._delivery_motor.stop()
 
-    def __common_movement_algorithm(self, column:int, row:int, on_putting: bool):
-        coords = self._coords_map.get((column, row))
-        shift = 100
-        if on_putting:
-            shift = -100
-        coords = (coords[0], coords[1] + shift)
+    def get_cargo(self, x: int, y: int):
+        coords = self._coords_map.get((x, y))
+        getting_shift = 100
+        self.__move_delta(coords[0], coords[1] + getting_shift)
+        self.__push_manipulator()
+        self.__move_delta(0, -100)
+        self.__pull_manipulator()
+        self.__move_delta(-coords[0], 650 - coords[1])
+        self.__push_manipulator()
+        self.__move_delta(0, 200)
+        self.__deliver_cargo()
+        self.calibrate()
+
+    def put_cargo(self, x: int, y: int):
+        coords = self._coords_map.get((x, y))
         self.__move_delta(coords[0], coords[1])
         self.__push_manipulator()
-        self.__move_delta(0, -shift)
+        self.__move_delta(0, -100)
         self.__pull_manipulator()
         self.__move_delta(-coords[0], 750 - coords[1])
         self.__push_manipulator()
-        self.__move_delta(0, shift * 2)
-        # self.__deliver_cargo()
-        # self.calibrate()
-
-    def get_cargo(self, column: int, row: int):
-        self.__common_movement_algorithm(column, row, False)
-
-    def put_cargo(self, column: int, row: int):
-        self.__common_movement_algorithm(column, row, True)
+        self.__move_delta(0, 200)
+        self.__deliver_cargo()
+        self.calibrate()
 
     def calibrate(self):
         self.__pull_manipulator()
