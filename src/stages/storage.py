@@ -23,15 +23,15 @@ class Storage(Stage):
         self._rail_motor = self._stage.motor(2)
         self._delivery_motor = self._stage.motor(1)
         self._coords_map = dict()
-        self._coords_map.update({(1, 1): (780, 100)})
-        self._coords_map.update({(2, 1): (1390, 100)})
-        self._coords_map.update({(3, 1): (1985, 100)})
-        self._coords_map.update({(1, 2): (780, 480)})
-        self._coords_map.update({(2, 2): (1390, 480)})
-        self._coords_map.update({(3, 2): (1985, 480)})
-        self._coords_map.update({(1, 3): (780, 870)})
-        self._coords_map.update({(2, 3): (1390, 870)})
-        self._coords_map.update({(3, 3): (1985, 870)})
+        self._coords_map.update({(1, 1): (780, 0)})
+        self._coords_map.update({(2, 1): (1390, 0)})
+        self._coords_map.update({(3, 1): (2000, 0)})
+        self._coords_map.update({(1, 2): (780, 380)})
+        self._coords_map.update({(2, 2): (1390, 380)})
+        self._coords_map.update({(3, 2): (2000, 380)})
+        self._coords_map.update({(1, 3): (780, 770)})
+        self._coords_map.update({(2, 3): (1390, 770)})
+        self._coords_map.update({(3, 3): (2000, 770)})
         self.__reset_sensors()
 
     def __reset_sensors(self):
@@ -122,6 +122,19 @@ class Storage(Stage):
         self._delivery_motor.stop()
 
     def get_cargo(self, x: int, y: int):
+        coords = self._coords_map.get((x, y))
+        getting_shift = 100
+        self.__move_delta(coords[0], coords[1] + getting_shift)
+        self.__push_manipulator()
+        self.__move_delta(0, -100)
+        self.__pull_manipulator()
+        self.__move_delta(-coords[0], 650 - coords[1])
+        self.__push_manipulator()
+        self.__move_delta(0, 200)
+        self.__deliver_cargo()
+        self.calibrate()
+
+    def put_cargo(self, x: int, y: int):
         coords = self._coords_map.get((x, y))
         self.__move_delta(coords[0], coords[1])
         self.__push_manipulator()
