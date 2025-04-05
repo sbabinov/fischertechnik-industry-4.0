@@ -22,6 +22,16 @@ class Storage(Stage):
         self._vert_motor = self._stage.motor(4)
         self._rail_motor = self._stage.motor(2)
         self._delivery_motor = self._stage.motor(1)
+        self._coords_map = dict()
+        self._coords_map.update({(1, 1): (780, 0)})
+        self._coords_map.update({(2, 1): (1370, 0)})
+        self._coords_map.update({(3, 1): (1985, 0)})
+        self._coords_map.update({(1, 2): (780, 380)})
+        self._coords_map.update({(2, 2): (1370, 380)})
+        self._coords_map.update({(3, 2): (1985, 380)})
+        self._coords_map.update({(1, 3): (780, 770)})
+        self._coords_map.update({(2, 3): (1370, 770)})
+        self._coords_map.update({(3, 3): (1985, 770)})
         self.__reset_sensors()
 
     def __reset_sensors(self):
@@ -66,32 +76,30 @@ class Storage(Stage):
         self._horiz_motor.stop()
 
     def __move_rail(self, distance: int):
+        if distance == 0:
+            return
         speed = -512
         if distance < 0:
             speed = 512
         self._rail_motor.setSpeed(speed)
         self._rail_motor.setDistance(abs(distance))
-        if distance < 0:
-            while not self.__should_rail_stop():
-                pass
-        else:
-            while not self._rail_motor.finished():
-                pass
+        while not self._rail_motor.finished():
+            if distance < 0 and self.__should_rail_stop():
+                break
         self._rail_motor.stop()
 
     def __move_vert(self, distance: int):
+        if distance == 0:
+            return
         speed = -512
         if distance < 0:
             speed = 512
 
         self._vert_motor.setSpeed(speed)
         self._vert_motor.setDistance(abs(distance))
-        if distance < 0:
-            while not self.__should_vertical_stop():
-                pass
-        else:
-            while not self._vert_motor.finished():
-                pass
+        while not self._vert_motor.finished():
+            if distance < 0 and self.__should_vertical_stop():
+                break
         self._vert_motor.stop()
 
     def __deliver_cargo(self):
@@ -104,37 +112,20 @@ class Storage(Stage):
             pass
         self._delivery_motor.stop()
 
-    def move_down(self):
-        self._vert_motor.setSpeed(-512)
-        self._vert_motor.setDistance(200)
-        while not self._vert_motor.finished():
-            self._stage.updateWait()
-
-    def move_up(self):
-        self.__deliver_cargo()
-
-    def move_left(self):
-        self.__pull_manipulator()
-        time.sleep(1)
-        self.__push_manipulator()
-
     def get_cargo(self, x: int, y: int):
-        if (x < 0 or y < 0) or (x > 2 or y > 2):
-            raise IndexError("")
-        self.__move_rail(780)
+        coords = self._coords_map.get((x, y))
+        self.__move_rail(coords[0])
+        self.__move_vert(coords[1])
         self.__move_vert(100)
         self.__push_manipulator()
         self.__move_vert(-100)
-        self.__pull_manipulator()
-        self.__move_rail(-780)
+        self.calibrate()
         self.__push_manipulator()
         self.__move_vert(800)
         self.__deliver_cargo()
         self.calibrate()
 
     def calibrate(self):
-        self.__reset_sensors()
-
         self.__pull_manipulator()
 
         self.__move_rail(-2000)
