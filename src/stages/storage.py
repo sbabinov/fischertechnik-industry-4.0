@@ -111,12 +111,12 @@ class Storage(Stage):
             rail_stopped = rail_stopped or self._rail_motor.finished()
             vert_stopped = vert_stopped or self._vert_motor.finished()
             motors_stopped = rail_stopped and vert_stopped
-        self._rail_motor.stop()
+
+        self._x += x
+        self._y += y
 
     def __move_to(self, x:int, y:int):
         self.__move_delta(x - self._x, y - self._y)
-        self._x = x
-        self._y = y
 
     def __deliver_cargo(self):
         if self._stage.resistor(4).value() != 15000:
@@ -127,6 +127,9 @@ class Storage(Stage):
         while not self._stage.resistor(1).value() == 15000:
             pass
         self._delivery_motor.stop()
+
+    def __pick_up_cargo(self):
+
 
     def get_cargo(self, x: int, y: int):
         coords = self._coords_map.get((x, y))
