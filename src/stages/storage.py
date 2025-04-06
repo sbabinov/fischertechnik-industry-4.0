@@ -1,19 +1,4 @@
-import time
-
 from .stage import Stage
-
-# speed = -512
-# motor = txt.motor(2)
-# motor.setSpeed(speed)
-# motor.setDistance(780)
-# while not motor.finished():
-#     txt.updateWait()
-# vert_motor = txt.motor(0)
-# vert_motor.setSpeed(-512)
-# vert_motor.setDistance(100)
-# while not vert_motor.finished():
-#     txt.updateWait()
-
 
 class Storage(Stage):
     def __init__(self, host: str, port: int = 65000):
