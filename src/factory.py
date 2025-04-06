@@ -1,4 +1,5 @@
 from .stages import *
+from stages.stage import Cargo
 from .singleton import singleton
 
 @singleton
@@ -14,7 +15,10 @@ class Factory:
 
     def calibrate(self) -> None:
         """ Calibrates all components. """
-        ...
+        self.__storage.calibrate()
+        self.__crane.calibrate()
+        self.__paintingCenter.calibrate()
+        self.__shipmentCenter.calibrate()
 
     def sort(self) -> None:
         """ Sort storage cargo. """
@@ -24,9 +28,9 @@ class Factory:
         """ Unsort storage cargo. """
         ...
 
-    def getStorage(self, row, column) -> str:
+    def getStorage(self, row, column) -> Cargo:
         """ Get information about cargo in storage cell:
-            empty - cell is empty;
-            unknown - cargo inside, but color is undefined;
-            white, blue, red - cargo of this color inside. """
-        ...
+            EMPTY - cell is empty;
+            UNDEFINED - cargo inside, but color is undefined;
+            WHITE, BLUE, RED - cargo of this color inside. """
+        return self.__storage.getData()[row][column]
