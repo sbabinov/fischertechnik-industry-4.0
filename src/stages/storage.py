@@ -1,4 +1,5 @@
 from .stage import Stage
+from .stage import Cargo
 
 class Storage(Stage):
     def __init__(self, host: str, port: int = 65000):
@@ -19,6 +20,7 @@ class Storage(Stage):
         self._coords_map.update({(1, 3): (780, 770)})
         self._coords_map.update({(2, 3): (1390, 770)})
         self._coords_map.update({(3, 3): (2000, 770)})
+        self._data = [[Cargo.UNDEFINED] * 3] * 3
         self.__reset_sensors()
 
     def __reset_sensors(self):
@@ -143,13 +145,17 @@ class Storage(Stage):
         self.__drop_cargo()
         self.__deliver_forward_cargo()
 
-    def put_cargo(self, x: int, y: int):
+    def put_cargo(self, x: int, y: int, color: int):
         coords = self._coords_map.get((x, y))
         self.__deliver_forward_cargo()
         self.__move_to(0, 650)
         self.__pick_up_cargo()
         self.__move_to(coords[0], coords[1])
         self.__drop_cargo()
+        self._data[x][y] = color
+
+    def get_data(self):
+        return self._data
 
     def calibrate(self):
         self.__pull_manipulator()
