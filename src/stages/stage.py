@@ -25,19 +25,24 @@ class Motor:
                 break
             sensor = self.__stage.resistor(self.__motor_id)
             self.__stage.updateWait()
+        self.move(-2)
 
-    def move(self, distance: int = 100_000, speed: int = 512, wait: bool = True) -> None:
+    def move(self, distance: int = 30000, speed: int = 512, wait: bool = True) -> None:
         speed = -speed if distance < 0 else speed
         self.__motor.setSpeed(speed)
-        self.__motor.setDistance(distance)
+        self.__motor.setDistance(abs(distance))
         if wait:
-            self.__stage._wait(self.__motor)
+            self.wait()
 
     def isFinished(self) -> bool:
         return self.__motor.finished()
 
     def stop(self) -> None:
         self.__motor.stop()
+
+    def wait(self) -> None:
+        while not self.__motor.finished():
+            self.__stage.updateWait()
 
 class Stage:
     """ Abstract class for stages. """
