@@ -118,7 +118,7 @@ class Storage(Stage):
     def __move_to(self, x:int, y:int):
         self.__move_delta(x - self._x, y - self._y)
 
-    def __deliver_cargo(self):
+    def __deliver_forward_cargo(self):
         if self._stage.resistor(4).value() != 15000:
             return
 
@@ -128,32 +128,43 @@ class Storage(Stage):
             pass
         self._delivery_motor.stop()
 
-    def __pick_up_cargo(self):
+    def __deliver_backward_cargo(self):
+        if self._stage.resistor(1).value() != 15000:
+            return
 
+        self._delivery_motor.setSpeed(512)
+        self._delivery_motor.setDistance(1)
+        while not self._stage.resistor(4).value() == 15000:
+            pass
+        self._delivery_motor.stop()
+
+    def __pick_up_cargo(self):
+        self.__move_delta(0, 100)
+        self.__push_manipulator()
+        self.__move_delta(0, -100)
+        self.__pull_manipulator()
+
+    def __drop_cargo(self):
+        self.__push_manipulator()
+        self.__move_delta(0, 100)
+        self.__pull_manipulator()
+        self.__move_delta(0, -100)
 
     def get_cargo(self, x: int, y: int):
         coords = self._coords_map.get((x, y))
         self.__move_to(coords[0], coords[1])
-        self.__push_manipulator()
-        self.__move_delta(0, -100)
-        self.__pull_manipulator()
+        self.__pick_up_cargo()
         self.__move_to(0, 650)
-        self.__push_manipulator()
-        self.__move_delta(0, 200)
-        self.__deliver_cargo()
-        self.calibrate()
+        self.__drop_cargo()
+        self.__deliver_forward_cargo()
 
     def put_cargo(self, x: int, y: int):
         coords = self._coords_map.get((x, y))
+        self.__deliver_forward_cargo()
+        self.__move_to(0, 650)
+        self.__pick_up_cargo()
         self.__move_to(coords[0], coords[1])
-        self.__push_manipulator()
-        self.__move_delta(0, -100)
-        self.__pull_manipulator()
-        self.__move_delta(-coords[0], 750 - coords[1])
-        self.__push_manipulator()
-        self.__move_delta(0, 200)
-        self.__deliver_cargo()
-        self.calibrate()
+        self.__drop_cargo()
 
     def calibrate(self):
         self.__pull_manipulator()
