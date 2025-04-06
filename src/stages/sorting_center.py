@@ -9,7 +9,7 @@ class SortingCenter(Stage):
         self.__redCount = 0
 
     def sort(self) -> None:
-        """ Determine the color of the cargo and sort it """
+        """ Determine the color of the cargo and sort it. """
         sensorIn = self._stage.resistor(1)
         sensorOut = self._stage.resistor(3)
         colorSensor = self._stage.colorsensor(2)
@@ -52,25 +52,25 @@ class SortingCenter(Stage):
         compressor.stop()
 
     def decWhite(self) -> None:
-        """ Reduce the number of white goods """
+        """ Reduce the number of white goods. """
         self.__whiteCount -= 1
 
     def decBlue(self) -> None:
-        """ Reduce the number of blue goods """
+        """ Reduce the number of blue goods. """
         self.__blueCount -= 1
 
     def decRed(self) -> None:
-        """ Reduce the number of red goods """
+        """ Reduce the number of red goods. """
         self.__redCount -= 1
 
     def getWhite(self) -> int:
-        """ Return the number of white goods """
+        """ Return the number of white goods. """
         return self.__whiteCount
 
     def getBlue(self) -> int:
-        """ Return the number of blue goods """
+        """ Return the number of blue goods. """
         return self.__blueCount
 
     def getRed(self) -> int:
-        """ Return the number of red goods """
+        """ Return the number of red goods. """
         return self.__redCount
