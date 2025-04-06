@@ -1,6 +1,16 @@
-from src.factory import Factory
+from src.stages.crane import Crane
 
-factory = Factory()
-factory2 = Factory()
-
-print(id(factory), id(factory2))
+crane = Crane("192.168.137.93")
+crane.calibrate()
+crane.takeFromSortingCenter(1)
+crane.putInStorage()
+crane.takeFromStorage()
+crane.putInPaintingCenter()
+crane.takeFromSortingCenter(2)
+crane.putInStorage()
+crane.takeFromStorage()
+crane.putInPaintingCenter()
+crane.takeFromSortingCenter(3)
+crane.putInStorage()
+crane.takeFromStorage()
+crane.putInPaintingCenter()
