@@ -44,3 +44,23 @@ class Factory:
                         self.__crane.takeFromStorage()
                         self.__crane._isRunning = True
                     self.__storage.putCargo(i, j)
+
+    def __process(self) -> None:
+        count = 0
+        while count != 9:
+            while self.__crane._isRunning == False:
+                pass
+
+            thread = threading.Thread(target = self.__paintingCenter.paint)
+            thread.start()
+            with self.__craneLock:
+                self.__crane.putInPaintingCenter()
+                self.__crane._isRunning = False
+            thread.join()
+
+            thread = threading.Thread(target = self.__sortingCenter.sort)
+            thread.start()
+            self.__shipment_center.polish()
+            thread.join()
+
+            count += 1
