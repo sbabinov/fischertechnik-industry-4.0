@@ -64,3 +64,21 @@ class Factory:
             thread.join()
 
             count += 1
+
+    def __takeFromSorting(self, x, y) -> None:
+        with self.__storageLock:
+            while self.__sortingCenter.getWhite() != 0 or self.__sortingCenter.getBlue() != 0 or self.__sortingCenter.getRed() != 0:
+                cargo = Cargo.RED
+                if self.__sortingCenter.getWhite != 0:
+                    cargo = Cargo.WHITE
+                elif self.__sortingCenter.getBlue != 0:
+                    cargo = Cargo.BLUE
+
+                j = self.__findCell()
+                self.__storage.getCargo(cargo, j)
+
+                with self.__craneLock:
+                    self.__crane.takeFromSortingCenter(cargo)
+                    self.__crane.putInStorage()
+                self.__storage.putCargo(cargo, j)
+                self.__storage.getData()[cargo][j] = cargo
