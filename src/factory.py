@@ -33,3 +33,14 @@ class Factory:
             UNDEFINED - cargo inside, but color is undefined;
             WHITE, BLUE, RED - cargo of this color inside. """
         return self.__storage.getData()[row][column]
+    
+    def __takeFromStorage(self) -> None:
+        with self.__storageLock:
+            for i in range(3):
+                for j in range(3):
+                    self.__storage.getCargo(i, j)
+                    self.__storage.getData()[i][j] = Cargo.EMPTY
+                    with self.__craneLock:
+                        self.__crane.takeFromStorage()
+                        self.__crane._isRunning = True
+                    self.__storage.putCargo(i, j)
