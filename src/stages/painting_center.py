@@ -1,6 +1,5 @@
-import ftrobopy
 import time
-from .stage import *
+from .stage import Motor, Stage
 
 class PaintingCenter(Stage):
     def __init__(self, host1: str, host2: str):
@@ -90,18 +89,10 @@ class PaintingCenter(Stage):
         time.sleep(1)
 
         # Активация подъемника и насосов
-        out_podnimat = self.output(6)
+        out_up = self.output(6)
         self.out_compressor.setLevel(512)
         self.out_pump.setLevel(512)
         time.sleep(2)
-        out_podnimat.setLevel(512)
+        out_up.setLevel(512)
         time.sleep(10)
-
-        # Финальная фаза движения крана
-        self.motor_crane.move(100, speed=512, wait=False)
-        while not self.motor_crane.isFinished():
-            self.updateWait()
-            if self.button_crane.value() != 15000:
-                out_podnimat.setLevel(0)
-                self.motor_crane.stop()
-                break
+        #Поднимает фишку и ждет
