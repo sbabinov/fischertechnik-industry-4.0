@@ -23,16 +23,28 @@ class Factory:
         self.__paintingCenter.calibrate()
         self.__shipmentCenter.calibrate()
 
-    def sort(self) -> None:
-        """ Sort storage cargo. """
-        ...
-
     def getStorage(self, row, column) -> Cargo:
         """ Get information about cargo in storage cell:
             EMPTY - cell is empty;
             UNDEFINED - cargo inside, but color is undefined;
             WHITE, BLUE, RED - cargo of this color inside. """
         return self.__storage.getData()[row][column]
+
+    def sort(self) -> None:
+        """ Sort storage cargo. """
+        self.calibrate()
+
+        takeFromStorageThread = threading.Thread(target = self.__takeFromStorage)
+        processThread = threading.Thread(target = self.__process)
+        takeFromSortingThread = threading.Thread(target = self.__takeFromSorting)
+
+        takeFromStorageThread.start()
+        processThread.start()
+        takeFromSortingThread.start()
+
+        takeFromStorageThread.join()
+        processThread.join()
+        takeFromSortingThread.join()
 
     def __takeFromStorage(self) -> None:
         with self.__storageLock:
