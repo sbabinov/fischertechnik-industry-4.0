@@ -1,6 +1,7 @@
 from .stages import *
 from stages.stage import Cargo
 from .singleton import singleton
+import threading
 
 @singleton
 class Factory:
@@ -12,6 +13,8 @@ class Factory:
         self.__paintingCenter = PaintingCenter('')
         self.__shipmentCenter = ShipmentCenter('')
         self.__sortingCenter = SortingCenter('')
+        self.__storageLock = threading.Lock()
+        self.__craneLock = threading.Lock()
 
     def calibrate(self) -> None:
         """ Calibrates all components. """
