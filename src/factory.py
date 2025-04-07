@@ -27,10 +27,6 @@ class Factory:
         """ Sort storage cargo. """
         ...
 
-    def unsort(self) -> None:
-        """ Unsort storage cargo. """
-        ...
-
     def getStorage(self, row, column) -> Cargo:
         """ Get information about cargo in storage cell:
             EMPTY - cell is empty;
