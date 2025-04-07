@@ -33,7 +33,7 @@ class Factory:
             UNDEFINED - cargo inside, but color is undefined;
             WHITE, BLUE, RED - cargo of this color inside. """
         return self.__storage.getData()[row][column]
-    
+
     def __takeFromStorage(self) -> None:
         with self.__storageLock:
             for i in range(3):
@@ -65,7 +65,7 @@ class Factory:
 
             count += 1
 
-    def __takeFromSorting(self, x, y) -> None:
+    def __takeFromSorting(self) -> None:
         with self.__storageLock:
             while self.__sortingCenter.getWhite() != 0 or self.__sortingCenter.getBlue() != 0 or self.__sortingCenter.getRed() != 0:
                 cargo = Cargo.RED
@@ -82,3 +82,8 @@ class Factory:
                     self.__crane.putInStorage()
                 self.__storage.putCargo(cargo, j)
                 self.__storage.getData()[cargo][j] = cargo
+
+    def __findCell(self, cargo) -> int:
+        for j in range(3):
+            if self.__storage.getData()[cargo][j] == Cargo.EMPTY:
+                return j
