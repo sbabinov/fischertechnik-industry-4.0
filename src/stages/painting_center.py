@@ -1,6 +1,6 @@
 import time
 from .stage import Motor, Stage
-#fdfs
+
 class PaintingCenter(Stage):
     def __init__(self, host1: str, host2: str):
         super().__init__(host1)
@@ -22,6 +22,7 @@ class PaintingCenter(Stage):
         self.out_gates = self.output(7)  # ворота
         self.out_light = self.output(8)  # лампочка
         self.out_pump = self.output(5)  # насос
+        self.out_tape = self.txt2.output(6)  # лента
 
     def show_sensors(self):
         try:
