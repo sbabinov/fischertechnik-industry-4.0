@@ -141,4 +141,12 @@ Window {
             }
         }
     }
+
+    Loader {
+        id: mainPart
+        anchors.top: header.bottom
+        anchors.bottom: footer.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+    }
 }
