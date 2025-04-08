@@ -22,5 +22,11 @@ Window {
         implicitWidth: root.width
         implicitHeight: root.height / 5
         color: "#e3e3e3"
+
+        Image {
+            sourceSize.width: root.width / 1.07
+            source: "images/logo.png"
+            anchors.centerIn: parent
+        }
     }
 }
