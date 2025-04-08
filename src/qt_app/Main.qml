@@ -42,9 +42,9 @@ Window {
         color: "#e3e3e3"
 
         Image {
-            sourceSize.width: root.width / 1.07
             source: "images/logo.png"
             anchors.centerIn: parent
+            sourceSize.width: root.width / 1.07
         }
 
         Rectangle {
@@ -52,6 +52,7 @@ Window {
             anchors.top: header.bottom
             width: root.width
             height: root.height / 35
+
             layer.enabled: true
             layer.smooth: true
             gradient: Gradient {
@@ -74,22 +75,22 @@ Window {
         color: "#e3e3e3"
 
         Image {
-            sourceSize.width: 80
             source: "images/logo1c.png"
             anchors.bottom: parent.bottom
             anchors.left: parent.left
             anchors.leftMargin: 20
             anchors.bottomMargin: 20
+            sourceSize.width: 80
         }
 
         Text {
             text: "2025"
-            font.bold: true
-            font.family: "Onest"
-            font.pointSize: root.height / 45
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 15
+            font.bold: true
+            font.family: "Onest"
+            font.pointSize: root.height / 45
         }
 
         Button {
@@ -117,10 +118,9 @@ Window {
 
             background: Image {
                 id: flag
+                source: "images/" + language.country + ".png"
                 sourceSize.width: 80
                 sourceSize.height: 45
-
-                source: "images/" + language.country + ".png"
             }
         }
 
