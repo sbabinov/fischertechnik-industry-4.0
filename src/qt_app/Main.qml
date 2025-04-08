@@ -54,5 +54,14 @@ Window {
         implicitWidth: root.width
         implicitHeight: root.height / 8
         color: "#e3e3e3"
+
+        Image {
+            sourceSize.width: 80
+            source: "images/logo1c.png"
+            anchors.bottom: parent.bottom
+            anchors.left: parent.left
+            anchors.leftMargin: 20
+            anchors.bottomMargin: 20
+        }
     }
 }
