@@ -63,5 +63,15 @@ Window {
             anchors.leftMargin: 20
             anchors.bottomMargin: 20
         }
+
+        Text {
+            text: "2025"
+            font.bold: true
+            font.family: "Onest"
+            font.pointSize: root.height / 45
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 15
+        }
     }
 }
