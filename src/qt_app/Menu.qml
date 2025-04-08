@@ -73,6 +73,10 @@ Item {
                 font.family: "Onest"
                 font.pointSize: root.height / 35
             }
+
+            onClicked: {
+                mainPart.source = "About.qml"
+            }
         }
     }
 }
