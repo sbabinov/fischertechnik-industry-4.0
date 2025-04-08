@@ -146,6 +146,7 @@ Window {
 
     Loader {
         id: mainPart
+        source: "Menu.qml"
         anchors.top: header.bottom
         anchors.bottom: footer.top
         anchors.left: parent.left
