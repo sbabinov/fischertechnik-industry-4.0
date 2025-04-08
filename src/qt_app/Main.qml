@@ -78,16 +78,17 @@ Window {
             source: "images/logo1c.png"
             anchors.bottom: parent.bottom
             anchors.left: parent.left
-            anchors.leftMargin: 20
-            anchors.bottomMargin: 20
-            sourceSize.width: 80
+            anchors.leftMargin: root.width / 24
+            anchors.bottomMargin: root.height / 40
+            sourceSize.width: root.width / 6
+            sourceSize.height: root.height / 18
         }
 
         Text {
             text: "2025"
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
-            anchors.bottomMargin: 15
+            anchors.bottomMargin: root.height / 53
             font.bold: true
             font.family: "Onest"
             font.pointSize: root.height / 45
@@ -97,8 +98,8 @@ Window {
             id: language
             anchors.bottom: parent.bottom
             anchors.right: parent.right
-            anchors.rightMargin: 20
-            anchors.bottomMargin: 20
+            anchors.rightMargin: root.width / 24
+            anchors.bottomMargin: root.height / 40
 
             property string country: "russia"
 
@@ -119,8 +120,8 @@ Window {
             background: Image {
                 id: flag
                 source: "images/" + language.country + ".png"
-                sourceSize.width: 80
-                sourceSize.height: 45
+                sourceSize.width: root.width / 6
+                sourceSize.height: root.height / 18
             }
         }
 
