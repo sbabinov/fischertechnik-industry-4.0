@@ -74,6 +74,38 @@ Window {
             anchors.bottomMargin: 15
         }
 
+        Button {
+            id: language
+            anchors.bottom: parent.bottom
+            anchors.right: parent.right
+            anchors.rightMargin: 20
+            anchors.bottomMargin: 20
+
+            property string country: "russia"
+
+            function setNextCountry() {
+                if (language.country === "russia") {
+                    language.country = "usa"
+                } else if (language.country === "usa") {
+                    language.country = "germany"
+                } else {
+                    language.country = "russia"
+                }
+            }
+
+            onClicked: {
+                setNextCountry()
+            }
+
+            background: Image {
+                id: flag
+                sourceSize.width: 80
+                sourceSize.height: 45
+
+                source: "images/" + language.country + ".png"
+            }
+        }
+
         Rectangle {
             id: footerShadow
             anchors.bottom: footer.top
