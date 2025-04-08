@@ -32,5 +32,14 @@ Item {
             horizontalAlignment: Text.AlignJustify
             text: "<b>Fischerтех</b> - небольшое приложение для удаленного управления макетом завода Fischertechnik industry 4.0. Макет функционирует благодаря программе на Python - сервера с основной логикой сортировки - и данному приложению, разработанному с помощью фреймворка Qt6 для C++."
         }
+
+        Image {
+            source: "images/command.jpeg"
+            anchors.top: aboutText.bottom
+            anchors.left: parent.left
+            anchors.topMargin: 20
+            anchors.leftMargin: 20
+            sourceSize.width: parent.width - 40
+        }
     }
 }
