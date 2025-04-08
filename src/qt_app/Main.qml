@@ -1,8 +1,18 @@
 import QtQuick
 
 Window {
-    width: 640
-    height: 480
+    id: root
+    width: 480
+    height: 800
     visible: true
-    title: qsTr("Hello World")
+    title: "Raspberry Pi"
+
+    Item {
+        anchors.fill: parent
+        Image {
+            anchors.fill: parent
+            anchors.bottomMargin: root.height / 10.67
+            source: "images/wallpaper.jpg"
+        }
+    }
 }
