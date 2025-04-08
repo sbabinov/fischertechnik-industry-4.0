@@ -28,5 +28,13 @@ Window {
             source: "images/logo.png"
             anchors.centerIn: parent
         }
+
+        Rectangle {
+            id: headerShadow
+            anchors.top: header.bottom
+            width: root.width
+            height: root.height / 35
+            }
+        }
     }
 }
