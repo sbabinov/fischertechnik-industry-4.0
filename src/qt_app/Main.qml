@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Effects
 
 Window {
     id: root
@@ -6,6 +7,21 @@ Window {
     height: 800
     visible: true
     title: "Raspberry Pi"
+
+    function translate(keywords) {
+        var dictionary = {
+            "automatic mode" : ["Авторежим", "Automatic mode", "Automatikbetrieb"],
+            "settings" : ["Настройки", "Settings", "Einstellung"],
+            "about us" : ["О нас", "About us", "Über uns"]
+        }
+        if (language.country === "russia") {
+            return dictionary[keywords][0]
+        } else if (language.country === "usa") {
+            return dictionary[keywords][1]
+        } else {
+            return dictionary[keywords][2]
+        }
+    }
 
     Item {
         anchors.fill: parent
