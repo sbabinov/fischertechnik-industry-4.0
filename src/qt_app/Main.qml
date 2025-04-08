@@ -15,4 +15,12 @@ Window {
             source: "images/wallpaper.jpg"
         }
     }
+
+    Rectangle {
+        id: header
+        anchors.top: parent.top
+        implicitWidth: root.width
+        implicitHeight: root.height / 5
+        color: "#e3e3e3"
+    }
 }
