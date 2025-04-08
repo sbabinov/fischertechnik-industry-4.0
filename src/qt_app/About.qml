@@ -18,40 +18,42 @@ Item {
     {
         anchors.fill: parent
         contentWidth: parent.width
-        contentHeight: aboutText.height
+        contentHeight: aboutSection.height
         clip: true
 
-        Text {
-            id: aboutText
-            width: about.width - 40
-            leftPadding: (about.width - width) / 2
-            horizontalAlignment: Text.AlignJustify
-            text: "<b>Fischerтех</b> - небольшое приложение для удаленного управления макетом завода Fischertechnik industry 4.0. Макет функционирует благодаря программе на Python - сервера с основной логикой сортировки - и данному приложению, разработанному с помощью фреймворка Qt6 для C++."
-            font.family: "Arial"
-            font.pointSize: 15
-            textFormat: Text.RichText
-            wrapMode: Text.Wrap
+        Column
+        {
+            id: aboutSection
+            spacing: 20
+            width: parent.width
+            Text {
+                width: about.width - 40
+                leftPadding: (about.width - width) / 2
+                horizontalAlignment: Text.AlignJustify
+                text: "<b>Fischerтех</b> - небольшое приложение для удаленного управления макетом завода Fischertechnik industry 4.0. Макет функционирует благодаря программе на Python - сервера с основной логикой сортировки - и данному приложению, разработанному с помощью фреймворка Qt6 для C++."
+                font.family: "Arial"
+                font.pointSize: 15
+                textFormat: Text.RichText
+                wrapMode: Text.Wrap
+            }
+
+            Text {
+                width: about.width
+                horizontalAlignment: Text.AlignHCenter
+                text: "Наша команда:"
+                font.family: "Arial"
+                font.pointSize: 20
+                font.bold: true
+            }
+
+            Image {
+                source: "images/command.jpeg"
+                anchors.left: parent.left
+                anchors.leftMargin: 20
+                sourceSize.width: parent.width - 40
+            }
         }
 
-        Text {
-            id: commandHeaderText
-            width: about.width
-            anchors.top: aboutText.bottom
-            anchors.topMargin: 20
-            horizontalAlignment: Text.AlignHCenter
-            text: "Наша команда:"
-            font.family: "Arial"
-            font.pointSize: 20
-            font.bold: true
-        }
 
-        Image {
-            source: "images/command.jpeg"
-            anchors.top: commandHeaderText.bottom
-            anchors.left: parent.left
-            anchors.topMargin: 20
-            anchors.leftMargin: 20
-            sourceSize.width: parent.width - 40
-        }
     }
 }
