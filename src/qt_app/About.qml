@@ -26,10 +26,11 @@ Item {
             width: about.width - 40
             leftPadding: 20
             font.family: "Arial"
-            font.pointSize: 30
+            font.pointSize: 15
+            textFormat: Text.RichText
             wrapMode: Text.Wrap
             horizontalAlignment: Text.AlignJustify
-            text: "Продолжаю перевод книги John Torjo «Boost.Asio C++ Network Programming». Вторая глава получилась большая, поэтому разобью ее на две части. В этой части мы поговорим именно про основы Boost.Asio, а во второй части речь пойдет про асинхронное программирование."
+            text: "<b>Fischerтех</b> - небольшое приложение для удаленного управления макетом завода Fischertechnik industry 4.0. Макет функционирует благодаря программе на Python - сервера с основной логикой сортировки - и данному приложению, разработанному с помощью фреймворка Qt6 для C++."
         }
     }
 }
