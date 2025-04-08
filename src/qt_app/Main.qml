@@ -47,4 +47,12 @@ Window {
             }
         }
     }
+
+    Rectangle {
+        id: footer
+        anchors.bottom: parent.bottom
+        implicitWidth: root.width
+        implicitHeight: root.height / 8
+        color: "#e3e3e3"
+    }
 }
