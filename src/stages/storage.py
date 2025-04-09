@@ -146,14 +146,14 @@ class Storage(Stage):
         self.__deliver_forward_cargo()
 
     def put_cargo(self, x: int, y: int, color: int):
+        self.__move_to(0, 650)
         coords = self._coords_map.get((x, y))
         self.__deliver_backward_cargo()
         self.__move_to(0, 650)
         self.__pick_up_cargo()
         self.__move_to(coords[0], coords[1])
         self.__drop_cargo()
-        self.__move_to(0, 650)
-        self._data[x][y] = color
+        self._data[x - 1][y - 1] = color
 
     def get_data(self):
         return self._data
