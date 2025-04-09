@@ -4,8 +4,8 @@ from .stage import Cargo
 class Storage(Stage):
     def __init__(self, host: str, port: int = 65000):
         super().__init__(host, port)
-        self._x = None
-        self._y = None
+        self._x = 2500
+        self._y = 2500
         self._horiz_motor = self._stage.motor(3)
         self._vert_motor = self._stage.motor(4)
         self._rail_motor = self._stage.motor(2)
@@ -109,7 +109,7 @@ class Storage(Stage):
         if self._stage.resistor(4).value() != 15000:
             return
 
-        self._delivery_motor.setSpeed(-512)
+        self._delivery_motor.setSpeed(-256)
         self._delivery_motor.setDistance(1)
         while not self._stage.resistor(1).value() == 15000:
             pass
@@ -119,7 +119,7 @@ class Storage(Stage):
         if self._stage.resistor(1).value() != 15000:
             return
 
-        self._delivery_motor.setSpeed(512)
+        self._delivery_motor.setSpeed(256)
         self._delivery_motor.setDistance(1)
         while not self._stage.resistor(4).value() == 15000:
             pass
@@ -147,11 +147,12 @@ class Storage(Stage):
 
     def put_cargo(self, x: int, y: int, color: int):
         coords = self._coords_map.get((x, y))
-        self.__deliver_forward_cargo()
+        self.__deliver_backward_cargo()
         self.__move_to(0, 650)
         self.__pick_up_cargo()
         self.__move_to(coords[0], coords[1])
         self.__drop_cargo()
+        self.__move_to(0, 650)
         self._data[x][y] = color
 
     def get_data(self):
@@ -159,6 +160,4 @@ class Storage(Stage):
 
     def calibrate(self):
         self.__pull_manipulator()
-        self.__move_delta(-2000, -2000)
-        self._x = 0
-        self._y = 0
+        self.__move_delta(-2500, -2500)
