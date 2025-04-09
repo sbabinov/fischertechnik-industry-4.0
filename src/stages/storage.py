@@ -70,11 +70,11 @@ class Storage(Stage):
 
     def __move_delta(self, x:int, y:int):
         rail_speed = -512
-        vert_speed = -512
+        vert_speed = -400
         if x < 0:
             rail_speed = 512
         if y < 0:
-            vert_speed = 512
+            vert_speed = 400
 
         rail_stopped = True
         vert_stopped = True
@@ -106,21 +106,15 @@ class Storage(Stage):
         self.__move_delta(x - self._x, y - self._y)
 
     def __deliver_forward_cargo(self):
-        if self._stage.resistor(4).value() != 15000:
-            return
-
-        self._delivery_motor.setSpeed(-256)
-        self._delivery_motor.setDistance(1)
+        self._delivery_motor.setSpeed(-512)
+        self._delivery_motor.setDistance(1000)
         while not self._stage.resistor(1).value() == 15000:
             pass
         self._delivery_motor.stop()
 
     def __deliver_backward_cargo(self):
-        if self._stage.resistor(1).value() != 15000:
-            return
-
-        self._delivery_motor.setSpeed(256)
-        self._delivery_motor.setDistance(1)
+        self._delivery_motor.setSpeed(512)
+        self._delivery_motor.setDistance(1000)
         while not self._stage.resistor(4).value() == 15000:
             pass
         self._delivery_motor.stop()
