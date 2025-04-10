@@ -25,7 +25,6 @@ class Motor:
                 break
             sensor = self.__stage.resistor(self.__motor_id)
             self.__stage.updateWait()
-        self.move(-2)
 
     def move(self, distance: int = 30000, speed: int = 512, wait: bool = True) -> None:
         speed = -speed if distance < 0 else speed
