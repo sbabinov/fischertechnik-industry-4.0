@@ -10,7 +10,7 @@ Window {
     visible: true
     title: "Raspberry Pi"
 
-     property int pageId: 1
+    property int pageId: 1
 
     function getPage(pageId, itemIndex) {
         var pages = {
@@ -22,9 +22,10 @@ Window {
 
     function translate(keywords) {
         var dictionary = {
-            "automatic mode" : ["Авторежим", "Automatic mode", "Automatikbetrieb"],
+            "automatic mode" : ["Авторежим", "Automatic mode", "Automatisch"],
             "settings" : ["Настройки", "Settings", "Einstellung"],
-            "about us" : ["О нас", "About us", "Über uns"]
+            "about us" : ["О нас", "About us", "Über uns"],
+            "start" : ["Старт", "Start", "Start"]
         }
         if (language.country === "russia") {
             return dictionary[keywords][0]
@@ -51,10 +52,10 @@ Window {
         implicitHeight: root.height / 5
         color: "#e3e3e3"
 
-        Image {
-            source: "images/logo.png"
-            anchors.centerIn: parent
-            sourceSize.width: root.width / 1.07
+        Loader {
+            id: headerPart
+            source: getPage(pageId, 0)
+            anchors.fill: parent
         }
 
         Rectangle {
@@ -157,7 +158,7 @@ Window {
 
     Loader {
         id: mainPart
-        source: "Menu.qml"
+        source: getPage(pageId, 1)
         anchors.top: header.bottom
         anchors.bottom: footer.top
         anchors.left: parent.left
