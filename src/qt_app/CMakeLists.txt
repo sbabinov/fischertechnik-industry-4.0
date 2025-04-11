@@ -19,6 +19,7 @@ qt_add_qml_module(appqt_app
         Main.qml
         Menu.qml
         MenuLogo.qml
+        AutoLogo.qml
     RESOURCES
         images/germany.png
         images/icon.png
