@@ -5,7 +5,6 @@ import QtQuick.Effects
 
 Item {
     id: menu
-
     ColumnLayout {
         anchors.fill: parent
         anchors.topMargin: root.height / 20
@@ -26,10 +25,14 @@ Item {
             Text {
                 id: buttonText1
                 text: translate("automatic mode")
-                anchors.centerIn: parent
                 font.bold: true
                 font.family: "Onest"
                 font.pointSize: root.height / 35
+                anchors.centerIn: parent
+            }
+
+            onClicked: {
+                pageId = 2
             }
         }
 
@@ -47,10 +50,10 @@ Item {
             Text {
                 id: buttonText2
                 text: translate("settings")
-                anchors.centerIn: parent
                 font.bold: true
                 font.family: "Onest"
                 font.pointSize: root.height / 35
+                anchors.centerIn: parent
             }
         }
 
@@ -68,10 +71,10 @@ Item {
             Text {
                 id: buttonText3
                 text: translate("about us")
-                anchors.centerIn: parent
                 font.bold: true
                 font.family: "Onest"
                 font.pointSize: root.height / 35
+                anchors.centerIn: parent
             }
         }
     }
