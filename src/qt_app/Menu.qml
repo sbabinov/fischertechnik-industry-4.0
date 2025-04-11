@@ -76,6 +76,10 @@ Item {
                 font.pointSize: root.height / 35
                 anchors.centerIn: parent
             }
+
+            onClicked: {
+                mainPart.source = "About.qml"
+            }
         }
     }
 }
