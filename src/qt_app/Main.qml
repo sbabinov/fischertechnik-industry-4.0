@@ -10,6 +10,16 @@ Window {
     visible: true
     title: "Raspberry Pi"
 
+     property int pageId: 1
+
+    function getPage(pageId, itemIndex) {
+        var pages = {
+            1 : ["MenuLogo.qml", "Menu.qml"],
+            2 : ["AutoLogo.qml", "Auto.qml"]
+        }
+        return pages[pageId][itemIndex]
+    }
+
     function translate(keywords) {
         var dictionary = {
             "automatic mode" : ["Авторежим", "Automatic mode", "Automatikbetrieb"],
