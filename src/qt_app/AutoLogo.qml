@@ -12,4 +12,30 @@ Item {
         font.pointSize: root.height / 25
         horizontalAlignment: Text.AlignHCenter
     }
+
+    Button {
+        anchors.top: parent.top
+        anchors.right: parent.right
+        anchors.rightMargin: 10
+        anchors.topMargin: 10
+        background: Rectangle {
+            implicitHeight: root.height / 12
+            implicitWidth: root.height / 12
+            color: "#b6b6b6"
+            radius: 15
+            border.color: "black"
+        }
+
+        Text {
+            text: "X"
+            anchors.centerIn: parent
+            font.bold: true
+            font.family: "Onest"
+            font.pointSize: root.height / 25
+        }
+
+        onClicked: {
+            pageId = 1
+        }
+    }
 }
