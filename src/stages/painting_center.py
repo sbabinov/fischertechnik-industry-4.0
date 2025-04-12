@@ -1,10 +1,10 @@
 import time
-
+import asyncio
 from .stage import Motor, SensorCheck, Stage
 from .shipment_center import ShipmentCenter
 
 class PaintingCenter(Stage):
-    def __init__(self, shipmentCenter: ShipmentCenter, host: str, port: int = 65000):
+    def __init__(self, shipmentCenter: ShipmentCenter, sensorCheck : SensorCheck, host: str, port: int = 65000):
         super().__init__(host, port)
         # Initialization of motors
         self.motorPainting = Motor(self._stage, 1)
@@ -23,14 +23,13 @@ class PaintingCenter(Stage):
         self.pump = self._stage.output(5)
         self.outUp = self._stage.output(6)
 
-        self.sensorCheck = SensorCheck
+        self.sensorCheck = sensorCheck
 
-    def painting(self):
+    async def painting(self):
         while self.sensorOut.value() != 15000:
             pass
 
-        self.sensorCheck = True
-        time.sleep(3)
+        await asyncio.sleep(3)
         self.gate.setLevel(512)
         self.compressor.setLevel(512)
         self.motorPainting.move(50, -300, False)
@@ -42,10 +41,10 @@ class PaintingCenter(Stage):
                 self.lighting.setLevel(512)
                 break
 
-        time.sleep(3)
+        await asyncio.sleep(3)
         self.gate.setLevel(512)
         self.motorPainting.move(100, 300, False)
-        time.sleep(5)
+        await asyncio.sleep(4.5)
         self.motorPainting.stop()
 
         while not self.motorPainting.isFinished():
@@ -53,11 +52,20 @@ class PaintingCenter(Stage):
             self.gate.setLevel(0)
             self._stage.updateWait()
 
-    def goToPainting(self):
+    async def goToPainting(self):
+        self.compressor.setLevel(0)
         self.motorCrane.move(100, -512, False)
-        time.sleep(23)
-        print("Crane stop")
+        for _ in range(23):
+            await asyncio.sleep(1)
+            self._stage.updateWait()
         self.motorCrane.stop()
+
+    async def run_concurrently(self):
+        task1 = asyncio.create_task(self.painting())
+        task2 = asyncio.create_task(self.goToPainting())
+
+        await task1
+        await task2
 
     def calibrate(self):
         self.motorCrane.move(100, 512, False)
@@ -75,30 +83,30 @@ class PaintingCenter(Stage):
                 self.motorCrane.stop()
                 self.outUp.setLevel(512)
                 self.compressor.setLevel(512)
-                time.sleep(1)
+                time.sleep(1.5)
+                self.pump.setLevel(0) #tut
                 self.outUp.setLevel(0)
                 time.sleep(0.5)
-                self.pump.setLevel(0)
                 self.compressor.setLevel(0)
                 break
 
     def runCrane(self):
-        if self.buttonCrane.value() == 15000:
-            self.calibrate()
+        # if self.buttonCrane.value() == 15000:
+        #     self.calibrate()
 
-        self.goToPainting()
+        # self.goToPainting()
         self.suckItUp()
         self.goFromPainting()
 
     def suckItUp(self):
-        print("Soset")
         self.outUp.setLevel(512)
         self.compressor.setLevel(512)
         time.sleep(1)
         self.pump.setLevel(512)
-        time.sleep(0.5)
+        time.sleep(1.5)
         self.outUp.setLevel(0)
 
-    def runPaintingCenter(self):
-        self.painting()
+    async def runPaintingCenter(self):
+        await self.run_concurrently()
         self.runCrane()
+        self.sensorCheck.sensorCheck = True
