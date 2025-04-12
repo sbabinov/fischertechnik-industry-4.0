@@ -1,7 +1,5 @@
 import time
-import ftrobopy
-from .stage import Motor, Stage
-from painting_center import SensorCheck
+from .stage import Motor, Stage, SensorCheck
 
 class ShipmentCenter(Stage):
     def __init__(self, host: str, port: int = 65000):
@@ -21,37 +19,60 @@ class ShipmentCenter(Stage):
         self.polishing = self._stage.output(3)
         self.tape = self._stage.output(6)
         self.throwOut = self._stage.output(7)
+        self.sensorCheck = SensorCheck
 
-    @property
-    def compressor(self):
+    def getCompressor(self):
         return self.compressor
 
-    @property
-    def buttonCrane(self):
+    def setCompressor(self, value):
+        self.compressor = value
+
+    def getButtonCrane(self):
         return self.buttonCrane
+
+    def setButtonCrane(self, value):
+        self.buttonCrane = value
+
+    # @property
+    # def compressor(self):
+    #     return self.compressor
+    #
+    # # @compressor.setter
+    # # def compressor(self, value):
+    # #     self._compressor = value
+    #
+    # @property
+    # def buttonCrane(self):
+    #     return self.buttonCrane
+    #
+    # @buttonCrane.setter
+    # def buttonCrane(self, value):
+    #     self._buttonCrane = value
+
 
     def calibrate(self):
         self.motorStand.move(100, 300, False)
-        while not self.motorStand.finished():
+        while not self.motorStand.isFinished():
             self._stage.updateWait()
-            if self.sensorStandMinus.value() != 15000:
+            if self.buttonStandMinus.value() != 15000:
                 self.motorStand.stop()
                 break
 
     def stand(self):
-        while self.buttonCrane.value() != 15000 and self.flag:
+        print(self.sensorCheck)
+        while self.buttonCrane.value() != 15000 and self.sensorCheck:
 
             self.motorStand.move(100, 300, False)
-            while not self.motorStand.finished():
+            while not self.motorStand.isFinished():
                 self._stage.updateWait()
-                if self.sensorStandMinus.value() != 15000:
+                if self.buttonStandMinus.value() != 15000:
                     self.motorStand.stop()
                     break
 
             self.motorStand.move(100, -300, False)
-            while not self.motorStand.finished():
+            while not self.motorStand.isFinished():
                 self._stage.updateWait()
-                if self.sensorStandDown.value() != 15000:
+                if self.buttonStandDown.value() != 15000:
                     self.motorStand.stop()
                     self.polishing.setLevel(512)
                     time.sleep(3)
@@ -59,9 +80,9 @@ class ShipmentCenter(Stage):
             self.polishing.setLevel(0)
 
             self.motorStand.move(100, -300, False)
-            while not self.motorStand.finished():
+            while not self.motorStand.isFinished():
                 self._stage.updateWait()
-                if self.sensorStandPlus.value() != 15000:
+                if self.buttonStandPlus.value() != 15000:
                     self.motorStand.stop()
                     self.compressor.setLevel(512)
                     self.throwOut.setLevel(512)
@@ -76,4 +97,7 @@ class ShipmentCenter(Stage):
             time.sleep(2)
             self.tape.setLevel(0)
             self.calibrate()
-            SensorCheck.sensorCheck = False
+            self.sensorCheck = False
+
+    def runShipmentCenter(self):
+        self.stand()
