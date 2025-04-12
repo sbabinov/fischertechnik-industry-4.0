@@ -75,6 +75,7 @@ class ShipmentCenter(Stage):
 
             self.throwOut.setLevel(0)
             self.compressor.setLevel(0)
+            self.calibrate()
             self.tape.setLevel(512)
             while self.sensorTape.value() != 15000:
                 pass
