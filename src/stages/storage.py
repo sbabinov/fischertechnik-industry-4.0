@@ -12,14 +12,14 @@ class Storage(Stage):
         self._delivery_motor = self._stage.motor(1)
         self._coords_map = dict()
         self._coords_map.update({(1, 1): (780, 0)})
-        self._coords_map.update({(2, 1): (1370, 0)})
+        self._coords_map.update({(2, 1): (1380, 0)})
         self._coords_map.update({(3, 1): (1980, 0)})
         self._coords_map.update({(1, 2): (780, 380)})
-        self._coords_map.update({(2, 2): (1370, 380)})
+        self._coords_map.update({(2, 2): (1380, 380)})
         self._coords_map.update({(3, 2): (1980, 380)})
-        self._coords_map.update({(1, 3): (780, 770)})
-        self._coords_map.update({(2, 3): (1370, 770)})
-        self._coords_map.update({(3, 3): (1980, 770)})
+        self._coords_map.update({(1, 3): (780, 780)})
+        self._coords_map.update({(2, 3): (1380, 780)})
+        self._coords_map.update({(3, 3): (1980, 780)})
         self._data = [[Cargo.UNDEFINED] * 3] * 3
         self.__reset_sensors()
 
@@ -107,7 +107,11 @@ class Storage(Stage):
             if z > 0 and self._stage.resistor(1).value() == 15000:
                 self._delivery_motor.stop()
                 conveyer_stopped = True
-            elif z < 0 and self._stage.resistor(4).value() == 15000:
+            try:
+                if z < 0 and self._stage.resistor(4).value() == 15000:
+                    self._delivery_motor.stop()
+                    conveyer_stopped = True
+            except Exception as e:
                 self._delivery_motor.stop()
                 conveyer_stopped = True
             rail_stopped = rail_stopped or self._rail_motor.finished()
