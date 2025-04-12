@@ -26,18 +26,26 @@ class Motor:
             sensor = self.__stage.resistor(self.__motor_id)
             self.__stage.updateWait()
 
-    def move(self, distance: int = 100_000, speed: int = 512, wait: bool = True) -> None:
+    def move(self, distance: int = 30000, speed: int = 512, wait: bool = True) -> None:
         speed = -speed if distance < 0 else speed
         self.__motor.setSpeed(speed)
-        self.__motor.setDistance(distance)
+        self.__motor.setDistance(abs(distance))
         if wait:
-            self.__stage._wait(self.__motor)
+            self.wait()
 
     def isFinished(self) -> bool:
         return self.__motor.finished()
 
     def stop(self) -> None:
         self.__motor.stop()
+
+    def wait(self) -> None:
+        while not self.__motor.finished():
+            self.__stage.updateWait()
+
+class SensorCheck:
+    def __init__(self):
+        self.sensorCheck = None
 
 def resetConfigCounter(f):
     def wrapper(*args):
@@ -48,7 +56,6 @@ def resetConfigCounter(f):
 
 class Stage:
     """ Abstract class for stages. """
-
     def __init__(self, host: str, port: int = 65000):
         self._stage = ftrobopy.ftrobopy(host, port)
         self._isRunning = False
