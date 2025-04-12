@@ -1,5 +1,6 @@
-from .stage import Stage
-from .stage import Cargo
+from time import sleep
+
+from .stage import Stage, Cargo, resetConfigCounter
 
 class Storage(Stage):
     def __init__(self, host: str, port: int = 65000):
@@ -13,13 +14,13 @@ class Storage(Stage):
         self._coords_map = dict()
         self._coords_map.update({(1, 1): (780, 0)})
         self._coords_map.update({(2, 1): (1380, 0)})
-        self._coords_map.update({(3, 1): (1980, 0)})
+        self._coords_map.update({(3, 1): (1990, 0)})
         self._coords_map.update({(1, 2): (780, 380)})
         self._coords_map.update({(2, 2): (1380, 380)})
-        self._coords_map.update({(3, 2): (1980, 380)})
+        self._coords_map.update({(3, 2): (1990, 380)})
         self._coords_map.update({(1, 3): (780, 780)})
         self._coords_map.update({(2, 3): (1380, 780)})
-        self._coords_map.update({(3, 3): (1980, 780)})
+        self._coords_map.update({(3, 3): (1990, 780)})
         self._data = [[Cargo.UNDEFINED] * 3] * 3
         self.__reset_sensors()
 
@@ -27,26 +28,29 @@ class Storage(Stage):
         for i in range(1, 10):
             iteration = list()
             for i in range(1, 9):
-                sensor = self._stage.resistor(i)
+                sensor = self.__safety_resistor(i)
                 iteration.append(sensor.value())
 
+    def __safety_resistor(self, num: int):
+        return self._stage.resistor(num)
+
     def __should_horizont_backward_stop(self):
-        sensor_backward = self._stage.resistor(6)
+        sensor_backward = self.__safety_resistor(6)
         if sensor_backward.value() != 15000:
             return True
 
     def __should_horizont_forward_stop(self):
-        sensor_forward = self._stage.resistor(7)
+        sensor_forward = self.__safety_resistor(7)
         if sensor_forward.value() != 15000:
             return True
 
     def __should_vertical_stop(self):
-        sensor = self._stage.resistor(8)
+        sensor = self.__safety_resistor(8)
         if sensor.value() != 15000:
             return True
 
     def __should_rail_stop(self):
-        sensor = self._stage.resistor(5)
+        sensor = self.__safety_resistor(5)
         if sensor.value() != 15000:
             return True
 
@@ -68,6 +72,7 @@ class Storage(Stage):
             pass
         self._horiz_motor.stop()
 
+    @resetConfigCounter
     def __move_delta(self, x: int, y: int, z: int):
         rail_speed = -512
         vert_speed = -400
@@ -104,11 +109,11 @@ class Storage(Stage):
             if y < 0 and self.__should_vertical_stop():
                 self._vert_motor.stop()
                 vert_stopped = True
-            if z > 0 and self._stage.resistor(1).value() == 15000:
+            if z > 0 and self.__safety_resistor(1).value() == 15000:
                 self._delivery_motor.stop()
                 conveyer_stopped = True
             try:
-                if z < 0 and self._stage.resistor(4).value() == 15000:
+                if z < 0 and self.__safety_resistor(4).value() == 15000:
                     self._delivery_motor.stop()
                     conveyer_stopped = True
             except Exception as e:
@@ -118,6 +123,9 @@ class Storage(Stage):
             vert_stopped = vert_stopped or self._vert_motor.finished()
             motors_stopped = rail_stopped and vert_stopped and conveyer_stopped
 
+        print(self._stage._config_id[0])
+       # self._stage._config_id[0] = 0
+        #self._stage._config_id[1] = 0
         self._x += x
         self._y += y
 
