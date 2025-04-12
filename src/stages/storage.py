@@ -124,20 +124,6 @@ class Storage(Stage):
     def __move_to(self, x: int, y: int, z = 0):
         self.__move_delta(x - self._x, y - self._y, z)
 
-    def __deliver_forward_cargo(self):
-        self._delivery_motor.setSpeed(-512)
-        self._delivery_motor.setDistance(1000)
-        while not self._stage.resistor(1).value() == 15000:
-            pass
-        self._delivery_motor.stop()
-
-    def __deliver_backward_cargo(self):
-        self._delivery_motor.setSpeed(512)
-        self._delivery_motor.setDistance(1000)
-        while not self._stage.resistor(4).value() == 15000:
-            pass
-        self._delivery_motor.stop()
-
     def __pick_up_cargo(self):
         self.__move_delta(0, 50, 0)
         self.__push_manipulator()
