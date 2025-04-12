@@ -112,20 +112,14 @@ class Storage(Stage):
             if z > 0 and self.__safety_resistor(1).value() == 15000:
                 self._delivery_motor.stop()
                 conveyer_stopped = True
-            try:
-                if z < 0 and self.__safety_resistor(4).value() == 15000:
-                    self._delivery_motor.stop()
-                    conveyer_stopped = True
-            except Exception as e:
+
+            if z < 0 and self.__safety_resistor(4).value() == 15000:
                 self._delivery_motor.stop()
                 conveyer_stopped = True
             rail_stopped = rail_stopped or self._rail_motor.finished()
             vert_stopped = vert_stopped or self._vert_motor.finished()
             motors_stopped = rail_stopped and vert_stopped and conveyer_stopped
 
-        print(self._stage._config_id[0])
-       # self._stage._config_id[0] = 0
-        #self._stage._config_id[1] = 0
         self._x += x
         self._y += y
 
