@@ -23,6 +23,7 @@ class PaintingCenter(Stage):
         self.pump = self._stage.output(5)
         self.outUp = self._stage.output(6)
 
+        # Initialization of flag
         self.sensorCheck = sensorCheck
 
     async def painting(self):
@@ -44,18 +45,18 @@ class PaintingCenter(Stage):
         await asyncio.sleep(3)
         self.gate.setLevel(512)
         self.motorPainting.move(100, 300, False)
+        self.lighting.setLevel(0)
         await asyncio.sleep(4.5)
         self.motorPainting.stop()
 
         while not self.motorPainting.isFinished():
-            self.lighting.setLevel(0)
             self.gate.setLevel(0)
             self._stage.updateWait()
 
     async def goToPainting(self):
         self.compressor.setLevel(0)
         self.motorCrane.move(100, -512, False)
-        for _ in range(23):
+        for _ in range(20):
             await asyncio.sleep(1)
             self._stage.updateWait()
         self.motorCrane.stop()
@@ -91,10 +92,6 @@ class PaintingCenter(Stage):
                 break
 
     def runCrane(self):
-        # if self.buttonCrane.value() == 15000:
-        #     self.calibrate()
-
-        # self.goToPainting()
         self.suckItUp()
         self.goFromPainting()
 
@@ -107,6 +104,8 @@ class PaintingCenter(Stage):
         self.outUp.setLevel(0)
 
     async def runPaintingCenter(self):
+        self._isRunning = True
         await self.run_concurrently()
         self.runCrane()
         self.sensorCheck.sensorCheck = True
+        self._isRunning = False

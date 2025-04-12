@@ -19,6 +19,8 @@ class ShipmentCenter(Stage):
         self.polishing = self._stage.output(3)
         self.tape = self._stage.output(6)
         self.throwOut = self._stage.output(7)
+
+        # Initialization of flag
         self.sensorCheck = sensorCheck
 
     def getCompressor(self):
@@ -32,23 +34,6 @@ class ShipmentCenter(Stage):
 
     def setButtonCrane(self, value):
         self.buttonCrane = value
-
-    # @property
-    # def compressor(self):
-    #     return self.compressor
-    #
-    # # @compressor.setter
-    # # def compressor(self, value):
-    # #     self._compressor = value
-    #
-    # @property
-    # def buttonCrane(self):
-    #     return self.buttonCrane
-    #
-    # @buttonCrane.setter
-    # def buttonCrane(self, value):
-    #     self._buttonCrane = value
-
 
     def calibrate(self):
         self.motorStand.move(100, 300, False)
@@ -99,4 +84,6 @@ class ShipmentCenter(Stage):
             self.sensorCheck.sensorCheck = False
 
     def runShipmentCenter(self):
+        self._isRunning = True
         self.stand()
+        self._isRunning = False
