@@ -39,8 +39,16 @@ class Motor:
     def stop(self) -> None:
         self.__motor.stop()
 
+def resetConfigCounter(f):
+    def wrapper(*args):
+        args[0]._stage._config_id[0] = 0
+        args[0]._stage._config_id[1] = 0
+        return f(*args)
+    return wrapper
+
 class Stage:
     """ Abstract class for stages. """
+
     def __init__(self, host: str, port: int = 65000):
         self._stage = ftrobopy.ftrobopy(host, port)
         self._isRunning = False
