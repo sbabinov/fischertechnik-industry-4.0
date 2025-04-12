@@ -40,11 +40,11 @@ class Crane(Stage):
     def takeFromSortingCenter(self, color) -> None:
         """ The crane takes a cargo from the sorting center and returns to the calibrated position. """
         if color == Cargo.WHITE:
-            distances = (465, -860, -375)
+            distances = (465, -900, -375)
         elif color == Cargo.RED:
-            distances = (545, -860, -420)
+            distances = (545, -900, -420)
         else:
-            distances = (615, -860, -600)
+            distances = (615, -900, -600)
 
         self.__move(distances)
         self.generator.move(wait=False)
@@ -63,7 +63,7 @@ class Crane(Stage):
 
     def putInPaintingCenter(self) -> None:
         """ The crane puts a cargo in the painting center and returns to the calibrated position. """
-        distances = (5, -600, -870)
+        distances = (5, -600, -880)
 
         self.__move(distances)
         self.generator.stop()
