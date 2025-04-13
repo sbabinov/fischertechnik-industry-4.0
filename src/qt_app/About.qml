@@ -5,25 +5,48 @@ import QtQuick.Controls
 Item {
     id: about
     anchors.fill: parent
-    width: parent.width
 
     Rectangle {
-        anchors.top: aboutHeaderLoader.bottom
-        anchors.bottom: parent.bottom
-        implicitWidth: root.width
-        implicitHeight: root.height
+        anchors.fill: parent
         color: "#e3e3e3"
     }
 
-    Loader {
-        id: aboutHeaderLoader
-        source: "Header.qml"
-        anchors.top: parent.top
+    Item
+    {
+        id: aboutHeader
+        height: aboutHeaderLoader.height
+        width: aboutHeaderLoader.width
+
+        Loader {
+            id: aboutHeaderLoader
+            source: "Header.qml"
+            anchors.top: parent.top
+        }
+
+        Loader {
+            property string previousPage: "Menu.qml"
+            source: "BackButton.qml"
+            anchors.top: parent.top
+            anchors.right: parent.right
+            anchors.rightMargin: 10
+            anchors.topMargin: 10
+        }
+    }
+
+    Text {
+        text: translate("about us")
+        anchors.centerIn: aboutHeader
+        wrapMode: Text.WordWrap
+        width: 200
+        font.bold: true
+        font.family: "Onest"
+        font.pointSize: root.height / 25
+        horizontalAlignment: Text.AlignHCenter
     }
 
     Flickable
     {
-        anchors.top: aboutHeaderLoader.bottom
+        anchors.top: aboutHeader.bottom
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: menuFooterLoader.top
