@@ -5,8 +5,24 @@ import QtQuick.Effects
 
 Item {
     id: menu
+
+    Loader {
+        id: menuHeaderLoader
+        source: "Header.qml"
+        anchors.top: parent.top
+    }
+
+    Image {
+        source: "images/logo.png"
+        anchors.centerIn: menuHeaderLoader
+        sourceSize.width: root.width / 1.07
+    }
+
     ColumnLayout {
-        anchors.fill: parent
+        anchors.top: menuHeaderLoader.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: menuFooterLoader.top
         anchors.topMargin: root.height / 20
         anchors.bottomMargin: root.height / 4
         spacing: 30
@@ -32,7 +48,7 @@ Item {
             }
 
             onClicked: {
-                pageId = 2
+                mainLoader.source = "AutoMode.qml"
             }
         }
 
@@ -78,8 +94,14 @@ Item {
             }
 
             onClicked: {
-                mainPart.source = "About.qml"
+                mainLoader.source = "About.qml"
             }
         }
+    }
+
+    Loader {
+        id: menuFooterLoader
+        source: "Footer.qml"
+        anchors.bottom: parent.bottom
     }
 }

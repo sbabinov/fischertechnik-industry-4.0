@@ -18,16 +18,17 @@ qt_add_qml_module(appqt_app
     QML_FILES
         Main.qml
         Menu.qml
-        MenuLogo.qml
-        AutoLogo.qml
-        Auto.qml
+        AutoMode.qml
         About.qml
+        Header.qml
+        Footer.qml
+        BackButton.qml
     RESOURCES
-        images/germany.png
+        images/german.png
         images/icon.png
         images/logo.png
-        images/russia.png
-        images/usa.png
+        images/russian.png
+        images/american.png
         images/wallpaper.jpg
         images/logo1c.png
         images/command.jpeg

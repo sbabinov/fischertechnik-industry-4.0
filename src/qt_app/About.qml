@@ -6,17 +6,27 @@ Item {
     id: about
     anchors.fill: parent
     width: parent.width
+
     Rectangle {
-        anchors.top: parent.top
+        anchors.top: aboutHeaderLoader.bottom
         anchors.bottom: parent.bottom
         implicitWidth: root.width
         implicitHeight: root.height
         color: "#e3e3e3"
     }
 
+    Loader {
+        id: aboutHeaderLoader
+        source: "Header.qml"
+        anchors.top: parent.top
+    }
+
     Flickable
     {
-        anchors.fill: parent
+        anchors.top: aboutHeaderLoader.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: menuFooterLoader.top
         contentWidth: parent.width
         contentHeight: aboutSection.height
         clip: true
@@ -55,5 +65,12 @@ Item {
                 sourceSize.width: parent.width - parent.width * 0.15
             }
         }
+    }
+
+
+    Loader {
+        id: menuFooterLoader
+        source: "Footer.qml"
+        anchors.bottom: parent.bottom
     }
 }

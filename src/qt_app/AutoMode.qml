@@ -4,18 +4,60 @@ import QtQuick.Layouts
 import QtQuick.Effects
 
 Item {
-    id: auto
+    id: autoMode
     anchors.fill: parent
-    anchors.topMargin: root.height / 20
-    anchors.bottomMargin: root.height / 20
-    anchors.centerIn: parent
-    GridLayout {
+
+    Rectangle {
         anchors.fill: parent
+        implicitWidth: root.width
+        implicitHeight: root.height
+        color: "#e3e3e3"
+    }
+
+    Item
+    {
+        id: automodeHeader
+        height: automodeHeaderLoader.height
+        width: automodeHeaderLoader.width
+
+        Loader {
+            id: automodeHeaderLoader
+            source: "Header.qml"
+            anchors.top: parent.top
+        }
+
+        Loader {
+            property string previousPage: "Menu.qml"
+            source: "BackButton.qml"
+            anchors.top: parent.top
+            anchors.right: parent.right
+            anchors.rightMargin: 10
+            anchors.topMargin: 10
+        }
+    }
+
+    Text {
+        text: translate("automatic mode")
+        anchors.centerIn: automodeHeader
+        wrapMode: Text.WordWrap
+        width: 200
+        font.bold: true
+        font.family: "Onest"
+        font.pointSize: root.height / 25
+        horizontalAlignment: Text.AlignHCenter
+    }
+
+    GridLayout {
+        anchors.top: automodeHeader.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: menuFooterLoader.top
+        anchors.bottomMargin: root.height / 20
         anchors.leftMargin: 20
         anchors.rightMargin: 20
         columns: 3
         rows: 4
-        rowSpacing: 20
+        rowSpacing: 5
 
         Rectangle {
             Layout.alignment: Qt.AlignHCenter
@@ -170,6 +212,8 @@ Item {
                 implicitWidth: root.width / 1.5
                 color: "#e3e3e3"
                 radius: 30
+                border.color: "black"
+                border.width: 3
 
                 Text {
                     text: translate("start")
@@ -180,5 +224,11 @@ Item {
                 }
             }
         }
+    }
+
+    Loader {
+        id: menuFooterLoader
+        source: "Footer.qml"
+        anchors.bottom: parent.bottom
     }
 }
