@@ -27,7 +27,7 @@ Item {
         }
 
         Text {
-            text: "X"
+            text: "✕"
             anchors.centerIn: parent
             font.bold: true
             font.family: "Onest"
