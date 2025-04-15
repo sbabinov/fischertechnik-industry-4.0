@@ -18,10 +18,18 @@ class Factory:
 
     def calibrate(self) -> None:
         """ Calibrates all components. """
-        self.__storage.calibrate()
-        self.__crane.calibrate()
-        self.__paintingCenter.calibrate()
-        self.__shipmentCenter.calibrate()
+        t1 = threading.Thread(target = self.__storage.calibrate)
+        t2 = threading.Thread(target = self.__crane.calibrate)
+        t3 = threading.Thread(target = self.__paintingCenter.calibrate)
+        t4 = threading.Thread(target = self.__shipmentCenter.calibrate)
+        t1.start()
+        t2.start()
+        t3.start()
+        t4.start()
+        t1.join()
+        t2.join()
+        t3.join()
+        t4.join()
 
     def getStorage(self, row, column) -> Cargo:
         """ Get information about cargo in storage cell:
