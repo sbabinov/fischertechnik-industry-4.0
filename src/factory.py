@@ -56,22 +56,21 @@ class Factory:
 
     def __takeFromStorage(self) -> None:
         with self.__storageLock:
-            for i in range(3):
-                for j in range(3):
+            for i in range(1, 4):
+                for j in range(1, 4):
                     self.__storage.getCargo(i, j)
-                    self.__storage.getData()[i][j] = Cargo.EMPTY
                     with self.__craneLock:
                         self.__crane.takeFromStorage()
                         self.__crane._isRunning = True
-                    self.__storage.putCargo(i, j)
+                    self.__storage.putCargo(i, j, Cargo.EMPTY)
 
     def __process(self) -> None:
         count = 0
         while count != 9:
-            while self.__crane._isRunning == False:
+            while not self.__crane.isRunning():
                 pass
 
-            thread = threading.Thread(target = self.__paintingCenter.paint)
+            thread = threading.Thread(target = self.__paintingCenter.run)
             thread.start()
             with self.__craneLock:
                 self.__crane.putInPaintingCenter()
@@ -80,7 +79,7 @@ class Factory:
 
             thread = threading.Thread(target = self.__sortingCenter.sort)
             thread.start()
-            self.__shipment_center.polish()
+            self.__shipmentCenter.run()
             thread.join()
 
             count += 1
@@ -94,16 +93,17 @@ class Factory:
                 elif self.__sortingCenter.getBlue != 0:
                     cargo = Cargo.BLUE
 
-                j = self.__findCell()
+                j = self.__findCell(cargo)
                 self.__storage.getCargo(cargo, j)
 
                 with self.__craneLock:
                     self.__crane.takeFromSortingCenter(cargo)
                     self.__crane.putInStorage()
-                self.__storage.putCargo(cargo, j)
+                self.__storage.putCargo(cargo, j, cargo)
                 self.__storage.getData()[cargo][j] = cargo
 
     def __findCell(self, cargo) -> int:
         for j in range(3):
             if self.__storage.getData()[cargo][j] == Cargo.EMPTY:
                 return j
+        return 0
