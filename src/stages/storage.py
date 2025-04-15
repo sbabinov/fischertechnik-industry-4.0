@@ -82,7 +82,7 @@ class Storage(Stage):
         if y < 0:
             vert_speed = 512
         if z < 0:
-            conveyer_speed = 512
+            conveyer_speed = 400
 
         rail_stopped = True
         vert_stopped = True
