@@ -18,7 +18,7 @@ class Crane(Stage):
     def __moveBack(self, distances: Tuple) -> None:
         self.arm_z.move(-distances[1] + (1 if distances[1] > 0 else -1))
         self.arm_x.move(-distances[2] + (1 if distances[2] > 0 else -1))
-        self.tower.move(-distances[0] + (1 if distances[0] > 0 else -1))
+        self.tower.move(-distances[0])
 
     def calibrate(self) -> None:
         """ Calibrates all crane motors. """
@@ -40,11 +40,11 @@ class Crane(Stage):
     def takeFromSortingCenter(self, color) -> None:
         """ The crane takes a cargo from the sorting center and returns to the calibrated position. """
         if color == Cargo.WHITE:
-            distances = (465, -860, -375)
+            distances = (460, -900, -375)
         elif color == Cargo.RED:
-            distances = (545, -860, -420)
+            distances = (542, -900, -420)
         else:
-            distances = (615, -860, -600)
+            distances = (610, -900, -585)
 
         self.__move(distances)
         self.generator.move(wait=False)
@@ -63,7 +63,7 @@ class Crane(Stage):
 
     def putInPaintingCenter(self) -> None:
         """ The crane puts a cargo in the painting center and returns to the calibrated position. """
-        distances = (5, -600, -870)
+        distances = (-10, -600, -870)
 
         self.__move(distances)
         self.generator.stop()
