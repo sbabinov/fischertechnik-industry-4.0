@@ -33,7 +33,7 @@ class PaintingCenter(Stage):
         time.sleep(3)
         self.gate.setLevel(512)
         self.compressor.setLevel(512)
-        self.motorPainting.move(50, -300, False)
+        self.motorPainting.move(50, -512, False)
         while not self.motorPainting.isFinished():
             self._stage.updateWait()
             if self.buttonPainting.value() != 15000:
@@ -45,7 +45,7 @@ class PaintingCenter(Stage):
         time.sleep(3)
         self.gate.setLevel(512)
         self.lighting.setLevel(0)
-        self.motorPainting.move(100, 300, False)
+        self.motorPainting.move(100, 512, False)
         while not self.motorPainting.isFinished():
             self._stage.updateWait()
             if self.buttonPaintingDown.value() != 15000:
@@ -70,7 +70,7 @@ class PaintingCenter(Stage):
     def _calibratePainting(self):
         self.gate.setLevel(512)
         self.compressor.setLevel(512)
-        self.motorPainting.move(50, -300, False)
+        self.motorPainting.move(50, -512, False)
         while not self.motorPainting.isFinished():
             self._stage.updateWait()
             if self.buttonPainting.value() != 15000:
@@ -79,7 +79,7 @@ class PaintingCenter(Stage):
                 break
 
         self.gate.setLevel(512)
-        self.motorPainting.move(100, 300, False)
+        self.motorPainting.move(100, 512, False)
         while not self.motorPainting.isFinished():
             self._stage.updateWait()
             if self.buttonPaintingDown.value() != 15000:
