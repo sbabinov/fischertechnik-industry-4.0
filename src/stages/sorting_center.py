@@ -30,15 +30,15 @@ class SortingCenter(Stage):
         if minColorValue > 1400:
             out = self._stage.output(6)
             conveyor.setDistance(8)
-            blueCount += 1
+            self.__blueCount += 1
         elif minColorValue > 1000:
             out = self._stage.output(5)
             conveyor.setDistance(13)
-            redCount += 1
+            self.__redCount += 1
         else:
             out = self._stage.output(4)
             conveyor.setDistance(3)
-            whiteCount += 1
+            self.__whiteCount += 1
 
         self._wait(conveyor)
 
