@@ -146,6 +146,7 @@ class Storage(Stage):
         self.__drop_cargo()
         self.__move_to(0, 0, 1)
         self.calibrate()
+        self._data[x - 1][y - 1] = Cargo.EMPTY
 
     def putCargo(self, x: int, y: int, color: int):
         self.__move_to(0, 650)
