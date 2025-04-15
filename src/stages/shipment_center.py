@@ -1,12 +1,8 @@
 import time
 from .stage import Motor, Stage
 
-class SensorCheck:
-    def __init__(self):
-        self.sensorCheck = False
-
 class ShipmentCenter(Stage):
-    def __init__(self, sensorCheck : SensorCheck, host: str, port: int = 65000):
+    def __init__(self, host: str, port: int = 65000):
         super().__init__(host, port)
         # Initialization of motors
         self.motorStand = Motor(self._stage, 1)
@@ -23,9 +19,6 @@ class ShipmentCenter(Stage):
         self.polishing = self._stage.output(3)
         self.tape = self._stage.output(6)
         self.throwOut = self._stage.output(7)
-
-        # Initialization of flag
-        self.sensorCheck = sensorCheck
 
     def getCompressor(self):
         return self.compressor
@@ -48,8 +41,6 @@ class ShipmentCenter(Stage):
                 break
 
     def stand(self):
-        #while self.buttonCrane.value() != 15000 and self.sensorCheck.sensorCheck:
-
         self.motorStand.move(100, 300, False)
         while not self.motorStand.isFinished():
             self._stage.updateWait()
@@ -90,7 +81,6 @@ class ShipmentCenter(Stage):
             if self.buttonStandMinus.value() != 15000:
                 self.motorStand.stop()
                 break
-        self.sensorCheck.sensorCheck = False #не нужен
 
     def run(self):
         self._isRunning = True

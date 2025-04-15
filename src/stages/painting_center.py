@@ -1,9 +1,9 @@
 import time
-from .stage import Motor, SensorCheck, Stage
+from .stage import Motor, Stage
 from .shipment_center import ShipmentCenter
 
 class PaintingCenter(Stage):
-    def __init__(self, shipmentCenter: ShipmentCenter, sensorCheck : SensorCheck, host: str, port: int = 65000):
+    def __init__(self, shipmentCenter: ShipmentCenter, host: str, port: int = 65000):
         super().__init__(host, port)
         # Initialization of motors
         self.motorPainting = Motor(self._stage, 1)
@@ -13,9 +13,9 @@ class PaintingCenter(Stage):
         self.shipment = shipmentCenter
         self.buttonCrane = self.shipment.getButtonCrane()
         self.buttonPainting = self._stage.resistor(1)
-        self.buttonPaintingDown = self._stage.resistor(2) #2
+        self.buttonPaintingDown = self._stage.resistor(2)
         self.sensorOut = self._stage.resistor(5)
-        self.buttonCranePainting = self._stage.resistor(3) #3
+        self.buttonCranePainting = self._stage.resistor(3)
 
         # Initialization of devices
         self.compressor = self.shipment.getCompressor()
@@ -23,9 +23,6 @@ class PaintingCenter(Stage):
         self.lighting = self._stage.output(8)
         self.pump = self._stage.output(5)
         self.outUp = self._stage.output(6)
-
-        # Initialization of flag
-        self.sensorCheck = sensorCheck
 
     def painting(self):
         while self.sensorOut.value() != 15000:
@@ -126,5 +123,4 @@ class PaintingCenter(Stage):
         self._isRunning = True
         self.painting()
         self.runCrane()
-        self.sensorCheck.sensorCheck = True
         self._isRunning = False
