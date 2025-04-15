@@ -1,5 +1,5 @@
 from .stages import *
-from stages.stage import Cargo
+from .stages.stage import Cargo
 from .singleton import singleton
 import threading
 
@@ -8,11 +8,11 @@ class Factory:
     """ Class for controlling the Fischertechnik factory layout. """
 
     def __init__(self):
-        self.__storage = Storage('')
-        self.__crane = Crane('')
-        self.__paintingCenter = PaintingCenter('')
-        self.__shipmentCenter = ShipmentCenter('')
-        self.__sortingCenter = SortingCenter('')
+        self.__storage = Storage('192.168.137.247')
+        self.__crane = Crane('192.168.137.74')
+        self.__paintingCenter = PaintingCenter('192.168.137.77')
+        self.__shipmentCenter = ShipmentCenter('192.168.137.201')
+        self.__sortingCenter = SortingCenter('192.168.137.138')
         self.__storageLock = threading.Lock()
         self.__craneLock = threading.Lock()
 
