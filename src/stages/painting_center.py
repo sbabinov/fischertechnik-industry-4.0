@@ -112,7 +112,7 @@ class PaintingCenter(Stage):
         time.sleep(1.5)
         self.outUp.setLevel(0)
 
-    async def run(self):
+    def run(self):
         self._isRunning = True
         self.painting()
         self.runCrane()
