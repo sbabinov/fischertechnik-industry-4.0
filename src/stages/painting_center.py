@@ -1,6 +1,7 @@
 import time
-from .stage import Motor, Stage
-from .shipment_center import ShipmentCenter, SensorCheck
+import asyncio
+from .stage import Motor, SensorCheck, Stage
+from .shipment_center import ShipmentCenter
 
 class PaintingCenter(Stage):
     def __init__(self, shipmentCenter: ShipmentCenter, sensorCheck : SensorCheck, host: str, port: int = 65000):
@@ -25,11 +26,11 @@ class PaintingCenter(Stage):
         # Initialization of flag
         self.sensorCheck = sensorCheck
 
-    def painting(self):
+    async def painting(self):
         while self.sensorOut.value() != 15000:
             pass
 
-        time.sleep(3)
+        await asyncio.sleep(3)
         self.gate.setLevel(512)
         self.compressor.setLevel(512)
         self.motorPainting.move(50, -300, False)
@@ -41,7 +42,7 @@ class PaintingCenter(Stage):
                 self.lighting.setLevel(512)
                 break
 
-        time.sleep(3)
+        await asyncio.sleep(3)
         self.gate.setLevel(512)
         self.motorPainting.move(100, 300, False)
         self.lighting.setLevel(0)

@@ -43,6 +43,10 @@ class Motor:
         while not self.__motor.finished():
             self.__stage.updateWait()
 
+class SensorCheck:
+    def __init__(self):
+        self.sensorCheck = None
+
 class Stage:
     """ Abstract class for stages. """
     def __init__(self, host: str, port: int = 65000):

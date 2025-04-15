@@ -74,17 +74,17 @@ class ShipmentCenter(Stage):
                     self.motorStand.stop()
                     self.compressor.setLevel(512)
                     self.throwOut.setLevel(512)
-                    time.sleep(1)
+                    time.sleep(0.5)
                     break
 
             self.throwOut.setLevel(0)
             self.compressor.setLevel(0)
+            self.calibrate()
             self.tape.setLevel(512)
             while self.sensorTape.value() != 15000:
                 pass
             time.sleep(2)
             self.tape.setLevel(0)
-            self.calibrate()
             self.sensorCheck.sensorCheck = False
 
     def runShipmentCenter(self):
