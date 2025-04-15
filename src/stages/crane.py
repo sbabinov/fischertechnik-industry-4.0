@@ -25,12 +25,12 @@ class Crane(Stage):
         for motor_id in 2, 3, 1:
             Motor(self._stage, motor_id).calibrate()
         Motor(self._stage, 1).move(-925)
-        #Motor(self._stage, 2).move(-20)
+        Motor(self._stage, 2).move(-10)
         Motor(self._stage, 3).move(-10)
 
     def takeFromStorage(self) -> None:
         """ The crane takes a cargo from the storage and returns to the calibrated position. """
-        distances = (-475, -250, -195)
+        distances = (-475, -250, -170)
 
         self.__move(distances)
         self.generator.move(wait=False)
