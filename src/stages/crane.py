@@ -16,8 +16,8 @@ class Crane(Stage):
         self.arm_z.move(distances[1])
 
     def __moveBack(self, distances: Tuple) -> None:
-        self.arm_z.move(-distances[1] + (1 if distances[1] > 0 else -1))
-        self.arm_x.move(-distances[2] + (1 if distances[2] > 0 else -1))
+        self.arm_z.move(-distances[1])
+        self.arm_x.move(-distances[2])
         self.tower.move(-distances[0])
 
     def calibrate(self) -> None:

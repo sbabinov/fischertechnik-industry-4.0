@@ -22,7 +22,7 @@ class SortingCenter(Stage):
         conveyor.setDistance(1000)
 
         minColorValue = 2000
-        while sensorOut.value() < 3000:
+        while sensorOut.value() < 5000:
             minColorValue = min(minColorValue, colorSensor.value())
 
         out = self._stage.output(5)

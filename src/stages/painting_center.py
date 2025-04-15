@@ -101,9 +101,9 @@ class PaintingCenter(Stage):
                 self.outUp.setLevel(512)
                 self.compressor.setLevel(512)
                 time.sleep(1.5)
-                self.pump.setLevel(0) #tut
-                self.outUp.setLevel(0)
+                self.pump.setLevel(0)
                 time.sleep(0.5)
+                self.outUp.setLevel(0)
                 self.compressor.setLevel(0)
                 break
 

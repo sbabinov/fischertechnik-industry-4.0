@@ -10,8 +10,8 @@ class Factory:
     def __init__(self):
         self.__storage = Storage('192.168.137.247')
         self.__crane = Crane('192.168.137.74')
-        self.__paintingCenter = PaintingCenter('192.168.137.77')
         self.__shipmentCenter = ShipmentCenter('192.168.137.201')
+        self.__paintingCenter = PaintingCenter(self.__shipmentCenter, '192.168.137.77')
         self.__sortingCenter = SortingCenter('192.168.137.138')
         self.__storageLock = threading.Lock()
         self.__craneLock = threading.Lock()
@@ -74,6 +74,8 @@ class Factory:
             thread.start()
             with self.__craneLock:
                 self.__crane.putInPaintingCenter()
+                thread1 = threading.Thread(target = self.__crane.calibrate(), daemon = True)
+                thread1.start()
                 self.__crane._isRunning = False
             thread.join()
 
@@ -87,23 +89,27 @@ class Factory:
     def __takeFromSorting(self) -> None:
         with self.__storageLock:
             while self.__sortingCenter.getWhite() != 0 or self.__sortingCenter.getBlue() != 0 or self.__sortingCenter.getRed() != 0:
-                cargo = Cargo.RED
-                if self.__sortingCenter.getWhite != 0:
+                cargo = Cargo.UNDEFINED
+                if self.__sortingCenter.getWhite() != 0:
                     cargo = Cargo.WHITE
-                elif self.__sortingCenter.getBlue != 0:
+                    self.__sortingCenter.decWhite()
+                elif self.__sortingCenter.getBlue() != 0:
                     cargo = Cargo.BLUE
+                    self.__sortingCenter.decBlue()
+                else:
+                    cargo = Cargo.RED
+                    self.__sortingCenter.decRed()
 
                 j = self.__findCell(cargo)
-                self.__storage.getCargo(cargo, j)
+                self.__storage.getCargo(j + 1, cargo)
 
                 with self.__craneLock:
                     self.__crane.takeFromSortingCenter(cargo)
                     self.__crane.putInStorage()
-                self.__storage.putCargo(cargo, j, cargo)
-                self.__storage.getData()[cargo][j] = cargo
+                self.__storage.putCargo(j + 1, cargo, cargo)
 
     def __findCell(self, cargo) -> int:
         for j in range(3):
-            if self.__storage.getData()[cargo][j] == Cargo.EMPTY:
+            if self.__storage.getData()[j][cargo - 1] == Cargo.EMPTY:
                 return j
         return 0

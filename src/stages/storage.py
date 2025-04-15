@@ -21,7 +21,7 @@ class Storage(Stage):
         self._coords_map.update({(1, 3): (780, 780)})
         self._coords_map.update({(2, 3): (1380, 780)})
         self._coords_map.update({(3, 3): (1990, 780)})
-        self._data = [[Cargo.UNDEFINED] * 3] * 3
+        self._data = [[Cargo.UNDEFINED for _ in range(3)] for _ in range(3)]
         self.__reset_sensors()
 
     def __reset_sensors(self):
