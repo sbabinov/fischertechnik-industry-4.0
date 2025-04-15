@@ -1,5 +1,9 @@
 import time
-from .stage import Motor, Stage, SensorCheck
+from .stage import Motor, Stage
+
+class SensorCheck:
+    def __init__(self):
+        self.sensorCheck = False
 
 class ShipmentCenter(Stage):
     def __init__(self, sensorCheck : SensorCheck, host: str, port: int = 65000):
