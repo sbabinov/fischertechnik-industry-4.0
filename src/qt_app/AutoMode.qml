@@ -7,13 +7,6 @@ Item {
     id: autoMode
     anchors.fill: parent
 
-    // Rectangle {
-    //     anchors.fill: parent
-    //     implicitWidth: root.width
-    //     implicitHeight: root.height
-    //     color: "#e3e3e3"
-    // }
-
     Item {
         anchors.fill: parent
         Image {
