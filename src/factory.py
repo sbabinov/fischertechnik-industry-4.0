@@ -15,21 +15,28 @@ class Factory:
         self.__sortingCenter = SortingCenter('192.168.137.138')
         self.__storageLock = threading.Lock()
         self.__craneLock = threading.Lock()
+        self.__threadPool = []
 
     def calibrate(self) -> None:
         """ Calibrates all components. """
-        t1 = threading.Thread(target = self.__storage.calibrate)
-        t2 = threading.Thread(target = self.__crane.calibrate)
-        t3 = threading.Thread(target = self.__paintingCenter.calibrate)
-        t4 = threading.Thread(target = self.__shipmentCenter.calibrate)
-        t1.start()
-        t2.start()
-        t3.start()
-        t4.start()
-        t1.join()
-        t2.join()
-        t3.join()
-        t4.join()
+        self.__threadPool.append(threading.Thread(target=self.__storage.calibrate, daemon=True))
+        self.__threadPool.append(threading.Thread(target=self.__crane.calibrate, daemon=True))
+        self.__threadPool.append(threading.Thread(target=self.__paintingCenter.calibrate, daemon=True))
+        self.__threadPool.append(threading.Thread(target=self.__shipmentCenter.calibrate, daemon=True))
+        self.__startAll()
+        self.__waitAll()
+
+    def __waitAll(self):
+        for thread in self.__threadPool:
+            thread.join()
+        self.__threadPool.clear()
+
+    def __startAll(self):
+        for thread in self.__threadPool:
+            thread.start()
+
+    def wait(self):
+        self.__waitAll()
 
     def getStorage(self, row, column) -> Cargo:
         """ Get information about cargo in storage cell:
@@ -38,21 +45,15 @@ class Factory:
             WHITE, BLUE, RED - cargo of this color inside. """
         return self.__storage.getData()[row][column]
 
-    def sort(self) -> None:
+    def sort(self, wait: bool = True) -> None:
         """ Sort storage cargo. """
         self.calibrate()
-
-        takeFromStorageThread = threading.Thread(target = self.__takeFromStorage)
-        processThread = threading.Thread(target = self.__process)
-        takeFromSortingThread = threading.Thread(target = self.__takeFromSorting)
-
-        takeFromStorageThread.start()
-        processThread.start()
-        takeFromSortingThread.start()
-
-        takeFromStorageThread.join()
-        processThread.join()
-        takeFromSortingThread.join()
+        self.__threadPool.append(threading.Thread(target=self.__takeFromStorage, daemon=True))
+        self.__threadPool.append(threading.Thread(target=self.__process, daemon=True))
+        self.__threadPool.append(threading.Thread(target=self.__takeFromSorting, daemon=True))
+        self.__startAll()
+        if wait:
+            self.__waitAll()
 
     def __takeFromStorage(self) -> None:
         with self.__storageLock:
@@ -70,16 +71,16 @@ class Factory:
             while not self.__crane.isRunning():
                 pass
 
-            thread = threading.Thread(target = self.__paintingCenter.run)
+            thread = threading.Thread(target=self.__paintingCenter.run, daemon=True)
             thread.start()
             with self.__craneLock:
                 self.__crane.putInPaintingCenter()
-                thread1 = threading.Thread(target = self.__crane.calibrate(), daemon = True)
+                thread1 = threading.Thread(target=self.__crane.calibrate(), daemon=True)
                 thread1.start()
                 self.__crane._isRunning = False
             thread.join()
 
-            thread = threading.Thread(target = self.__sortingCenter.sort)
+            thread = threading.Thread(target=self.__sortingCenter.sort, daemon=True)
             thread.start()
             self.__shipmentCenter.run()
             thread.join()
@@ -101,11 +102,15 @@ class Factory:
                     self.__sortingCenter.decRed()
 
                 j = self.__findCell(cargo)
-                self.__storage.getCargo(j + 1, cargo)
 
                 with self.__craneLock:
-                    self.__crane.takeFromSortingCenter(cargo)
+                    thread = threading.Thread(target=self.__crane.takeFromSortingCenter, args=[cargo], daemon=True)
+                    thread.start()
+                    self.__storage.getCargo(j + 1, cargo)
+                    thread.join()
                     self.__crane.putInStorage()
+                    thread = threading.Thread(target=self.__crane.calibrate, daemon=True)
+                    thread.start()
                 self.__storage.putCargo(j + 1, cargo, cargo)
 
     def __findCell(self, cargo) -> int:
