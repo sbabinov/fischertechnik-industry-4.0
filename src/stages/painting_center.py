@@ -28,8 +28,6 @@ class PaintingCenter(Stage):
         while self.sensorOut.value() != 15000:
             pass
 
-        self.motorCrane.move(100, -512, False)
-
         time.sleep(3)
         self.gate.setLevel(512)
         self.compressor.setLevel(512)
@@ -42,6 +40,7 @@ class PaintingCenter(Stage):
                 self.lighting.setLevel(512)
                 break
 
+        self.motorCrane.move(100, -512, False)
         time.sleep(3)
         self.gate.setLevel(512)
         self.lighting.setLevel(0)
