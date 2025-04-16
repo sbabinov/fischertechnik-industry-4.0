@@ -1,16 +1,16 @@
 from fastapi import FastAPI
 import uvicorn
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 from typing import List
-from src.stages.stage import Cargo
 from src.factory import Factory
 
 factory = Factory()
 
+
 class CargoResponse(BaseModel):
     row: int
     col: int
-    state: Cargo
+    state: int
 
 
 class CargoListResponse(BaseModel):
@@ -24,7 +24,12 @@ async def main():
     return {"ok": "Hello world"}
 
 
-@app.get("/storage", response_model=CargoListResponse)
+@app.get("/sort")
+async def sort():
+    factory.sort()
+    return {"ok": "sorted start"}
+
+@app.get("/storage")
 async def getAllCargos():
     cargos = []
     for row in range(3):
