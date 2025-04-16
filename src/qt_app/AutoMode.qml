@@ -7,11 +7,20 @@ Item {
     id: autoMode
     anchors.fill: parent
 
-    Rectangle {
+    // Rectangle {
+    //     anchors.fill: parent
+    //     implicitWidth: root.width
+    //     implicitHeight: root.height
+    //     color: "#e3e3e3"
+    // }
+
+    Item {
         anchors.fill: parent
-        implicitWidth: root.width
-        implicitHeight: root.height
-        color: "#e3e3e3"
+        Image {
+            anchors.fill: parent
+            anchors.bottomMargin: root.height / 10.67
+            source: "images/wallpaper1.jpg"
+        }
     }
 
     Item
@@ -49,6 +58,7 @@ Item {
 
     GridLayout {
         anchors.top: automodeHeader.bottom
+        anchors.topMargin: root.height / 20
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: menuFooterLoader.top
@@ -65,6 +75,8 @@ Item {
             Layout.preferredWidth: root.height / 7
             color: "#b6b6b6"
             radius: 30
+            border.color: "black"
+            border.width: 2
 
             Text {
                 text: "1"
@@ -81,6 +93,8 @@ Item {
             Layout.preferredWidth: root.height / 7
             color: "#ffffff"
             radius: 30
+            border.color: "black"
+            border.width: 2
 
             Text {
                 text: "2"
@@ -97,6 +111,8 @@ Item {
             Layout.preferredWidth: root.height / 7
             color: "#474747"
             radius: 30
+            border.color: "black"
+            border.width: 2
 
             Text {
                 text: "3"
@@ -113,6 +129,8 @@ Item {
             Layout.preferredWidth: root.height / 7
             color: "#0038a5"
             radius: 30
+            border.color: "black"
+            border.width: 2
 
             Text {
                 text: "4"
@@ -129,6 +147,8 @@ Item {
             Layout.preferredWidth: root.height / 7
             color: "#b6b6b6"
             radius: 30
+            border.color: "black"
+            border.width: 2
 
             Text {
                 text: "5"
@@ -145,6 +165,8 @@ Item {
             Layout.preferredWidth: root.height / 7
             color: "#b6b6b6"
             radius: 30
+            border.color: "black"
+            border.width: 2
 
             Text {
                 text: "6"
@@ -161,6 +183,8 @@ Item {
             Layout.preferredWidth: root.height / 7
             color: "#b6b6b6"
             radius: 30
+            border.color: "black"
+            border.width: 2
 
             Text {
                 text: "7"
@@ -177,6 +201,8 @@ Item {
             Layout.preferredWidth: root.height / 7
             color: "#D52B1E"
             radius: 30
+            border.color: "black"
+            border.width: 2
 
             Text {
                 text: "8"
@@ -193,6 +219,8 @@ Item {
             Layout.preferredWidth: root.height / 7
             color: "#474747"
             radius: 30
+            border.color: "black"
+            border.width: 2
 
             Text {
                 text: "9"
@@ -213,7 +241,7 @@ Item {
                 color: "#e3e3e3"
                 radius: 30
                 border.color: "black"
-                border.width: 3
+                border.width: 2
 
                 Text {
                     text: translate("start")
