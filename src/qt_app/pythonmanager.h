@@ -3,6 +3,7 @@
 
 #include <QProcess>
 #include <QObject>
+#include <QDebug>
 
 class PythonManager : public QObject
 {

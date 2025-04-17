@@ -244,6 +244,8 @@ Item {
                     anchors.centerIn: parent
                 }
             }
+
+            onClicked: pythonManager.sendCommand("autoMode")
         }
     }
 
