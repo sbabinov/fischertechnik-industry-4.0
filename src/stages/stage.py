@@ -25,7 +25,6 @@ class Motor:
                 break
             sensor = self.__stage.resistor(self.__motor_id)
             self.__stage.updateWait()
-        self.move(-2)
 
     def move(self, distance: int = 30000, speed: int = 512, wait: bool = True) -> None:
         speed = -speed if distance < 0 else speed
@@ -44,6 +43,17 @@ class Motor:
         while not self.__motor.finished():
             self.__stage.updateWait()
 
+class SensorCheck:
+    def __init__(self):
+        self.sensorCheck = None
+
+def resetConfigCounter(f):
+    def wrapper(*args):
+        args[0]._stage._config_id[0] = 0
+        args[0]._stage._config_id[1] = 0
+        return f(*args)
+    return wrapper
+
 class Stage:
     """ Abstract class for stages. """
     def __init__(self, host: str, port: int = 65000):
@@ -58,3 +68,5 @@ class Stage:
         """ Wait until motor is finished. """
         while not motor.finished():
             self._stage.updateWait()
+
+
