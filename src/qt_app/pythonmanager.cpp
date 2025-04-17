@@ -30,3 +30,20 @@ void PythonManager::sendCommand(const QString& command)
         m_process.write((command + "\n").toUtf8());
     }
 }
+
+void PythonManager::onPythonOutput()
+{
+    QString output = m_process.readAllStandardOutput();
+    emit pythonOutputReceived(output);
+}
+
+void PythonManager::onPythonError()
+{
+    QString error = m_process.readAllStandardError();
+    emit pythonErrorReceived(error);
+}
+
+void PythonManager::onPythonFinished()
+{
+    emit pythonFinished();
+}
