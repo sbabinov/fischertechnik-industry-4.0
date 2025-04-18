@@ -4,9 +4,9 @@ import time
 class SortingCenter(Stage):
     def __init__(self, host: str, port: int = 65000):
         super().__init__(host, port)
-        self.__whiteCount = 3
-        self.__blueCount = 3
-        self.__redCount = 3
+        self.__whiteCount = 0
+        self.__blueCount = 0
+        self.__redCount = 0
 
     def sort(self) -> None:
         """ Determine the color of the cargo and sort it. """
@@ -33,7 +33,7 @@ class SortingCenter(Stage):
             self.__blueCount += 1
         elif minColorValue > 1000:
             out = self._stage.output(5)
-            conveyor.setDistance(12)
+            conveyor.setDistance(13)
             self.__redCount += 1
         else:
             out = self._stage.output(4)
