@@ -95,6 +95,7 @@ class Factory:
             thread1 = threading.Thread(target=self.__crane.calibrate, daemon=True)
             thread1.start()
             self.__crane._isRunning = False
+            thread1.join()
         thread.join()
 
         thread = threading.Thread(target=self.__sortingCenter.sort, daemon=True)

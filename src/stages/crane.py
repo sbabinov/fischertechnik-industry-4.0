@@ -30,7 +30,7 @@ class Crane(Stage):
 
     def takeFromStorage(self) -> None:
         """ The crane takes a cargo from the storage and returns to the calibrated position. """
-        distances = (-480, -230, -170)
+        distances = (-480, -250, -170)
 
         self.__move(distances)
         self.generator.move(wait=False)
@@ -57,7 +57,7 @@ class Crane(Stage):
 
     def putInStorage(self) -> None:
         """ The crane puts a cargo in the storage and returns to the calibrated position. """
-        distances = (-475, -230, -195)
+        distances = (-475, -250, -195)
 
         self.__move(distances)
         self.generator.stop()
