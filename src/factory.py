@@ -6,7 +6,6 @@ import threading
 @singleton
 class Factory:
     """ Class for controlling the Fischertechnik factory layout. """
-
     def __init__(self):
         self.__storage = Storage('192.168.137.247')
         self.__crane = Crane('192.168.137.74')
@@ -38,17 +37,38 @@ class Factory:
     def wait(self):
         self.__waitAll()
 
-    def getStorage(self, row, column) -> Cargo:
+    def getStorage(self, row: int, column: int) -> Cargo:
         """ Get information about cargo in storage cell:
             EMPTY - cell is empty;
             UNDEFINED - cargo inside, but color is undefined;
             WHITE, BLUE, RED - cargo of this color inside. """
         return self.__storage.getData()[row][column]
 
-    def processCargo(self, row, column, wait: bool = True) -> None:
+    def getStatus(self, id: bool) -> bool:
+        """ Return information about factory running status:
+            id 0 - Storage
+            id 1 - Crane
+            id 2 - Painting center
+            id 3 - Shipment center
+            id 4 - Sorting center """
+        if id == 0:
+            return self.__storage.isRunning()
+        elif id == 1:
+            return self.__crane.isRunning()
+        elif id == 2:
+            return self.__paintingCenter.isRunning()
+        elif id == 3:
+            return self.__shipmentCenter.isRunning()
+        elif id == 4:
+            return self.__sortingCenter.isRunning()
+        else:
+            return False
+
+
+    def processCargo(self, row: int, column: int, wait: bool = True) -> None:
         """ Proces one cargo from storage and put it back. """
         self.calibrate()
-        self.__threadPool.append(threading.Thread(target=self.__processCargo, daemon=True))
+        self.__threadPool.append(threading.Thread(target=self.__processCargo, args=[row, column], daemon=True))
         if wait:
             self.__waitAll()
 
@@ -61,7 +81,7 @@ class Factory:
         if wait:
             self.__waitAll()
 
-    def __processCargo(self, row, column) -> None:
+    def __processCargo(self, row: int, column: int) -> None:
         self.__storage._isRunning = True
         self.__storage.getCargo(row + 1, column + 1)
         self.__storage._isRunning = False
@@ -186,7 +206,7 @@ class Factory:
                     thread.start()
                 self.__storage.putCargo(j + 1, cargo, cargo)
 
-    def __findCell(self, cargo) -> int:
+    def __findCell(self, cargo: Cargo) -> int:
         for j in range(3):
             if self.__storage.getData()[j][cargo - 1] == Cargo.EMPTY:
                 return j
