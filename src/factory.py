@@ -64,7 +64,6 @@ class Factory:
         else:
             return False
 
-
     def processCargo(self, row: int, column: int, wait: bool = True) -> None:
         """ Proces one cargo from storage and put it back. """
         self.calibrate()
@@ -125,7 +124,7 @@ class Factory:
         thread = threading.Thread(target=self.__crane.calibrate, daemon=True)
         thread.start()
         self.__storage._isRunning = True
-        self.__storage.putCargo(row, column, cargo)
+        self.__storage.putCargo(row + 1, column + 1, cargo)
         self.__storage._isRunning = False
         thread.join()
         self.__crane._isRunning = False
