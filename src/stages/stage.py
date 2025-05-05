@@ -2,8 +2,8 @@ import ftrobopy
 
 class Cargo:
     WHITE = 1
-    RED = 2
-    BLUE = 3
+    BLUE = 2
+    RED = 3
     UNDEFINED = 4
     EMPTY = 5
 

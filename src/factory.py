@@ -19,10 +19,10 @@ class Factory:
 
     def calibrate(self) -> None:
         """ Calibrates all components. """
-        self.__threadPool.append(threading.Thread(target=self.__storage.calibrate, daemon=True))
-        self.__threadPool.append(threading.Thread(target=self.__crane.calibrate, daemon=True))
-        self.__threadPool.append(threading.Thread(target=self.__paintingCenter.calibrate, daemon=True))
-        self.__threadPool.append(threading.Thread(target=self.__shipmentCenter.calibrate, daemon=True))
+        self.__threadPool.append(threading.Thread(target=self.__storage.calibrate))
+        self.__threadPool.append(threading.Thread(target=self.__crane.calibrate))
+        self.__threadPool.append(threading.Thread(target=self.__paintingCenter.calibrate))
+        self.__threadPool.append(threading.Thread(target=self.__shipmentCenter.calibrate))
         self.__startAll()
         self.__waitAll()
 
@@ -49,7 +49,6 @@ class Factory:
         """ Sort storage cargo. """
         self.calibrate()
         self.__threadPool.append(threading.Thread(target=self.__takeFromStorage, daemon=True))
-        self.__threadPool.append(threading.Thread(target=self.__process, daemon=True))
         self.__threadPool.append(threading.Thread(target=self.__takeFromSorting, daemon=True))
         self.__startAll()
         if wait:
@@ -63,38 +62,56 @@ class Factory:
                     with self.__craneLock:
                         self.__crane.takeFromStorage()
                         self.__crane._isRunning = True
-                    self.__storage.putCargo(i, j, Cargo.EMPTY)
+                    thread = threading.Thread(target=self.__process, daemon=True)
+                    thread.start()
+
+                    cargo = Cargo.UNDEFINED
+                    if j == Cargo.WHITE and self.__sortingCenter.getWhite():
+                        cargo = Cargo.WHITE
+                        self.__sortingCenter.decWhite()
+                    elif j == Cargo.BLUE and self.__sortingCenter.getBlue():
+                        cargo = Cargo.BLUE
+                        self.__sortingCenter.decBlue()
+                    elif j == Cargo.RED and self.__sortingCenter.getRed():
+                        cargo = Cargo.RED
+                        self.__sortingCenter.decRed()
+
+                    if cargo != Cargo.UNDEFINED:
+                        with self.__craneLock:
+                            self.__crane.takeFromSortingCenter(cargo)
+                            self.__crane.putInStorage()
+                            thread = threading.Thread(target=self.__crane.calibrate, daemon=True)
+                            thread.start()
+                            self.__storage.putCargo(i, j, cargo)
+                    else:
+                        self.__storage.putCargo(i, j, Cargo.EMPTY)
 
     def __process(self) -> None:
-        count = 0
-        while count != 9:
-            while not self.__crane.isRunning():
-                pass
-
+        thread = {}
+        with self.__craneLock:
             thread = threading.Thread(target=self.__paintingCenter.run, daemon=True)
             thread.start()
-            with self.__craneLock:
-                self.__crane.putInPaintingCenter()
-                thread1 = threading.Thread(target=self.__crane.calibrate(), daemon=True)
-                thread1.start()
-                self.__crane._isRunning = False
-            thread.join()
+            self.__crane.putInPaintingCenter()
+            thread1 = threading.Thread(target=self.__crane.calibrate, daemon=True)
+            thread1.start()
+            self.__crane._isRunning = False
+            thread1.join()
+        thread.join()
 
-            thread = threading.Thread(target=self.__sortingCenter.sort, daemon=True)
-            thread.start()
-            self.__shipmentCenter.run()
-            thread.join()
-
-            count += 1
+        thread = threading.Thread(target=self.__sortingCenter.sort, daemon=True)
+        thread.start()
+        self.__shipmentCenter.run()
+        thread.join()
 
     def __takeFromSorting(self) -> None:
         with self.__storageLock:
-            while self.__sortingCenter.getWhite() != 0 or self.__sortingCenter.getBlue() != 0 or self.__sortingCenter.getRed() != 0:
+            while (self.__sortingCenter.getWhite() or self.__sortingCenter.getBlue() or
+                self.__sortingCenter.getRed()):
                 cargo = Cargo.UNDEFINED
-                if self.__sortingCenter.getWhite() != 0:
+                if self.__sortingCenter.getWhite():
                     cargo = Cargo.WHITE
                     self.__sortingCenter.decWhite()
-                elif self.__sortingCenter.getBlue() != 0:
+                elif self.__sortingCenter.getBlue():
                     cargo = Cargo.BLUE
                     self.__sortingCenter.decBlue()
                 else:
