@@ -50,6 +50,17 @@ async def getSingleCargo(row: int, col: int):
             "col": col,
             "cargo": cargo}
 
+@app.get("/process/{row}/{col}")
+async def processSingleCargo(row: int, col: int):
+    factory.processCargo(row, col)
+    return {"ok": "isProcessed"}
+
+
+@app.get("/status/{index}")
+async def getStatus(index: int):
+    isRunning = factory.getStatus(index)
+    return {"isRunning": isRunning}
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000)
