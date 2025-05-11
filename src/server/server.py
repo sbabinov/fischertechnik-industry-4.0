@@ -24,10 +24,10 @@ async def main():
     return {"ok": "Hello world"}
 
 
-@app.get("/sort")
+@app.post("/sort")
 async def sort():
     factory.sort()
-    return {"ok": "sorted start"}
+    return {"sucess": True}
 
 @app.get("/storage")
 async def getAllCargos():
@@ -50,10 +50,10 @@ async def getSingleCargo(row: int, col: int):
             "col": col,
             "cargo": cargo}
 
-@app.get("/process/{row}/{col}")
+@app.post("/process/{row}/{col}")
 async def processSingleCargo(row: int, col: int):
     factory.processCargo(row, col)
-    return {"ok": "isProcessed"}
+    return {"sucess": True}
 
 
 @app.get("/status/{index}")
