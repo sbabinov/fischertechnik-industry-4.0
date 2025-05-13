@@ -81,6 +81,7 @@ class Factory:
             self.__waitAll()
 
     def __processCargo(self, row: int, column: int) -> None:
+        self.calibrate()
         self.__storage._isRunning = True
         self.__storage.getCargo(row + 1, column + 1)
         self.__storage._isRunning = False
