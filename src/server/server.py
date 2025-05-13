@@ -52,7 +52,7 @@ async def getSingleCargo(row: int, col: int):
 
 @app.post("/process/{row}/{col}")
 async def processSingleCargo(row: int, col: int):
-    factory.processCargo(row, col)
+    factory.processCargo(row, col, wait=False)
     return {"sucess": True}
 
 
