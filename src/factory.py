@@ -88,12 +88,17 @@ class Factory:
         self.__crane._isRunning = True
         self.__crane.takeFromStorage()
 
-        thread = threading.Thread(target=self.__paintingCenter.run, daemon=True)
-        self.__paintingCenter._isRunning = True
+        thread = threading.Thread(target=self.__storage.putCargo, args=[row + 1, column + 1], daemon=True)
+        self.__storage._isRunning = True
         thread.start()
+        thread1 = threading.Thread(target=self.__paintingCenter.run, daemon=True)
+        self.__paintingCenter._isRunning = True
+        thread1.start()
         self.__crane.putInPaintingCenter()
         thread1 = threading.Thread(target=self.__crane.calibrate, daemon=True)
         thread1.start()
+        thread.join()
+        self.__storage._isRunning = False
         thread1.join()
         self.__crane._isRunning = False
         thread.join()
@@ -107,28 +112,6 @@ class Factory:
         self.__sortingCenter._isRunning = True
         thread.join()
         self.__sortingCenter._isRunning = False
-
-        cargo = Cargo.UNDEFINED
-        if self.__sortingCenter.getWhite():
-            cargo = Cargo.WHITE
-            self.__sortingCenter.decWhite()
-        elif self.__sortingCenter.getBlue():
-            cargo = Cargo.BLUE
-            self.__sortingCenter.decBlue()
-        else:
-            cargo = Cargo.RED
-            self.__sortingCenter.decRed()
-
-        self.__crane._isRunning = True
-        self.__crane.takeFromSortingCenter(cargo)
-        self.__crane.putInStorage()
-        thread = threading.Thread(target=self.__crane.calibrate, daemon=True)
-        thread.start()
-        self.__storage._isRunning = True
-        self.__storage.putCargo(row + 1, column + 1, cargo)
-        self.__storage._isRunning = False
-        thread.join()
-        self.__crane._isRunning = False
 
     def __takeFromStorage(self) -> None:
         with self.__storageLock:
