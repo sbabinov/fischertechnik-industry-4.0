@@ -37,6 +37,9 @@ class Factory:
     def wait(self):
         self.__waitAll()
 
+    def writeStorage(self, storage: list[list[int]]) -> None:
+        self.__storage._data = storage
+
     def getStorage(self, row: int, column: int) -> Cargo:
         """ Get information about cargo in storage cell:
             EMPTY - cell is empty;
