@@ -96,6 +96,10 @@ Item {
                 font.pointSize: root.height / 35
                 anchors.centerIn: parent
             }
+
+            onClicked: {
+                mainLoader.source = "Settings.qml"
+            }
         }
 
         Button {
