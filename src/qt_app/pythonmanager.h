@@ -1,34 +1,31 @@
-#ifndef PYTHONMANAGER_H
-#define PYTHONMANAGER_H
+#ifndef NETWORKMANAGER_HPP
+#define NETWORKMANAGER_HPP
 
-#include <QProcess>
 #include <QObject>
-#include <QDebug>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
 
-class PythonManager : public QObject
+class NetworkManager : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(QString response READ response NOTIFY responseChanged)
 
 public:
-    explicit PythonManager(QObject* parent = nullptr);
+    explicit NetworkManager(QObject* parent = nullptr);
+    QString response() const;
 
-    Q_INVOKABLE void startPythonScript(const QString& scriptPath);
-    Q_INVOKABLE void stopPythonScript();
-    Q_INVOKABLE void sendCommand(const QString& command);
+    Q_INVOKABLE void getRequest(const QString &url);
+    Q_INVOKABLE void postRequest(const QString &url, const QString &jsonData);
 
 signals:
-    void pythonOutputReceived(const QString& output);
-    void pythonErrorReceived(const QString& error);
-    void pythonFinished();
+    void responseChanged(const QString &response);
+    void errorOccurred(const QString &error);
 
 private slots:
-    void onPythonOutput();
-
-    void onPythonError();
-
-    void onPythonFinished();
+    void onReplyFinished(QNetworkReply *reply);
 private:
-    QProcess m_process;
+    QNetworkAccessManager *manager_;
+    QString response_;
 };
 
 #endif
