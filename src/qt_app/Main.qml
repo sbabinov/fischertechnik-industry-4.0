@@ -15,6 +15,7 @@ Window {
     function translate(keywords) {
         var dictionary = {
             "automatic mode" : ["Авторежим", "Automatic mode", "Automatisch"],
+            "manual mode" : ["Ручной режим", "Manual mode", "Manueller Modus"],
             "settings" : ["Настройки", "Settings", "Einstellung"],
             "about us" : ["О нас", "About us", "Über uns"],
             "start" : ["Старт", "Start", "Start"]
