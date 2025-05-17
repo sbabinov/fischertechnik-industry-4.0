@@ -10,6 +10,8 @@ Window {
     visible: true
     title: "Raspberry Pi"
 
+    property string ip: "127.0.0.0"
+    property string port: "8000"
     property string language: "russian"
 
     function translate(keywords) {
