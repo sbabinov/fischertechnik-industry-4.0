@@ -1,5 +1,5 @@
-#ifndef NETWORKMANAGER_HPP
-#define NETWORKMANAGER_HPP
+#ifndef NETWORK_MANAGER_HPP
+#define NETWORK_MANAGER_HPP
 
 #include <QObject>
 #include <QNetworkAccessManager>
