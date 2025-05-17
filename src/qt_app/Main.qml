@@ -10,8 +10,6 @@ Window {
     visible: true
     title: "Raspberry Pi"
 
-    property string ip: "127.0.0.0"
-    property string port: "8000"
     property string language: "russian"
 
     function translate(keywords) {
@@ -20,7 +18,8 @@ Window {
             "manual mode" : ["Ручной режим", "Manual mode", "Manueller Modus"],
             "settings" : ["Настройки", "Settings", "Einstellung"],
             "about us" : ["О нас", "About us", "Über uns"],
-            "start" : ["Старт", "Start", "Start"]
+            "start" : ["Старт", "Start", "Start"],
+            "save" : ["Сохранить", "Save", "Speichern"]
         }
         if (language === "russian") {
             return dictionary[keywords][0]

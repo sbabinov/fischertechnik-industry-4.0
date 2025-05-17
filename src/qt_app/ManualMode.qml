@@ -91,7 +91,7 @@ Item {
                     }
                 }
 
-                onClicked: networkManager.postRequest("http://127.0.0.1:8000/process" + "/" + (modelData.row + 1) + "/" + (modelData.col + 1), "")
+                onClicked: networkManager.postRequest("/process" + "/" + (modelData.row + 1) + "/" + (modelData.col + 1), "")
             }
         }
     }

@@ -114,7 +114,7 @@ Item {
             }
         }
 
-        onClicked: networkManager.postRequest("http://127.0.0.1:8000/sort", "")
+        onClicked: networkManager.postRequest("/sort", "")
     }
 
     Loader {
