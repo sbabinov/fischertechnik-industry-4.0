@@ -32,7 +32,7 @@ Item {
             Layout.alignment: Qt.AlignHCenter
 
             background: Rectangle {
-                implicitHeight: root.height / 7
+                implicitHeight: root.height / 9
                 implicitWidth: root.width / 1.2
                 color: "#e3e3e3"
                 radius: 30
@@ -57,14 +57,39 @@ Item {
             Layout.alignment: Qt.AlignHCenter
 
             background: Rectangle {
-                implicitHeight: root.height / 7
+                implicitHeight: root.height / 9
+                implicitWidth: root.width / 1.2
+                color: "#e3e3e3"
+                radius: 30
+            }
+
+            Text {
+                id: buttonText2
+                text: translate("manual mode")
+                font.bold: true
+                font.family: "Onest"
+                font.pointSize: root.height / 35
+                anchors.centerIn: parent
+            }
+
+            onClicked: {
+                mainLoader.source = "AutoMode.qml"
+            }
+        }
+
+        Button {
+            id: button3
+            Layout.alignment: Qt.AlignHCenter
+
+            background: Rectangle {
+                implicitHeight: root.height / 9
                 implicitWidth: root.width / 1.2
                 color: "#e3e3e3"
                 radius: 25
             }
 
             Text {
-                id: buttonText2
+                id: buttonText3
                 text: translate("settings")
                 font.bold: true
                 font.family: "Onest"
@@ -74,18 +99,18 @@ Item {
         }
 
         Button {
-            id: button3
+            id: button4
             Layout.alignment: Qt.AlignHCenter
 
             background: Rectangle {
-                implicitHeight: root.height / 7
+                implicitHeight: root.height / 9
                 implicitWidth: root.width / 1.2
                 color: "#e3e3e3"
                 radius: 25
             }
 
             Text {
-                id: buttonText3
+                id: buttonText4
                 text: translate("about us")
                 font.bold: true
                 font.family: "Onest"
