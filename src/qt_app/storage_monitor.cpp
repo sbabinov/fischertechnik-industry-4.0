@@ -2,8 +2,9 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
-StorageMonitor::StorageMonitor(NetworkManager* netManager, QObject* parent)
-    : QObject(parent), networkManager_(netManager)
+StorageMonitor::StorageMonitor(NetworkManager* netManager, QObject* parent):
+  QObject(parent),
+  networkManager_(netManager)
 {
   timer_ = new QTimer(this);
   connect(timer_, &QTimer::timeout, this, &StorageMonitor::fetchStorageData);
@@ -22,7 +23,7 @@ QJsonArray StorageMonitor::storageData() const
 
 void StorageMonitor::fetchStorageData()
 {
-  networkManager_->getRequest("http://127.0.0.1:8000/storage");
+  networkManager_->getRequest("/storage");
 }
 
 void StorageMonitor::handleResponse(const QString &response)
