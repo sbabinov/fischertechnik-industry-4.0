@@ -49,84 +49,64 @@ Item {
         horizontalAlignment: Text.AlignHCenter
     }
 
-    GridLayout {
+    Grid {
         anchors.top: automodeHeader.bottom
-        anchors.topMargin: root.height / 20
         anchors.left: parent.left
         anchors.right: parent.right
-        anchors.bottom: menuFooterLoader.top
-        anchors.bottomMargin: root.height / 20
-        anchors.leftMargin: 20
-        anchors.rightMargin: 20
+        anchors.bottom: startButton.top
+        anchors.topMargin: root.height / 20
+        anchors.bottomMargin: 20
+        anchors.leftMargin: 50
+        anchors.rightMargin: 50
         columns: 3
-        rows: 4
-        rowSpacing: 5
+        rows: 3
+        spacing: 20
 
-        Rectangle {
-            Layout.alignment: Qt.AlignHCenter
-            Layout.preferredHeight: root.height / 7
-            Layout.preferredWidth: root.height / 7
-            color: "#b6b6b6"
-            radius: 30
-            border.color: "black"
-            border.width: 2
+        Repeater {
+            model: storageMonitor.storageData
+            delegate: Rectangle {
+                height: root.height / 7
+                width: root.height / 7
+                color: {
+                    if (modelData.cargo === 1) return "#ffffff";
+                    if (modelData.cargo === 2) return "#0038a5";
+                    if (modelData.cargo === 3) return "#D52B1E";
+                    if (modelData.cargo === 4) return "#b6b6b6";
+                    if (modelData.cargo === 5) return "#474747";
+                    return "yellow";
+                }
 
-            Text {
-                text: "1"
-                font.bold: true
-                font.family: "Onest"
-                font.pointSize: root.height / 30
-                anchors.centerIn: parent
+                radius: 30
+                border.color: "black"
+                border.width: 2
+
+                Text {
+                    text: index + 1
+                    font.bold: true
+                    font.family: "Onest"
+                    font.pointSize: root.height / 30
+                    anchors.centerIn: parent
+                }
             }
         }
+    }
 
-        Rectangle {
-            Layout.alignment: Qt.AlignHCenter
-            Layout.preferredHeight: root.height / 7
-            Layout.preferredWidth: root.height / 7
-            color: "#ffffff"
+    Button {
+        id: startButton
+        anchors.bottom: menuFooterLoader.top
+        anchors.bottomMargin: root.height / 25
+        anchors.horizontalCenter: parent.horizontalCenter
+
+        background: Rectangle {
+            implicitHeight: root.height / 12
+            implicitWidth: root.width / 1.5
+            color: "#e3e3e3"
             radius: 30
             border.color: "black"
             border.width: 2
 
             Text {
-                text: "2"
-                font.bold: true
-                font.family: "Onest"
-                font.pointSize: root.height / 30
-                anchors.centerIn: parent
-            }
-        }
-
-        Rectangle {
-            Layout.alignment: Qt.AlignHCenter
-            Layout.preferredHeight: root.height / 7
-            Layout.preferredWidth: root.height / 7
-            color: "#474747"
-            radius: 30
-            border.color: "black"
-            border.width: 2
-
-            Text {
-                text: "3"
-                font.bold: true
-                font.family: "Onest"
-                font.pointSize: root.height / 30
-                anchors.centerIn: parent
-            }
-        }
-
-        Rectangle {
-            Layout.alignment: Qt.AlignHCenter
-            Layout.preferredHeight: root.height / 7
-            Layout.preferredWidth: root.height / 7
-            color: "#0038a5"
-            radius: 30
-            border.color: "black"
-            border.width: 2
-
-            Text {
-                text: "4"
+                text: translate("start")
                 font.bold: true
                 font.family: "Onest"
                 font.pointSize: root.height / 35
@@ -134,119 +114,7 @@ Item {
             }
         }
 
-        Rectangle {
-            Layout.alignment: Qt.AlignHCenter
-            Layout.preferredHeight: root.height / 7
-            Layout.preferredWidth: root.height / 7
-            color: "#b6b6b6"
-            radius: 30
-            border.color: "black"
-            border.width: 2
-
-            Text {
-                text: "5"
-                font.bold: true
-                font.family: "Onest"
-                font.pointSize: root.height / 30
-                anchors.centerIn: parent
-            }
-        }
-
-        Rectangle {
-            Layout.alignment: Qt.AlignHCenter
-            Layout.preferredHeight: root.height / 7
-            Layout.preferredWidth: root.height / 7
-            color: "#b6b6b6"
-            radius: 30
-            border.color: "black"
-            border.width: 2
-
-            Text {
-                text: "6"
-                font.bold: true
-                font.family: "Onest"
-                font.pointSize: root.height / 30
-                anchors.centerIn: parent
-            }
-        }
-
-        Rectangle {
-            Layout.alignment: Qt.AlignHCenter
-            Layout.preferredHeight: root.height / 7
-            Layout.preferredWidth: root.height / 7
-            color: "#b6b6b6"
-            radius: 30
-            border.color: "black"
-            border.width: 2
-
-            Text {
-                text: "7"
-                font.bold: true
-                font.family: "Onest"
-                font.pointSize: root.height / 30
-                anchors.centerIn: parent
-            }
-        }
-
-        Rectangle {
-            Layout.alignment: Qt.AlignHCenter
-            Layout.preferredHeight: root.height / 7
-            Layout.preferredWidth: root.height / 7
-            color: "#D52B1E"
-            radius: 30
-            border.color: "black"
-            border.width: 2
-
-            Text {
-                text: "8"
-                font.bold: true
-                font.family: "Onest"
-                font.pointSize: root.height / 30
-                anchors.centerIn: parent
-            }
-        }
-
-        Rectangle {
-            Layout.alignment: Qt.AlignHCenter
-            Layout.preferredHeight: root.height / 7
-            Layout.preferredWidth: root.height / 7
-            color: "#474747"
-            radius: 30
-            border.color: "black"
-            border.width: 2
-
-            Text {
-                text: "9"
-                font.bold: true
-                font.family: "Onest"
-                font.pointSize: root.height / 30
-                anchors.centerIn: parent
-            }
-        }
-
-        Button {
-            Layout.columnSpan: 3
-            Layout.alignment: Qt.AlignHCenter
-
-            background: Rectangle {
-                implicitHeight: root.height / 12
-                implicitWidth: root.width / 1.5
-                color: "#e3e3e3"
-                radius: 30
-                border.color: "black"
-                border.width: 2
-
-                Text {
-                    text: translate("start")
-                    font.bold: true
-                    font.family: "Onest"
-                    font.pointSize: root.height / 35
-                    anchors.centerIn: parent
-                }
-            }
-
-            onClicked: pythonManager.sendCommand("autoMode")
-        }
+        onClicked: networkManager.postRequest("http://127.0.0.1:8000/sort", "")
     }
 
     Loader {
