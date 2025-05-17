@@ -1,7 +1,7 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
-#include "pythonmanager.h"
+#include "network_manager.hpp"
 
 int main(int argc, char *argv[])
 {
