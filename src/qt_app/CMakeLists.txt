@@ -36,6 +36,7 @@ qt_add_qml_module(appqt_app
     SOURCES
         pythonmanager.h
         pythonmanager.cpp
+        QML_FILES ManualMode.qml
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
