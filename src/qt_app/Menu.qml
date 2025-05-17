@@ -73,7 +73,7 @@ Item {
             }
 
             onClicked: {
-                mainLoader.source = "AutoMode.qml"
+                mainLoader.source = "ManualMode.qml"
             }
         }
 
