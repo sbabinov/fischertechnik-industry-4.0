@@ -1,4 +1,4 @@
-#include "pythonmanager.h"
+#include "network_manager.hpp"
 
 PythonManager::PythonManager(QObject* parent) : QObject(parent)
 {
