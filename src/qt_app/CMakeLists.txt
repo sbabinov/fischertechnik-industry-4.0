@@ -34,8 +34,8 @@ qt_add_qml_module(appqt_app
         images/command.jpeg
         images/wallpaper1.jpg
     SOURCES
-        pythonmanager.h
-        pythonmanager.cpp
+    network_manager.hpp
+    network_manager.cpp
         QML_FILES ManualMode.qml
 )
 
