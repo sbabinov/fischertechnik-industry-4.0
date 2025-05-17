@@ -51,25 +51,39 @@ Item {
             color: "white"
         }
 
+        text: networkManager.url
+
         anchors.top: settingsHeader.bottom
         height: 100
         anchors.right: parent.right
         anchors.left: parent.left
-        placeholderText: "HTTP address"
+        placeholderText: "Enter HTTP address"
     }
 
-    TextArea {
-        id: portArea
+    Button {
+        id: saveButton
+        anchors.bottom: menuFooterLoader.top
+        anchors.bottomMargin: root.height / 25
+        anchors.horizontalCenter: parent.horizontalCenter
+
         background: Rectangle {
-            anchors.fill: parent
-            color: "white"
+            implicitHeight: root.height / 12
+            implicitWidth: root.width / 1.5
+            color: "#e3e3e3"
+            radius: 30
+            border.color: "black"
+            border.width: 2
+
+            Text {
+                text: translate("save")
+                font.bold: true
+                font.family: "Onest"
+                font.pointSize: root.height / 35
+                anchors.centerIn: parent
+            }
         }
-        anchors.top: httpArea.bottom
-        anchors.topMargin: 20
-        height: 100
-        anchors.right: parent.right
-        anchors.left: parent.left
-        placeholderText: "Port"
+
+        onClicked: networkManager.setUrl(httpArea.text)
     }
 
 
