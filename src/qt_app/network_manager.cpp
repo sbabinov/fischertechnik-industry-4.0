@@ -1,49 +1,39 @@
 #include "network_manager.hpp"
 
-PythonManager::PythonManager(QObject* parent) : QObject(parent)
+NetworkManager::NetworkManager(QObject *parent) : QObject(parent)
 {
-    connect(&m_process, &QProcess::readyReadStandardOutput, this, &PythonManager::onPythonOutput);
-    connect(&m_process, &QProcess::readyReadStandardError, this, &PythonManager::onPythonError);
-    connect(&m_process, QOverload< int, QProcess::ExitStatus >::of(&QProcess::finished), this, &PythonManager::onPythonFinished);
+  manager_ = new QNetworkAccessManager(this);
+  connect(manager_, &QNetworkAccessManager::finished, this, &NetworkManager::onReplyFinished);
 }
 
-void PythonManager::startPythonScript(const QString& scriptPath)
+QString NetworkManager::response() const
 {
-    if (m_process.state() == QProcess::NotRunning)
-    {
-        m_process.start("python", QStringList() << scriptPath);
-    }
+  return response_;
 }
 
-void PythonManager::stopPythonScript()
+void NetworkManager::getRequest(const QString &url)
 {
-    if (m_process.state() != QProcess::NotRunning)
-    {
-        m_process.terminate();
-    }
+  QNetworkRequest request(url);
+  manager_->get(request);
 }
 
-void PythonManager::sendCommand(const QString& command)
+void NetworkManager::postRequest(const QString &url, const QString &jsonData)
 {
-    if (m_process.state() == QProcess::Running)
-    {
-        m_process.write((command + "\n").toUtf8());
-    }
+  QNetworkRequest request(url);
+  request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+  manager_->post(request, jsonData.toUtf8());
 }
 
-void PythonManager::onPythonOutput()
+void NetworkManager::onReplyFinished(QNetworkReply *reply)
 {
-    QString output = m_process.readAllStandardOutput();
-    emit pythonOutputReceived(output);
-}
-
-void PythonManager::onPythonError()
-{
-    QString error = m_process.readAllStandardError();
-    emit pythonErrorReceived(error);
-}
-
-void PythonManager::onPythonFinished()
-{
-    emit pythonFinished();
+  if (reply->error() == QNetworkReply::NoError)
+  {
+    response_ = QString::fromUtf8(reply->readAll());
+    emit responseChanged(response_);
+  }
+  else
+  {
+    emit errorOccurred(reply->errorString());
+  }
+  reply->deleteLater();
 }
