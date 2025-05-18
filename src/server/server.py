@@ -3,6 +3,7 @@ import uvicorn
 from pydantic import BaseModel, validator
 from typing import List
 from src.factory import Factory
+import json
 
 factory = Factory()
 
@@ -27,7 +28,7 @@ async def main():
 @app.post("/sort")
 async def sort():
     factory.sort(wait=False)
-    return {"sucess": True}
+    return {"success": True}
 
 @app.get("/storage")
 async def getAllCargos():
@@ -53,7 +54,7 @@ async def getSingleCargo(row: int, col: int):
 @app.post("/process/{row}/{col}")
 async def processSingleCargo(row: int, col: int):
     factory.processCargo(row, col, wait=False)
-    return {"sucess": True}
+    return {"success": True}
 
 @app.get("/status/{index}")
 async def getStatus(index: int):
@@ -61,9 +62,16 @@ async def getStatus(index: int):
     return {"isRunning": isRunning}
 
 @app.post("/write/{storage}")
-async def writeStorage(storage: List[List[int]]):
-    factory.writeStorage(storage)
-    return {"sucess": True}
+async def writeStorage(storage: str):
+    try:
+        storage_data = json.loads(storage)
+        if not isinstance(storage_data, list) or not all(isinstance(row, list) 
+                                                         for row in storage_data):
+            return {"success": False}
+        factory.writeStorage(storage)
+        return {"success": True}
+    except json.JSONDecodeError:
+        return {"sucess": False}
 
 @app.post("/process/color/{color}")
 async def processColorCargo(color: int):
