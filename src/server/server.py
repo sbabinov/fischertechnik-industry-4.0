@@ -26,7 +26,7 @@ async def main():
 
 @app.post("/sort")
 async def sort():
-    factory.sort()
+    factory.sort(wait=False)
     return {"sucess": True}
 
 @app.get("/storage")
