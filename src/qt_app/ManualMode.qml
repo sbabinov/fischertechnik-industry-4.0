@@ -37,8 +37,8 @@ Item {
             anchors {
                 top: parent.top
                 right: parent.right
-                rightMargin: 10
-                topMargin: 10
+                rightMargin: root.width / 48
+                topMargin: root.height / 80
             }
         }
     }
@@ -52,7 +52,7 @@ Item {
             pointSize: root.height / 25
         }
         wrapMode: Text.WordWrap
-        width: 200
+        width: root.width / 2.4
         horizontalAlignment: Text.AlignHCenter
     }
 
@@ -64,18 +64,18 @@ Item {
             bottom: menuFooterLoader.top
             topMargin: root.height / 13
             bottomMargin: root.height / 13
-            leftMargin: 50
-            rightMargin: 50
+            leftMargin: root.width / 9.6
+            rightMargin: root.width / 9.6
         }
         columns: 3
         rows: 3
-        spacing: 20
+        spacing: root.height / 40
 
         Repeater {
             model: storageMonitor.storageData
             delegate: Button {
                 height: root.height / 7
-                width: root.height / 7
+                width: root.width / 4.21
                 background: Rectangle {
                     anchors.fill: parent
                     color: {
@@ -86,10 +86,10 @@ Item {
                         if (modelData.cargo === 5) return "#474747";
                         return "yellow";
                     }
-                    radius: 30
+                    radius: root.height / 27
                     border {
                         color: "black"
-                        width: 2
+                        width: root.height / 400
                     }
 
                     Text {

@@ -29,8 +29,8 @@ Item {
             anchors {
                 top: parent.top
                 right: parent.right
-                rightMargin: 10
-                topMargin: 10
+                rightMargin: root.width / 48
+                topMargin: root.height / 80
             }
         }
     }
@@ -44,7 +44,7 @@ Item {
             pointSize: root.height / 25
         }
         wrapMode: Text.WordWrap
-        width: 200
+        width: root.width / 2.4
         horizontalAlignment: Text.AlignHCenter
     }
 
@@ -60,7 +60,7 @@ Item {
             anchors.fill: parent
             color: "white"
         }
-        height: 100
+        height: root.height / 8
         placeholderText: "Enter HTTP address"
     }
 
@@ -76,16 +76,20 @@ Item {
             implicitHeight: root.height / 12
             implicitWidth: root.width / 1.5
             color: "#e3e3e3"
-            radius: 30
-            border.color: "black"
-            border.width: 2
+            radius: root.height / 27
+            border {
+                color: "black"
+                width: root.height / 400
+            }
 
             Text {
                 text: translate("save")
-                font.bold: true
-                font.family: "Onest"
-                font.pointSize: root.height / 35
                 anchors.centerIn: parent
+                font {
+                    bold: true
+                    family: "Onest"
+                    pointSize: root.height / 35
+                }
             }
         }
 

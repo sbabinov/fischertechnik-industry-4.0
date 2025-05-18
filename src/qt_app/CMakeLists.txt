@@ -9,56 +9,53 @@ find_package(Qt6 REQUIRED COMPONENTS Quick)
 qt_standard_project_setup(REQUIRES 6.8)
 
 qt_add_executable(appqt_app
-    main.cpp
+  main.cpp
 )
 
 qt_add_qml_module(appqt_app
-    URI qt_app
-    VERSION 1.0
-    QML_FILES
-        Main.qml
-        Menu.qml
-        AutoMode.qml
-        About.qml
-        Header.qml
-        Footer.qml
-        BackButton.qml
-    RESOURCES
-        images/german.png
-        images/icon.png
-        images/logo.png
-        images/russian.png
-        images/american.png
-        images/wallpaper.jpg
-        images/logo1c.png
-        images/command.jpeg
-        images/wallpaper1.jpg
-    SOURCES
+  URI qt_app
+  VERSION 1.0
+  QML_FILES
+    Main.qml
+    Menu.qml
+    AutoMode.qml
+    About.qml
+    Header.qml
+    Footer.qml
+    BackButton.qml
+    ManualMode.qml
+    Settings.qml
+  RESOURCES
+    images/german.png
+    images/icon.png
+    images/logo.png
+    images/russian.png
+    images/american.png
+    images/wallpaper.jpg
+    images/logo1c.png
+    images/command.png
+    images/wallpaper1.jpg
+  SOURCES
     network_manager.hpp
     network_manager.cpp
-        QML_FILES ManualMode.qml
-        SOURCES storage_monitor.hpp storage_monitor.cpp
-        QML_FILES Settings.qml
+    storage_monitor.hpp
+    storage_monitor.cpp
 )
 
-# Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
-# If you are developing for iOS or macOS you should consider setting an
-# explicit, fixed bundle identifier manually though.
 set_target_properties(appqt_app PROPERTIES
-#    MACOSX_BUNDLE_GUI_IDENTIFIER com.example.appqt_app
-    MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
-    MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
-    MACOSX_BUNDLE TRUE
-    WIN32_EXECUTABLE TRUE
+  MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
+  MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
+  MACOSX_BUNDLE TRUE
+  WIN32_EXECUTABLE TRUE
 )
 
 target_link_libraries(appqt_app
-    PRIVATE Qt6::Quick
+  PRIVATE Qt6::Quick
 )
 
 include(GNUInstallDirs)
 install(TARGETS appqt_app
-    BUNDLE DESTINATION .
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+  BUNDLE DESTINATION .
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )

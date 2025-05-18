@@ -32,6 +32,7 @@ Window {
 
     Item {
         anchors.fill: parent
+
         Image {
             source: "images/wallpaper.jpg"
             anchors {

@@ -55,9 +55,7 @@ Rectangle {
             }
         }
 
-        onClicked: {
-            setNextLanguage()
-        }
+        onClicked: setNextLanguage()
 
         background: Image {
             id: flag

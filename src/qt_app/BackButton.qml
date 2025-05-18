@@ -6,7 +6,7 @@ Button {
         implicitHeight: root.height / 12
         implicitWidth: root.height / 12
         color: "#b6b6b6"
-        radius: 15
+        radius: root.height / 53
         border.color: "black"
     }
 
@@ -20,7 +20,5 @@ Button {
         }
     }
 
-    onClicked: {
-        mainLoader.source = parent.previousPage
-    }
+    onClicked: mainLoader.source = parent.previousPage
 }

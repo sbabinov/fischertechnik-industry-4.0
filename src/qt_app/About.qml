@@ -29,8 +29,8 @@ Item {
             anchors {
                 top: parent.top
                 right: parent.right
-                rightMargin: 10
-                topMargin: 10
+                rightMargin: root.width / 48
+                topMargin: root.height / 80
             }
         }
     }
@@ -44,7 +44,7 @@ Item {
             pointSize: root.height / 25
         }
         wrapMode: Text.WordWrap
-        width: 200
+        width: root.width / 2.4
         horizontalAlignment: Text.AlignHCenter
     }
 
@@ -92,7 +92,7 @@ Item {
             }
 
             Image {
-                source: "images/command.jpeg"
+                source: "images/command.png"
                 anchors {
                     left: parent.left
                     leftMargin: (parent.width - sourceSize.width) / 2
