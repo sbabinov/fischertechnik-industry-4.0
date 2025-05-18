@@ -59,6 +59,8 @@ Item {
         contentWidth: parent.width
         contentHeight: aboutSection.height
         clip: true
+        boundsBehavior: Flickable.StopAtBounds
+        boundsMovement: Flickable.StopAtBounds
 
         Column
         {

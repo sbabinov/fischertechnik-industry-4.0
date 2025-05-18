@@ -23,7 +23,10 @@ Window {
             "our team" : ["Наша команда:", "Our team:", "Unser Team:"],
             "about" : ["<b>Fischerтех</b> - приложение для удаленного управления макетом завода Fischertechnik industry 4.0. Макет функционирует благодаря программе на Python - сервера с основной логикой - и данному приложению, разработанному с помощью фреймворка Qt6 для C++.",
             "<b>Fischerтех</b> is an application for remote control of the Fischertechnik industry 4.0 factory layout. The layout functions thanks to a Python server program with basic logic and this application developed using the Qt6 framework for C++.",
-            "<b>Fischerтех</b> ist eine Anwendung zur Fernsteuerung des Anlagenlayouts von Fischertechnik Industrie 4.0. Das Layout funktioniert dank eines Python-Serverprogramms mit grundlegender Logik - und einer Anwendung, die mit dem Qt6-Framework für C++ entwickelt wurde."]
+            "<b>Fischerтех</b> ist eine Anwendung zur Fernsteuerung des Anlagenlayouts von Fischertechnik Industrie 4.0. Das Layout funktioniert dank eines Python-Serverprogramms mit grundlegender Logik - und einer Anwendung, die mit dem Qt6-Framework für C++ entwickelt wurde."],
+            "http placeholder" : ["Введите HTTP адрес", "Enter the HTTP address", "Geben Sie die HTTP-Adresse ein"],
+            "http address" : ["HTTP адрес:", "HTTP address", "HTTP-Adresse"],
+            "storage state" : ["Состояние склада:", "Storage status:", "Lagerstatus:"]
         }
         if (language === "russian") {
             return dictionary[keywords][0]
