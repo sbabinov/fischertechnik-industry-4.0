@@ -71,7 +71,7 @@ async def writeStorage(storage: str):
         factory.writeStorage(storage)
         return {"success": True}
     except json.JSONDecodeError:
-        return {"sucess": False}
+        return {"success": False}
 
 @app.post("/process/color/{color}")
 async def processColorCargo(color: int):
@@ -79,8 +79,8 @@ async def processColorCargo(color: int):
         for col in range(3):
             if factory.getStorage(row, col) == color:
                 factory.processCargo(row, col, wait=False)
-                return {"sucess": True}
-    return {"sucess": False}
+                return {"success": True}
+    return {"success": False}
 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000)
