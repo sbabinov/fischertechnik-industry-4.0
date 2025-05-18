@@ -4,14 +4,13 @@
 
 StorageMonitor::StorageMonitor(NetworkManager* netManager, QObject* parent):
   QObject(parent),
-  networkManager_(netManager)
+  networkManager_(netManager),
+  timer_(new QTimer(this)),
+  data_()
 {
-  timer_ = new QTimer(this);
   connect(timer_, &QTimer::timeout, this, &StorageMonitor::fetchStorageData);
-
   connect(networkManager_, &NetworkManager::responseChanged, this, &StorageMonitor::handleResponse);
   connect(networkManager_, &NetworkManager::errorOccurred, this, &StorageMonitor::errorOccurred);
-
   timer_->start(5000);
   fetchStorageData();
 }
@@ -26,12 +25,12 @@ void StorageMonitor::fetchStorageData()
   networkManager_->getRequest("/storage");
 }
 
-void StorageMonitor::handleResponse(const QString &response)
+void StorageMonitor::handleResponse(const QString& response)
 {
   parseResponse(response);
 }
 
-void StorageMonitor::parseResponse(const QString &response)
+void StorageMonitor::parseResponse(const QString& response)
 {
   QJsonDocument doc = QJsonDocument::fromJson(response.toUtf8());
 

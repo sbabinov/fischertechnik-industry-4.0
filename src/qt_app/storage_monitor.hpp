@@ -6,7 +6,7 @@
 #include <QJsonArray>
 #include "network_manager.hpp"
 
-class StorageMonitor : public QObject
+class StorageMonitor: public QObject
 {
   Q_OBJECT
   Q_PROPERTY(QJsonArray storageData READ storageData NOTIFY dataUpdated)
@@ -20,16 +20,16 @@ public slots:
 
 signals:
   void dataUpdated();
-  void errorOccurred(const QString &message);
+  void errorOccurred(const QString& message);
 
 private slots:
-  void handleResponse(const QString &response);
+  void handleResponse(const QString& response);
 
 private:
   NetworkManager* networkManager_;
   QTimer* timer_;
   QJsonArray data_;
-  void parseResponse(const QString &response);
+  void parseResponse(const QString& response);
 };
 
 #endif
