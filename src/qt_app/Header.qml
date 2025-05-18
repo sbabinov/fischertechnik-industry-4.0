@@ -12,7 +12,6 @@ Rectangle {
         anchors.top: header.bottom
         width: root.width
         height: root.height / 35
-
         layer.enabled: true
         layer.smooth: true
         gradient: Gradient {

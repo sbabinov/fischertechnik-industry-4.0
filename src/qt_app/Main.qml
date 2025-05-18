@@ -33,9 +33,11 @@ Window {
     Item {
         anchors.fill: parent
         Image {
-            anchors.fill: parent
-            anchors.bottomMargin: root.height / 10.67
             source: "images/wallpaper.jpg"
+            anchors {
+                fill: parent
+                bottomMargin: root.height / 10.67
+            }
         }
     }
 

@@ -13,9 +13,11 @@ Button {
     Text {
         text: "✕"
         anchors.centerIn: parent
-        font.bold: true
-        font.family: "Onest"
-        font.pointSize: root.height / 25
+        font {
+            bold: true
+            family: "Onest"
+            pointSize: root.height / 25
+        }
     }
 
     onClicked: {

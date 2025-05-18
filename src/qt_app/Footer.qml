@@ -10,30 +10,40 @@ Rectangle {
 
     Image {
         source: "images/logo1c.png"
-        anchors.bottom: parent.bottom
-        anchors.left: parent.left
-        anchors.leftMargin: root.width / 24
-        anchors.bottomMargin: root.height / 40
-        sourceSize.width: root.width / 6
-        sourceSize.height: root.height / 18
+        anchors {
+            bottom: parent.bottom
+            left: parent.left
+            leftMargin: root.width / 24
+            bottomMargin: root.height / 40
+        }
+        sourceSize {
+            width: root.width / 6
+            height: root.height / 18
+        }
     }
 
     Text {
         text: "2025"
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: root.height / 53
-        font.bold: true
-        font.family: "Onest"
-        font.pointSize: root.height / 45
+        anchors {
+            horizontalCenter: parent.horizontalCenter
+            bottom: parent.bottom
+            bottomMargin: root.height / 53
+        }
+        font {
+            bold: true
+            family: "Onest"
+            pointSize: root.height / 45
+        }
     }
 
     Button {
         id: language
-        anchors.bottom: parent.bottom
-        anchors.right: parent.right
-        anchors.rightMargin: root.width / 24
-        anchors.bottomMargin: root.height / 40
+        anchors {
+            bottom: parent.bottom
+            right: parent.right
+            rightMargin: root.width / 24
+            bottomMargin: root.height / 40
+        }
 
         function setNextLanguage() {
             if (root.language === "russian") {
@@ -52,8 +62,10 @@ Rectangle {
         background: Image {
             id: flag
             source: "images/" + root.language + ".png"
-            sourceSize.width: root.width / 6
-            sourceSize.height: root.height / 18
+            sourceSize {
+                width: root.width / 6
+                height: root.height / 18
+            }
         }
     }
 
@@ -62,7 +74,6 @@ Rectangle {
         anchors.bottom: footer.top
         width: root.width
         height: root.height / 35
-
         layer.enabled: true
         layer.smooth: true
         gradient: Gradient {

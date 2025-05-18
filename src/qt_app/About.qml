@@ -26,30 +26,36 @@ Item {
         Loader {
             property string previousPage: "Menu.qml"
             source: "BackButton.qml"
-            anchors.top: parent.top
-            anchors.right: parent.right
-            anchors.rightMargin: 10
-            anchors.topMargin: 10
+            anchors {
+                top: parent.top
+                right: parent.right
+                rightMargin: 10
+                topMargin: 10
+            }
         }
     }
 
     Text {
         text: translate("about us")
         anchors.centerIn: aboutHeader
+        font {
+            bold: true
+            family: "Onest"
+            pointSize: root.height / 25
+        }
         wrapMode: Text.WordWrap
         width: 200
-        font.bold: true
-        font.family: "Onest"
-        font.pointSize: root.height / 25
         horizontalAlignment: Text.AlignHCenter
     }
 
     Flickable
     {
-        anchors.top: aboutHeader.bottom
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.bottom: menuFooterLoader.top
+        anchors {
+            top: aboutHeader.bottom
+            left: parent.left
+            right: parent.right
+            bottom: menuFooterLoader.top
+        }
         contentWidth: parent.width
         contentHeight: aboutSection.height
         clip: true
@@ -61,30 +67,36 @@ Item {
             width: parent.width
 
             Text {
+                text: "<b>Fischerтех</b> - небольшое приложение для удаленного управления макетом завода Fischertechnik industry 4.0. Макет функционирует благодаря программе на Python - сервера с основной логикой сортировки - и данному приложению, разработанному с помощью фреймворка Qt6 для C++."
+                font {
+                    family: "Arial"
+                    pixelSize: parent.width * 0.04
+                }
                 width: parent.width
                 leftPadding: parent.width * 0.15 / 2
                 rightPadding: parent.width * 0.15 / 2
                 horizontalAlignment: Text.AlignJustify
-                text: "<b>Fischerтех</b> - небольшое приложение для удаленного управления макетом завода Fischertechnik industry 4.0. Макет функционирует благодаря программе на Python - сервера с основной логикой сортировки - и данному приложению, разработанному с помощью фреймворка Qt6 для C++."
-                font.family: "Arial"
-                font.pixelSize: parent.width * 0.04
                 textFormat: Text.RichText
                 wrapMode: Text.Wrap
             }
 
             Text {
+                text: "Наша команда:"
+                font {
+                    family: "Arial"
+                    pixelSize: parent.width * 0.05
+                    bold: true
+                }
                 width: about.width
                 horizontalAlignment: Text.AlignHCenter
-                text: "Наша команда:"
-                font.family: "Arial"
-                font.pixelSize: parent.width * 0.05
-                font.bold: true
             }
 
             Image {
                 source: "images/command.jpeg"
-                anchors.left: parent.left
-                anchors.leftMargin: (parent.width - sourceSize.width) / 2
+                anchors {
+                    left: parent.left
+                    leftMargin: (parent.width - sourceSize.width) / 2
+                }
                 sourceSize.width: parent.width - parent.width * 0.15
             }
         }

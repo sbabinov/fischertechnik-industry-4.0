@@ -10,9 +10,11 @@ Item {
     Item {
         anchors.fill: parent
         Image {
-            anchors.fill: parent
-            anchors.bottomMargin: root.height / 10.67
             source: "images/wallpaper1.jpg"
+            anchors {
+                fill: parent
+                bottomMargin: root.height / 10.67
+            }
         }
     }
 
@@ -31,33 +33,39 @@ Item {
         Loader {
             property string previousPage: "Menu.qml"
             source: "BackButton.qml"
-            anchors.top: parent.top
-            anchors.right: parent.right
-            anchors.rightMargin: 10
-            anchors.topMargin: 10
+            anchors {
+                top: parent.top
+                right: parent.right
+                rightMargin: 10
+                topMargin: 10
+            }
         }
     }
 
     Text {
         text: translate("automatic mode")
         anchors.centerIn: automodeHeader
+        font {
+            bold: true
+            family: "Onest"
+            pointSize: root.height / 25
+        }
         wrapMode: Text.WordWrap
         width: 200
-        font.bold: true
-        font.family: "Onest"
-        font.pointSize: root.height / 25
         horizontalAlignment: Text.AlignHCenter
     }
 
     Grid {
-        anchors.top: automodeHeader.bottom
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.bottom: startButton.top
-        anchors.topMargin: root.height / 20
-        anchors.bottomMargin: 20
-        anchors.leftMargin: 50
-        anchors.rightMargin: 50
+        anchors {
+            top: automodeHeader.bottom
+            left: parent.left
+            right: parent.right
+            bottom: startButton.top
+            topMargin: root.height / 20
+            bottomMargin: 20
+            leftMargin: 50
+            rightMargin: 50
+        }
         columns: 3
         rows: 3
         spacing: 20
@@ -75,17 +83,20 @@ Item {
                     if (modelData.cargo === 5) return "#474747";
                     return "yellow";
                 }
-
                 radius: 30
-                border.color: "black"
-                border.width: 2
+                border {
+                    color: "black"
+                    width: 2
+                }
 
                 Text {
                     text: index + 1
-                    font.bold: true
-                    font.family: "Onest"
-                    font.pointSize: root.height / 30
                     anchors.centerIn: parent
+                    font {
+                        bold: true
+                        family: "Onest"
+                        pointSize: root.height / 30
+                    }
                 }
             }
         }
@@ -93,24 +104,30 @@ Item {
 
     Button {
         id: startButton
-        anchors.bottom: menuFooterLoader.top
-        anchors.bottomMargin: root.height / 25
-        anchors.horizontalCenter: parent.horizontalCenter
+        anchors {
+            bottom: menuFooterLoader.top
+            bottomMargin: root.height / 25
+            horizontalCenter: parent.horizontalCenter
+        }
 
         background: Rectangle {
             implicitHeight: root.height / 12
             implicitWidth: root.width / 1.5
             color: "#e3e3e3"
             radius: 30
-            border.color: "black"
-            border.width: 2
+            border {
+                color: "black"
+                width: 2
+            }
 
             Text {
                 text: translate("start")
-                font.bold: true
-                font.family: "Onest"
-                font.pointSize: root.height / 35
                 anchors.centerIn: parent
+                font {
+                    bold: true
+                    family: "Onest"
+                    pointSize: root.height / 35
+                }
             }
         }
 

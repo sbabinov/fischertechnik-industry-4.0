@@ -19,13 +19,15 @@ Item {
     }
 
     ColumnLayout {
-        anchors.top: menuHeaderLoader.bottom
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.bottom: menuFooterLoader.top
-        anchors.topMargin: root.height / 20
-        anchors.bottomMargin: root.height / 4
-        spacing: 30
+        anchors {
+            top: menuHeaderLoader.bottom
+            left: parent.left
+            right: parent.right
+            bottom: menuFooterLoader.top
+            topMargin: root.height / 20
+            bottomMargin: root.height / 4
+        }
+        spacing: root.height / 27
 
         Button {
             id: button1
@@ -35,21 +37,21 @@ Item {
                 implicitHeight: root.height / 9
                 implicitWidth: root.width / 1.2
                 color: "#e3e3e3"
-                radius: 30
+                radius: root.height / 27
             }
 
             Text {
                 id: buttonText1
                 text: translate("automatic mode")
-                font.bold: true
-                font.family: "Onest"
-                font.pointSize: root.height / 35
                 anchors.centerIn: parent
+                font {
+                    bold: true
+                    family: "Onest"
+                    pointSize: root.height / 35
+                }
             }
 
-            onClicked: {
-                mainLoader.source = "AutoMode.qml"
-            }
+            onClicked: mainLoader.source = "AutoMode.qml"
         }
 
         Button {
@@ -60,21 +62,21 @@ Item {
                 implicitHeight: root.height / 9
                 implicitWidth: root.width / 1.2
                 color: "#e3e3e3"
-                radius: 30
+                radius: root.height / 27
             }
 
             Text {
                 id: buttonText2
                 text: translate("manual mode")
-                font.bold: true
-                font.family: "Onest"
-                font.pointSize: root.height / 35
                 anchors.centerIn: parent
+                font {
+                    bold: true
+                    family: "Onest"
+                    pointSize: root.height / 35
+                }
             }
 
-            onClicked: {
-                mainLoader.source = "ManualMode.qml"
-            }
+            onClicked: mainLoader.source = "ManualMode.qml"
         }
 
         Button {
@@ -85,21 +87,21 @@ Item {
                 implicitHeight: root.height / 9
                 implicitWidth: root.width / 1.2
                 color: "#e3e3e3"
-                radius: 25
+                radius: root.height / 27
             }
 
             Text {
                 id: buttonText3
                 text: translate("settings")
-                font.bold: true
-                font.family: "Onest"
-                font.pointSize: root.height / 35
                 anchors.centerIn: parent
+                font {
+                    bold: true
+                    family: "Onest"
+                    pointSize: root.height / 35
+                }
             }
 
-            onClicked: {
-                mainLoader.source = "Settings.qml"
-            }
+            onClicked: mainLoader.source = "Settings.qml"
         }
 
         Button {
@@ -110,21 +112,21 @@ Item {
                 implicitHeight: root.height / 9
                 implicitWidth: root.width / 1.2
                 color: "#e3e3e3"
-                radius: 25
+                radius: root.height / 27
             }
 
             Text {
                 id: buttonText4
                 text: translate("about us")
-                font.bold: true
-                font.family: "Onest"
-                font.pointSize: root.height / 35
                 anchors.centerIn: parent
+                font {
+                    bold: true
+                    family: "Onest"
+                    pointSize: root.height / 35
+                }
             }
 
-            onClicked: {
-                mainLoader.source = "About.qml"
-            }
+            onClicked: mainLoader.source = "About.qml"
         }
     }
 

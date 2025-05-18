@@ -9,10 +9,13 @@ Item {
 
     Item {
         anchors.fill: parent
+
         Image {
-            anchors.fill: parent
-            anchors.bottomMargin: root.height / 10.67
             source: "images/wallpaper1.jpg"
+            anchors {
+                fill: parent
+                bottomMargin: root.height / 10.67
+            }
         }
     }
 
@@ -31,33 +34,39 @@ Item {
         Loader {
             property string previousPage: "Menu.qml"
             source: "BackButton.qml"
-            anchors.top: parent.top
-            anchors.right: parent.right
-            anchors.rightMargin: 10
-            anchors.topMargin: 10
+            anchors {
+                top: parent.top
+                right: parent.right
+                rightMargin: 10
+                topMargin: 10
+            }
         }
     }
 
     Text {
         text: translate("manual mode")
         anchors.centerIn: manualmodeHeader
+        font {
+            bold: true
+            family: "Onest"
+            pointSize: root.height / 25
+        }
         wrapMode: Text.WordWrap
         width: 200
-        font.bold: true
-        font.family: "Onest"
-        font.pointSize: root.height / 25
         horizontalAlignment: Text.AlignHCenter
     }
 
     Grid {
-        anchors.top: manualmodeHeader.bottom
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.bottom: menuFooterLoader.top
-        anchors.topMargin: root.height / 13
-        anchors.bottomMargin: root.height / 13
-        anchors.leftMargin: 50
-        anchors.rightMargin: 50
+        anchors {
+            top: manualmodeHeader.bottom
+            left: parent.left
+            right: parent.right
+            bottom: menuFooterLoader.top
+            topMargin: root.height / 13
+            bottomMargin: root.height / 13
+            leftMargin: 50
+            rightMargin: 50
+        }
         columns: 3
         rows: 3
         spacing: 20
@@ -77,17 +86,20 @@ Item {
                         if (modelData.cargo === 5) return "#474747";
                         return "yellow";
                     }
-
                     radius: 30
-                    border.color: "black"
-                    border.width: 2
+                    border {
+                        color: "black"
+                        width: 2
+                    }
 
                     Text {
                         text: index + 1
-                        font.bold: true
-                        font.family: "Onest"
-                        font.pointSize: root.height / 30
                         anchors.centerIn: parent
+                        font {
+                            bold: true
+                            family: "Onest"
+                            pointSize: root.height / 30
+                        }
                     }
                 }
 

@@ -26,45 +26,51 @@ Item {
         Loader {
             property string previousPage: "Menu.qml"
             source: "BackButton.qml"
-            anchors.top: parent.top
-            anchors.right: parent.right
-            anchors.rightMargin: 10
-            anchors.topMargin: 10
+            anchors {
+                top: parent.top
+                right: parent.right
+                rightMargin: 10
+                topMargin: 10
+            }
         }
     }
 
     Text {
         text: translate("settings")
         anchors.centerIn: settingsHeader
+        font {
+            bold: true
+            family: "Onest"
+            pointSize: root.height / 25
+        }
         wrapMode: Text.WordWrap
         width: 200
-        font.bold: true
-        font.family: "Onest"
-        font.pointSize: root.height / 25
         horizontalAlignment: Text.AlignHCenter
     }
 
     TextArea {
         id: httpArea
+        text: networkManager.url
+        anchors {
+            top: settingsHeader.bottom
+            right: parent.right
+            left: parent.left
+        }
         background: Rectangle {
             anchors.fill: parent
             color: "white"
         }
-
-        text: networkManager.url
-
-        anchors.top: settingsHeader.bottom
         height: 100
-        anchors.right: parent.right
-        anchors.left: parent.left
         placeholderText: "Enter HTTP address"
     }
 
     Button {
         id: saveButton
-        anchors.bottom: menuFooterLoader.top
-        anchors.bottomMargin: root.height / 25
-        anchors.horizontalCenter: parent.horizontalCenter
+        anchors {
+            bottom: menuFooterLoader.top
+            bottomMargin: root.height / 25
+            horizontalCenter: parent.horizontalCenter
+        }
 
         background: Rectangle {
             implicitHeight: root.height / 12
