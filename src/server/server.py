@@ -55,12 +55,24 @@ async def processSingleCargo(row: int, col: int):
     factory.processCargo(row, col, wait=False)
     return {"sucess": True}
 
-
 @app.get("/status/{index}")
 async def getStatus(index: int):
     isRunning = factory.getStatus(index)
     return {"isRunning": isRunning}
 
+@app.post("/write/{storage}")
+async def writeStorage(storage: List[List[int]]):
+    factory.writeStorage(storage)
+    return {"sucess": True}
+
+@app.post("/process/color/{color}")
+async def processColorCargo(color: int):
+    for row in range(3):
+        for col in range(3):
+            if factory.getStorage(row, col) == color:
+                factory.processCargo(row, col, wait=False)
+                return {"sucess": True}
+    return {"sucess": False}
 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000)
