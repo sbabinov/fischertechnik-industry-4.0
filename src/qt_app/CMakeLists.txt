@@ -4,12 +4,15 @@ project(qt_app VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Quick)
+find_package(Qt6 REQUIRED COMPONENTS Quick Widgets)
 
 qt_standard_project_setup(REQUIRES 6.8)
 
+set(app_icon_resource_windows "${CMAKE_CURRENT_SOURCE_DIR}/images/icon.png")
+
 qt_add_executable(appqt_app
   main.cpp
+  ${app_icon_resource_windows}
 )
 
 qt_add_qml_module(appqt_app
@@ -27,7 +30,6 @@ qt_add_qml_module(appqt_app
     Settings.qml
   RESOURCES
     images/german.png
-    images/icon.png
     images/logo.png
     images/russian.png
     images/american.png
@@ -35,6 +37,7 @@ qt_add_qml_module(appqt_app
     images/logo1c.png
     images/command.png
     images/wallpaper1.jpg
+    images/icon.png
   SOURCES
     network_manager.hpp
     network_manager.cpp
@@ -51,6 +54,7 @@ set_target_properties(appqt_app PROPERTIES
 
 target_link_libraries(appqt_app
   PRIVATE Qt6::Quick
+  PRIVATE Qt6::Widgets
 )
 
 include(GNUInstallDirs)

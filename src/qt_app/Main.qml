@@ -8,7 +8,7 @@ Window {
     width: 480
     height: 800
     visible: true
-    title: "Raspberry Pi"
+    title: "Firsherтех"
 
     property string language: "russian"
 
