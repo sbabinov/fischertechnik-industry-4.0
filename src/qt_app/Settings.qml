@@ -96,7 +96,6 @@ Item {
         onClicked: networkManager.setUrl(httpArea.text)
     }
 
-
     Loader {
         id: menuFooterLoader
         source: "Footer.qml"
