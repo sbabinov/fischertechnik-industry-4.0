@@ -44,9 +44,9 @@ class Crane(Stage):
         if color == Cargo.WHITE:
             distances = (460, -890, -375)
         elif color == Cargo.RED:
-            distances = (542, -890, -420)
-        else:
             distances = (610, -890, -585)
+        else:
+            distances = (542, -890, -420)
 
         self.__move(distances)
         self.generator.move(wait=False)
