@@ -98,8 +98,8 @@ class Factory:
         self.__paintingCenter._isRunning = True
         thread1.start()
         self.__crane.putInPaintingCenter()
-        thread1 = threading.Thread(target=self.__crane.calibrate, daemon=True)
-        thread1.start()
+        thread2 = threading.Thread(target=self.__crane.calibrate, daemon=True)
+        thread2.start()
         thread.join()
         self.__storage._isRunning = False
         thread1.join()
