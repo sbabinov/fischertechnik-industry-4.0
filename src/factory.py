@@ -18,6 +18,7 @@ class Factory:
 
     def calibrate(self) -> None:
         """ Calibrates all components. """
+        self.__threadPool.clear()
         self.__threadPool.append(threading.Thread(target=self.__storage.calibrate))
         self.__threadPool.append(threading.Thread(target=self.__crane.calibrate))
         self.__threadPool.append(threading.Thread(target=self.__paintingCenter.calibrate))
@@ -86,12 +87,12 @@ class Factory:
 
     def __processCargo(self, row: int, column: int) -> None:
         self.__storage._isRunning = True
-        self.__storage.getCargo(row + 1, column + 1)
+        self.__storage.getCargo(column + 1, row + 1)
         self.__storage._isRunning = False
         self.__crane._isRunning = True
         self.__crane.takeFromStorage()
 
-        thread = threading.Thread(target=self.__storage.putCargo, args=[row + 1, column + 1], daemon=True)
+        thread = threading.Thread(target=self.__storage.putCargo, args=[column + 1, row + 1, Cargo.EMPTY], daemon=True)
         self.__storage._isRunning = True
         thread.start()
         thread1 = threading.Thread(target=self.__paintingCenter.run, daemon=True)
@@ -100,17 +101,16 @@ class Factory:
         self.__crane.putInPaintingCenter()
         thread2 = threading.Thread(target=self.__crane.calibrate, daemon=True)
         thread2.start()
-        thread.join()
-        self.__storage._isRunning = False
         thread1.join()
         self.__crane._isRunning = False
-        thread.join()
         self.__paintingCenter._isRunning = False
 
-        thread = threading.Thread(target=self.__sortingCenter.sort, daemon=True)
-        thread.start()
+        thread1 = threading.Thread(target=self.__sortingCenter.sort, daemon=True)
+        thread1.start()
         self.__shipmentCenter._isRunning = True
         self.__shipmentCenter.run()
+        thread.join()
+        self.__storage._isRunning = False
         self.__shipmentCenter._isRunning = False
         self.__sortingCenter._isRunning = True
         thread.join()

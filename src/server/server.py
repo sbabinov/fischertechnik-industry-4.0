@@ -68,7 +68,7 @@ async def writeStorage(storage: str):
         if not isinstance(storage_data, list) or not all(isinstance(row, list) 
                                                          for row in storage_data):
             return {"success": False}
-        factory.writeStorage(storage)
+        factory.writeStorage(storage_data)
         return {"success": True}
     except json.JSONDecodeError:
         return {"success": False}

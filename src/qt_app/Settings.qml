@@ -6,6 +6,8 @@ Item {
     id: settings
     anchors.fill: parent
 
+    property var myArray: [1, 1, 1, 1, 1, 1, 1, 1, 1]
+
     Rectangle {
         anchors.fill: parent
         color: "#e3e3e3"
@@ -126,7 +128,7 @@ Item {
 
                 Repeater {
                     id: writeMatrix
-                    model: [1, 1, 1, 1, 1, 1, 1, 1, 1]
+                    model: myArray
                     delegate: Button {
                         height: root.height / 7
                         width: root.width / 4.21
@@ -157,11 +159,15 @@ Item {
                         }
 
                         onClicked: {
-                            if (modelData !== 5) {
-                                ++modelData;
+                            if (myArray[index] !== 5) {
+                                var newArray = myArray;
+                                ++newArray[index];
+                                myArray = newArray;
                             }
                             else {
-                                modelData = 1;
+                                var newArray = myArray;
+                                newArray[index] = 1;
+                                myArray = newArray;
                             }
                         }
                     }
@@ -201,14 +207,13 @@ Item {
 
         onClicked: {
             networkManager.setUrl(httpArea.text);
-            const array = writeMatrix.model;
+            const array = myArray
             const matrix = [];
             const size = 3;
             for (let i = 0; i < array.length; i += size) {
                 matrix.push(array.slice(i, i + size));
             }
             const result = `[${matrix.map(row => `[${row.join(',')}]`).join(',')}]`;
-            console.log("/write" + "/" + result)
             networkManager.postRequest("/write" + "/" + result, "")
         }
     }

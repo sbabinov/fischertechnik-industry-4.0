@@ -103,7 +103,7 @@ Item {
                     }
                 }
 
-                onClicked: networkManager.postRequest("/process" + "/" + (modelData.row + 1) + "/" + (modelData.col + 1), "")
+                onClicked: networkManager.postRequest("/process" + "/" + (modelData.row) + "/" + (modelData.col), "")
             }
         }
     }
