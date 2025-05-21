@@ -1,16 +1,17 @@
 from .stages import *
 from .stages.stage import Cargo
 from .singleton import singleton
+import numpy as np
 import threading
 
 @singleton
 class Factory:
     """ Class for controlling the Fischertechnik factory layout. """
     def __init__(self):
-        self.__storage = Storage('192.168.137.247')
+        self.__storage = Storage('192.168.137.79')
         self.__crane = Crane('192.168.137.74')
-        self.__shipmentCenter = ShipmentCenter('192.168.137.201')
-        self.__paintingCenter = PaintingCenter(self.__shipmentCenter, '192.168.137.77')
+        self.__shipmentCenter = ShipmentCenter('192.168.137.216')
+        self.__paintingCenter = PaintingCenter(self.__shipmentCenter, '192.168.137.6')
         self.__sortingCenter = SortingCenter('192.168.137.138')
         self.__storageLock = threading.Lock()
         self.__craneLock = threading.Lock()
@@ -39,14 +40,19 @@ class Factory:
         self.__waitAll()
 
     def writeStorage(self, storage: list[list[int]]) -> None:
-        self.__storage._data = storage
+        newStorage = [[i for i in range(3)] for j in range(3)]
+        for i in range(3):
+            for j in range(3):
+                newStorage[j][i] = storage[i][j]
+
+        self.__storage._data = newStorage
 
     def getStorage(self, row: int, column: int) -> Cargo:
         """ Get information about cargo in storage cell:
             EMPTY - cell is empty;
             UNDEFINED - cargo inside, but color is undefined;
             WHITE, BLUE, RED - cargo of this color inside. """
-        return self.__storage.getData()[row][column]
+        return self.__storage.getData()[column][row]
 
     def getStatus(self, id: bool) -> bool:
         """ Return information about factory running status:
