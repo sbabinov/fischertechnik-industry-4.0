@@ -1,7 +1,6 @@
 from .stages import *
 from .stages.stage import Cargo
 from .singleton import singleton
-import numpy as np
 import threading
 
 @singleton
