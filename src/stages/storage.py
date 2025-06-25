@@ -156,8 +156,8 @@ class Storage(Stage):
         self.__move_to(coords[0], coords[1])
         self.__drop_cargo()
         self._data[x - 1][y - 1] = color
-        self.__move_to(0, 0)
-        self.calibrate()
+        # self.__move_to(0, 0)
+        # self.calibrate()
 
     def getData(self):
         return self._data
