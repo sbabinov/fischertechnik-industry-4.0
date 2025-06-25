@@ -8,11 +8,11 @@ import threading
 class Factory:
     """ Class for controlling the Fischertechnik factory layout. """
     def __init__(self):
-        self.__storage = Storage('192.168.137.79')
-        self.__crane = Crane('192.168.137.74')
-        self.__shipmentCenter = ShipmentCenter('192.168.137.216')
-        self.__paintingCenter = PaintingCenter(self.__shipmentCenter, '192.168.137.6')
-        self.__sortingCenter = SortingCenter('192.168.137.138')
+        self.__storage = Storage('192.168.12.37')
+        self.__crane = Crane('192.168.12.162')
+        self.__shipmentCenter = ShipmentCenter('192.168.12.232')
+        self.__paintingCenter = PaintingCenter(self.__shipmentCenter, '192.168.12.182')
+        self.__sortingCenter = SortingCenter('192.168.12.137')
         self.__storageLock = threading.Lock()
         self.__craneLock = threading.Lock()
         self.__threadPool = []
