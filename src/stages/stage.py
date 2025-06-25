@@ -11,7 +11,7 @@ class Motor:
     def __init__(self, stage, motor_id):
         self.__stage = stage
         self.__motor_id = motor_id
-        self.__motor = self.__stage.motor(motor_id)
+        self.motor = self.__stage.motor(motor_id)
 
     def calibrate(self) -> None:
         sensor = self.__stage.resistor(self.__motor_id)
@@ -28,19 +28,21 @@ class Motor:
 
     def move(self, distance: int = 30000, speed: int = 512, wait: bool = True) -> None:
         speed = -speed if distance < 0 else speed
-        self.__motor.setSpeed(speed)
-        self.__motor.setDistance(abs(distance))
+        self.motor.setDistance(abs(distance))
+        self.motor.setSpeed(speed)
         if wait:
             self.wait()
 
     def isFinished(self) -> bool:
-        return self.__motor.finished()
+        return self.motor.finished()
 
     def stop(self) -> None:
-        self.__motor.stop()
+        self.motor.setSpeed(0)
+        self.motor.stop()
+        self.motor.setDistance(0)
 
     def wait(self) -> None:
-        while not self.__motor.finished():
+        while not self.motor.finished():
             self.__stage.updateWait()
 
 class SensorCheck:
