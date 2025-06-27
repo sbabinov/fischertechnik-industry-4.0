@@ -11,7 +11,7 @@ class Factory:
         self.__crane = Crane('192.168.12.162')
         self.__shipmentCenter = ShipmentCenter('192.168.12.232')
         self.__paintingCenter = PaintingCenter(self.__shipmentCenter, '192.168.12.182')
-        self.__sortingCenter = SortingCenter('192.168.12.137')
+        self.__sortingCenter = SortingCenter('192.168.12.187')
         self.__storageLock = threading.Lock()
         self.__craneLock = threading.Lock()
         self.__threadPool = []
