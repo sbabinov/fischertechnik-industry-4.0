@@ -124,13 +124,13 @@ class PaintingCenter(Stage):
 
     def paint(self):
         self.__gate_open()
-        self.__shift_forward()
+        self.__shift_backward()
         self.__lighting.setLevel(512)
 
         self.__slide_crane_near()
         time.sleep(3)
         self.__lighting.setLevel(0)
-        self.__shift_backward()
+        self.__shift_forward()
         self.__gate_close()
 
 
