@@ -61,9 +61,9 @@ class ShipmentCenter(Stage):
 
 
 class PaintingCenter(Stage):
-    def __init__(self, ip: str, port: int = 65000):
+    def __init__(self, ship, ip: str, port: int = 65000):
         super().__init__(ip, port)
-        # Initialization of motors
+        self.__shipment = ship
         self.__motorPainting = self._stage.motor(1)
         self.__motorCrane = self._stage.motor(2)
 
@@ -73,7 +73,7 @@ class PaintingCenter(Stage):
         self.__buttonCranePainting = self._stage.resistor(3)
 
         # Initialization of devices
-        self.__compressor = self.shipment.getCompressor()
+        self.__compressor = self.__shipment.getCompressor()
         self.__gate = self._stage.output(7)
         self.__lighting = self._stage.output(8)
         self.__pump = self._stage.output(5)
@@ -100,10 +100,10 @@ class PaintingCenter(Stage):
             pass
         self.__motorCrane.stop()
 
-    def __slide_crane_furth(self, stage):
+    def __slide_crane_furth(self):
         self.__motorCrane.setDistance(100)
         self.__motorCrane.setSpeed(-512)
-        button = stage.resistor(5)
+        button = self.__shipment.resistor(5)
         while not self.__motorCrane.isFinished() and button.value() == 15000:
             pass
         self.__motorCrane.stop()
@@ -143,9 +143,9 @@ class PaintingCenter(Stage):
         self.__shift_backward()
         self.__shift_forward()
 
-    def deliver(self, ship):
+    def deliver(self):
         self.__pick_up()
-        self.__slide_crane_furth(ship)
+        self.__slide_crane_furth()
         self.__put_down()
 
     def __pick_up(self):
@@ -177,5 +177,5 @@ class HandleCenter():
 
     def process(self):
         self.__painting.paint()
-        self.__painting.deliver(self.__shipment)
+        self.__painting.deliver()
         self.__shipment.stand()
