@@ -59,6 +59,12 @@ class ShipmentCenter(Stage):
         time.sleep(2)
         self.__tape.setLevel(0)
 
+    def get_compressor(self):
+        return self.__compressor
+
+    def get_button(self):
+        return self.__buttonCrane
+
 
 class PaintingCenter(Stage):
     def __init__(self, ship, ip: str, port: int = 65000):
@@ -73,7 +79,7 @@ class PaintingCenter(Stage):
         self.__buttonCranePainting = self._stage.resistor(3)
 
         # Initialization of devices
-        self.__compressor = self.__shipment.getCompressor()
+        self.__compressor = self.__shipment.get_compressor()
         self.__gate = self._stage.output(7)
         self.__lighting = self._stage.output(8)
         self.__pump = self._stage.output(5)
@@ -103,7 +109,7 @@ class PaintingCenter(Stage):
     def __slide_crane_furth(self):
         self.__motorCrane.setDistance(100)
         self.__motorCrane.setSpeed(-512)
-        button = self.__shipment.resistor(5)
+        button = self.__shipment.get_button()
         while not self.__motorCrane.isFinished() and button.value() == 15000:
             pass
         self.__motorCrane.stop()
