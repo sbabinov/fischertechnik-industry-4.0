@@ -23,14 +23,14 @@ class ShipmentCenter(Stage):
     def __rotate_forward(self):
         self.__motorStand.setDistance(100)
         self.__motorStand.setSpeed(300)
-        while not self.__motorStand.isFinished() and self.__buttonStandMinus.value() == 15000:
+        while not self.__motorStand.finished() and self.__buttonStandMinus.value() == 15000:
             pass
         self.__motorStand.stop()
 
     def __rotate_backward(self):
         self.__motorStand.setDistance(100)
         self.__motorStand.setSpeed(-300)
-        while not self.__motorStand.isFinished() and self.__buttonStandPlus.value() == 15000:
+        while not self.__motorStand.finished() and self.__buttonStandPlus.value() == 15000:
             pass
         self.__motorStand.stop()
 
@@ -102,7 +102,7 @@ class PaintingCenter(Stage):
     def __slide_crane_near(self):
         self.__motorCrane.setDistance(100)
         self.__motorCrane.setSpeed(-512)
-        while not self.__motorCrane.isFinished() and self.__buttonCranePainting.value() == 15000:
+        while not self.__motorCrane.finished() and self.__buttonCranePainting.value() == 15000:
             pass
         self.__motorCrane.stop()
 
@@ -110,7 +110,7 @@ class PaintingCenter(Stage):
         self.__motorCrane.setDistance(100)
         self.__motorCrane.setSpeed(-512)
         button = self.__shipment.get_button()
-        while not self.__motorCrane.isFinished() and button.value() == 15000:
+        while not self.__motorCrane.finished() and button.value() == 15000:
             pass
         self.__motorCrane.stop()
 
