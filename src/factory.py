@@ -1,7 +1,6 @@
 from .stages import *
 from .stages.stage import Cargo
 from .singleton import singleton
-import numpy as np
 import threading
 
 @singleton
@@ -40,19 +39,14 @@ class Factory:
         self.__waitAll()
 
     def writeStorage(self, storage: list[list[int]]) -> None:
-        newStorage = [[i for i in range(3)] for j in range(3)]
-        for i in range(3):
-            for j in range(3):
-                newStorage[j][i] = storage[i][j]
-
-        self.__storage._data = newStorage
+        self.__storage._data = storage
 
     def getStorage(self, row: int, column: int) -> Cargo:
         """ Get information about cargo in storage cell:
             EMPTY - cell is empty;
             UNDEFINED - cargo inside, but color is undefined;
             WHITE, BLUE, RED - cargo of this color inside. """
-        return self.__storage.getData()[column][row]
+        return self.__storage.getData()[row][column]
 
     def getStatus(self, id: bool) -> bool:
         """ Return information about factory running status:
