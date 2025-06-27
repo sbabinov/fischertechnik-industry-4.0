@@ -6,10 +6,9 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: fastapi_app
-    command: uvicorn src.server.server:app --host 0.0.0.0 --port 8000
-    ports:
-      - "8000:8000"
     restart: always
+    networks:
+      - app-network
 
   nginx:
     image: nginx:alpine
@@ -21,3 +20,9 @@ services:
     depends_on:
       - fastapi
     restart: always
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
