@@ -27,6 +27,13 @@ class ShipmentCenter(Stage):
             pass
         self.__motorStand.stop()
 
+    def __rotate_to_polish(self):
+        self.__motorStand.setDistance(100)
+        self.__motorStand.setSpeed(-300)
+        while not self.__motorStand.finished() and self.__buttonStandDown.value() == 15000:
+            pass
+        self.__motorStand.stop()
+
     def __rotate_backward(self):
         self.__motorStand.setDistance(100)
         self.__motorStand.setSpeed(-300)
@@ -39,10 +46,11 @@ class ShipmentCenter(Stage):
 
     def stand(self):
         self.__rotate_forward()
-        self.__rotate_backward()
+        self.__rotate_to_polish()
         self.__polishing.setLevel(512)
         time.sleep(3)
         self.__polishing.setLevel(0)
+        self.__rotate_backward()
 
         self.__rotate_backward()
         self.__compressor.setLevel(512)
