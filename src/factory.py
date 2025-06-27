@@ -1,204 +1,224 @@
 from .stages import *
 from .stages.stage import Cargo
-from .singleton import singleton
-import threading
+import asyncio
+import multiprocessing
+from concurrent.futures import ProcessPoolExecutor
 
-@singleton
 class Factory:
     """ Class for controlling the Fischertechnik factory layout. """
     def __init__(self):
         self.__storage = Storage('192.168.12.37')
         self.__crane = Crane('192.168.12.162')
-        self.__shipmentCenter = ShipmentCenter('192.168.12.232')
-        self.__paintingCenter = PaintingCenter(self.__shipmentCenter, '192.168.12.182')
-        self.__sortingCenter = SortingCenter('192.168.12.187')
-        self.__storageLock = threading.Lock()
-        self.__craneLock = threading.Lock()
-        self.__threadPool = []
+        self.__handleCenter = HandleCenter('192.168.12.232', '192.168.12.182')
+        self.__sortCenter = SortCenter('192.168.12.187')
 
-    def calibrate(self) -> None:
-        """ Calibrates all components. """
-        self.__threadPool.clear()
-        self.__threadPool.append(threading.Thread(target=self.__storage.calibrate))
-        self.__threadPool.append(threading.Thread(target=self.__crane.calibrate))
-        self.__threadPool.append(threading.Thread(target=self.__paintingCenter.calibrate))
-        self.__threadPool.append(threading.Thread(target=self.__shipmentCenter.calibrate))
-        self.__startAll()
-        self.__waitAll()
+        self.__manager = multiprocessing.Manager()
+        self.__storageData = self.__manager.dict()
+        self.__processes = []
+        self.__stop_event = multiprocessing.Event()
 
-    def __waitAll(self):
-        for thread in self.__threadPool:
-            thread.join()
-        self.__threadPool.clear()
+        self.__queues = {
+            'storage-crane': self.__manager.Queue(),  # storage -> crane
+            'crane-handle': self.__manager.Queue(),  # crane -> handle
+            'handle-sort': self.__manager.Queue(),  # handle -> sort
+            'sort-storage': self.__manager.Queue(),  # sort -> storage
+            'sort-crane': self.__manager.Queue(),  # sort-> crane
+            'crane-storage': self.__manager.Queue()  # crane -> storage
+        }
 
-    def __startAll(self):
-        for thread in self.__threadPool:
-            thread.start()
+    async def writeStorage(self, storage: list[list[int]]) -> None:
+        self.__storage._data = storage
+        self.__storageData = storage
 
-    def wait(self):
-        self.__waitAll()
-
-    def writeStorage(self, storage: list[list[int]]) -> None:
-        newStorage = [[i for i in range(3)] for j in range(3)]
-        for i in range(3):
-            for j in range(3):
-                newStorage[j][i] = storage[i][j]
-
-        self.__storage._data = newStorage
-
-    def getStorage(self, row: int, column: int) -> Cargo:
+    async def getStorage(self, row: int, column: int) -> Cargo:
         """ Get information about cargo in storage cell:
             EMPTY - cell is empty;
             UNDEFINED - cargo inside, but color is undefined;
             WHITE, BLUE, RED - cargo of this color inside. """
-        return self.__storage.getData()[column][row]
+        return self.__storageData.get(row, column)
 
-    def getStatus(self, id: bool) -> bool:
-        """ Return information about factory running status:
-            id 0 - Storage
-            id 1 - Crane
-            id 2 - Painting center
-            id 3 - Shipment center
-            id 4 - Sorting center """
-        if id == 0:
-            return self.__storage.isRunning()
-        elif id == 1:
-            return self.__crane.isRunning()
-        elif id == 2:
-            return self.__paintingCenter.isRunning()
-        elif id == 3:
-            return self.__shipmentCenter.isRunning()
-        elif id == 4:
-            return self.__sortingCenter.isRunning()
-        else:
-            return False
+    async def __runProcess(self, target, args):
+        """Запускает процесс и добавляет его в список."""
+        process = multiprocessing.Process(target=target, args=args)
+        process.start()
+        self.__processes.append(process)
+        return process
 
-    def processCargo(self, row: int, column: int, wait: bool = True) -> None:
-        """ Proces one cargo from storage and put it back. """
-        self.calibrate()
-        self.__threadPool.append(threading.Thread(target=self.__processCargo, args=[row, column], daemon=True))
-        self.__startAll()
-        if wait:
-            self.__waitAll()
-
-    def sort(self, wait: bool = True) -> None:
+    async def sort(self, storage) -> None:
         """ Sort storage cargo. """
-        self.calibrate()
-        self.__threadPool.append(threading.Thread(target=self.__takeFromStorage, daemon=True))
-        self.__threadPool.append(threading.Thread(target=self.__takeFromSorting, daemon=True))
-        self.__startAll()
-        if wait:
-            self.__waitAll()
+        self.__clearQueues()
+        self.__stop_event.clear()
 
-    def __processCargo(self, row: int, column: int) -> None:
-        self.__storage._isRunning = True
-        self.__storage.getCargo(column + 1, row + 1)
-        self.__storage._isRunning = False
-        self.__crane._isRunning = True
-        self.__crane.takeFromStorage()
+        with ProcessPoolExecutor() as executor:
+            loop = asyncio.get_event_loop()
 
-        thread = threading.Thread(target=self.__storage.putCargo, args=[column + 1, row + 1, Cargo.EMPTY], daemon=True)
-        self.__storage._isRunning = True
-        thread.start()
-        thread1 = threading.Thread(target=self.__paintingCenter.run, daemon=True)
-        self.__paintingCenter._isRunning = True
-        thread1.start()
-        self.__crane.putInPaintingCenter()
-        thread2 = threading.Thread(target=self.__crane.calibrate, daemon=True)
-        thread2.start()
-        thread1.join()
-        self.__crane._isRunning = False
-        self.__paintingCenter._isRunning = False
+            self.__processes = await asyncio.gather(
+                loop.run_in_executor(executor, self.__runProcess, self.__storageProcess,
+                    ([], storage, self.__queues['crane-storage'], self.__queues['sort-storage'],
+                     self.__queues['storage-crane'])),
+                loop.run_in_executor(executor, self.__runProcess, self.__craneProcess,
+                    (self.__queues['storage-crane'], self.__queues['sort-crane'],
+                     self.__queues['crane-storage'], self.__queues['crane-handle'])),
+                loop.run_in_executor(executor, self.__runProcess, self.__handleProcess,
+                    (self.__queues['crane-handle'], self.__queues['handle-sort'])),
+                loop.run_in_executor(executor, self.__runProcess, self.__sortProcess,
+                    (True, storage, self.__queues['handle-sort'], self.__queues['sort-storage'],
+                     self.__queues['sort-crane']))
+            )
 
-        thread1 = threading.Thread(target=self.__sortingCenter.sort, daemon=True)
-        thread1.start()
-        self.__shipmentCenter._isRunning = True
-        self.__shipmentCenter.run()
-        thread.join()
-        self.__storage._isRunning = False
-        self.__shipmentCenter._isRunning = False
-        self.__sortingCenter._isRunning = True
-        thread.join()
-        self.__sortingCenter._isRunning = False
+    async def processCargo(self, arr) -> None:
+        self.__clearQueues()
+        self.__stop_event.clear()
 
-    def __takeFromStorage(self) -> None:
-        with self.__storageLock:
-            for i in range(1, 4):
-                for j in range(1, 4):
-                    self.__storage.getCargo(i, j)
-                    with self.__craneLock:
-                        self.__crane.takeFromStorage()
-                        self.__crane._isRunning = True
-                    thread = threading.Thread(target=self.__process, daemon=True)
-                    thread.start()
+        with ProcessPoolExecutor() as executor:
+            loop = asyncio.get_event_loop()
 
-                    cargo = Cargo.UNDEFINED
-                    if j == Cargo.WHITE and self.__sortingCenter.getWhite():
-                        cargo = Cargo.WHITE
-                        self.__sortingCenter.decWhite()
-                    elif j == Cargo.BLUE and self.__sortingCenter.getBlue():
-                        cargo = Cargo.BLUE
-                        self.__sortingCenter.decBlue()
-                    elif j == Cargo.RED and self.__sortingCenter.getRed():
-                        cargo = Cargo.RED
-                        self.__sortingCenter.decRed()
+            self.__processes = await asyncio.gather(
+                loop.run_in_executor(executor, self.__runProcess, self.__storageProcess,
+                    ([], [[]], self.__queues['crane-storage'], self.__queues['sort-storage'],
+                     self.__queues['storage-crane'])),
+                loop.run_in_executor(executor, self.__runProcess, self.__craneProcess,
+                    (self.__queues['storage-crane'], self.__queues['sort-crane'],
+                     self.__queues['crane-storage'], self.__queues['crane-handle'])),
+                loop.run_in_executor(executor, self.__runProcess, self.__handleProcess,
+                    (self.__queues['crane-handle'], self.__queues['handle-sort'])),
+                loop.run_in_executor(executor, self.__runProcess, self.__sortProcess,
+                    (False, [[]], self.__queues['handle-sort'], self.__queues['sort-storage'],
+                     self.__queues['sort-crane']))
+            )
 
-                    if cargo != Cargo.UNDEFINED:
-                        with self.__craneLock:
-                            self.__crane.takeFromSortingCenter(cargo)
-                            self.__crane.putInStorage()
-                            thread = threading.Thread(target=self.__crane.calibrate, daemon=True)
-                            thread.start()
-                            self.__storage.putCargo(i, j, cargo)
+    async def returnCargo(self, storage) -> None:
+        self.__clearQueues()
+        self.__stop_event.clear()
+
+        with ProcessPoolExecutor() as executor:
+            loop = asyncio.get_event_loop()
+
+            self.__processes = await asyncio.gather(
+                loop.run_in_executor(executor, self.__runProcess, self.__storageProcess,
+                    ([], storage, self.__queues['crane-storage'], self.__queues['sort-storage'],
+                     self.__queues['storage-crane'])),
+                loop.run_in_executor(executor, self.__runProcess, self.__craneProcess,
+                    (self.__queues['storage-crane'], self.__queues['sort-crane'],
+                     self.__queues['crane-storage'], self.__queues['crane-handle'])),
+                loop.run_in_executor(executor, self.__runProcess, self.__returnProcess,
+                    (storage, self.__queues['sort-storage'], self.__queues['sort-crane']))
+            )
+
+    async def stop_processes(self):
+        """Безопасно останавливает все процессы."""
+        self.__stop_event.set()
+
+        for q in self.__queues.values():
+            q.put(None)
+
+        for p in self.__processes:
+            p.join(timeout=2.0)
+            if p.is_alive():
+                p.terminate()
+
+        self.__processes = []
+
+    def __clearQueues(self):
+        """Очищает все очереди перед новым запуском процессов."""
+        for q in self.__queues.values():
+            while not q.empty():
+                try:
+                    q.get_nowait()
+                except:
+                    break
+
+    def __storageProcess(self, arr, storage, inputQ2, inputQ4, outputQ2):
+        for cell in arr:
+            self.__storage.getCargo(cell[0], cell[1])
+            outputQ2.put(1)
+            self.__storage.putCargo(cell[0], cell[1], Cargo.EMPTY)
+        outputQ2.put(None)
+
+        while True:
+            cargo = inputQ4.get()
+            if cargo is None:
+                break
+            else:
+                cell = []
+                for i in range(3):
+                    for j in range(3):
+                        if storage[i][j] == cargo and self.__storage.getData()[i][j] == Cargo.EMPTY:
+                            cell = [i, j]
+                            break
+                self.__storage.getCargo(cell[0], cell[1])
+                outputQ2.put(1)
+                while True:
+                    item = inputQ2.get()
+                    if item is None:
+                        break
                     else:
-                        self.__storage.putCargo(i, j, Cargo.EMPTY)
+                        self.__storage.putCargo(cell[0], cell[1], cargo)
 
-    def __process(self) -> None:
-        thread = {}
-        with self.__craneLock:
-            thread = threading.Thread(target=self.__paintingCenter.run, daemon=True)
-            thread.start()
-            self.__crane.putInPaintingCenter()
-            thread1 = threading.Thread(target=self.__crane.calibrate, daemon=True)
-            thread1.start()
-            self.__crane._isRunning = False
-            thread1.join()
-        thread.join()
+    def __craneProcess(self, inputQ1, inputQ4, outputQ1, outputQ3):
+        while True:
+            item = inputQ1.get()
+            if item is None:
+                break
+            else:
+                self.__crane.takeFromStorage()
+                self.__crane.putInPaintingCenter()
+                outputQ3.put(item)
+                self.__crane.calibrate()
+        outputQ3.put(None)
 
-        thread = threading.Thread(target=self.__sortingCenter.sort, daemon=True)
-        thread.start()
-        self.__shipmentCenter.run()
-        thread.join()
+        while True:
+            cargo = inputQ4.get()
+            if cargo is None:
+                break
+            else:
+                self.__crane.takeFromSortingCenter(cargo)
+                outputQ1.put(1)
+                while True:
+                    item = inputQ1()
+                    if item is None:
+                        break
+                    else:
+                        self.__crane.putInStorage()
+                        self.__crane.calibrate()
 
-    def __takeFromSorting(self) -> None:
-        with self.__storageLock:
-            while (self.__sortingCenter.getWhite() or self.__sortingCenter.getBlue() or
-                self.__sortingCenter.getRed()):
-                cargo = Cargo.UNDEFINED
-                if self.__sortingCenter.getWhite():
-                    cargo = Cargo.WHITE
-                    self.__sortingCenter.decWhite()
-                elif self.__sortingCenter.getBlue():
-                    cargo = Cargo.BLUE
-                    self.__sortingCenter.decBlue()
-                else:
-                    cargo = Cargo.RED
-                    self.__sortingCenter.decRed()
+    def __handleProcess(self, inputQ2, outputQ4):
+        while True:
+            item = inputQ2.get()
+            if item is None:
+                break
+            else:
+                self.__handleCenter.run()
+                outputQ4.put(item)
+        outputQ4.put(None)
 
-                j = self.__findCell(cargo)
+    def __sortProcess(self, shouldReturn, inputQ3, outputQ1, outputQ2):
+        while True:
+            item = inputQ3.get()
+            if item is None:
+                break
+            else:
+                self.__sortCenter.sort()
+                if shouldReturn:
+                    if self.__sortCenter.getWhite() != 0:
+                        self.__sortCenter.decWhite()
+                        outputQ1.put(Cargo.WHITE)
+                        outputQ2.put(Cargo.WHITE)
+                    elif self.__sortCenter.getBlue() != 0:
+                        self.__sortCenter.decBlue()
+                        outputQ1.put(Cargo.BLUE)
+                        outputQ2.put(Cargo.BLUE)
+                    else:
+                        self.__sortCenter.decRed()
+                        outputQ1.put(Cargo.RED)
+                        outputQ2.put(Cargo.RED)
+        outputQ1.put(None)
+        outputQ2.put(None)
 
-                with self.__craneLock:
-                    thread = threading.Thread(target=self.__crane.takeFromSortingCenter, args=[cargo], daemon=True)
-                    thread.start()
-                    self.__storage.getCargo(j + 1, cargo)
-                    thread.join()
-                    self.__crane.putInStorage()
-                    thread = threading.Thread(target=self.__crane.calibrate, daemon=True)
-                    thread.start()
-                self.__storage.putCargo(j + 1, cargo, cargo)
-
-    def __findCell(self, cargo: Cargo) -> int:
-        for j in range(3):
-            if self.__storage.getData()[j][cargo - 1] == Cargo.EMPTY:
-                return j
-        return 0
+    def __returnProcess(self, storage, outputQ1, outputQ2):
+        for i in range(3):
+            for j in range(3):
+                outputQ1.put(storage[i][j])
+                outputQ2.put(storage[i][j])
+        outputQ1.put(None)
+        outputQ2.put(None)
