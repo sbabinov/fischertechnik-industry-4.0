@@ -1,7 +1,7 @@
 from .stage import Stage
 import time
 
-class SortingCenter(Stage):
+class SortCenter(Stage):
     def __init__(self, host: str, port: int = 65000):
         super().__init__(host, port)
         self.__whiteCount = 0

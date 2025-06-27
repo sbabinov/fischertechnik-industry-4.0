@@ -1,6 +1,7 @@
 from .stages import *
 from .stages.stage import Cargo
 import asyncio
+import concurrent
 import multiprocessing
 from concurrent.futures import ProcessPoolExecutor
 
@@ -105,7 +106,20 @@ class Factory:
                     (storage, self.__queues['sort-storage'], self.__queues['sort-crane']))
             )
 
-    async def stop_processes(self):
+    def __calibrate(self):
+        components = [
+            self.__storage,
+            self.__crane,
+            self.__handleCenter,
+            self.__sortCenter
+        ]
+        with ProcessPoolExecutor() as executor:
+            futures = [executor.submit(component.calibrate) for component in components]
+
+            for future in concurrent.futures.as_completed(futures):
+                future.result()
+
+    async def stopProcesses(self):
         """Безопасно останавливает все процессы."""
         self.__stop_event.set()
 
@@ -116,7 +130,6 @@ class Factory:
             p.join(timeout=2.0)
             if p.is_alive():
                 p.terminate()
-
         self.__processes = []
 
     def __clearQueues(self):
