@@ -123,10 +123,6 @@ class PaintingCenter(Stage):
         self.__compressor.setLevel(0)
 
     def paint(self):
-        while self.__sensorOut.value() != 15000:
-            pass
-
-        time.sleep(3)
         self.__gate_open()
         self.__shift_forward()
         self.__lighting.setLevel(512)
