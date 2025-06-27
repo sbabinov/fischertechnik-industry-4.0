@@ -146,8 +146,10 @@ class PaintingCenter(Stage):
 
     def calibrate(self):
         self.__slide_crane_near()
+        self.__gate.setLevel(512)
         self.__shift_backward()
         self.__shift_forward()
+        self.__gate.setLevel(0)
 
     def deliver(self):
         self.__pick_up()
