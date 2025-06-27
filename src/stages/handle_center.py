@@ -126,9 +126,11 @@ class PaintingCenter(Stage):
         self.__gate_open()
         self.__shift_backward()
         self.__lighting.setLevel(512)
+        self.__gate_close()
 
         self.__slide_crane_near()
         self.__lighting.setLevel(0)
+        self.__gate_open()
         self.__shift_forward()
         self.__gate_close()
 
