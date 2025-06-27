@@ -108,48 +108,52 @@ class PaintingCenter(Stage):
 
     def __slide_crane_furth(self):
         self.__motorCrane.setDistance(100)
-        self.__motorCrane.setSpeed(-512)
+        self.__motorCrane.setSpeed(512)
         button = self.__shipment.get_button()
         while not self.__motorCrane.finished() and button.value() == 15000:
             pass
         self.__motorCrane.stop()
+
+    def __gate_open(self):
+        self.__compressor.setLevel(512)
+        self.__gate.setLevel(512)
+
+    def __gate_close(self):
+        self.__gate.setLevel(0)
+        self.__compressor.setLevel(0)
 
     def paint(self):
         while self.__sensorOut.value() != 15000:
             pass
 
         time.sleep(3)
-        self.__gate.setLevel(512)
-        self.__compressor.setLevel(512)
+        self.__gate_open()
         self.__shift_forward()
-        self.__gate.setLevel(0)
         self.__lighting.setLevel(512)
 
         self.__slide_crane_near()
         time.sleep(3)
-        self.__gate.setLevel(512)
         self.__lighting.setLevel(0)
         self.__shift_backward()
-        self.__gate.setLevel(0)
+        self.__gate_close()
+
 
     def __calibratePainting(self):
-        self.__gate.setLevel(512)
-        self.__compressor.setLevel(512)
+        self.__gate_open()
         self.__motorPainting.move(100, -512, False)
         self.__shift_backward()
         self.__gate.setLevel(0)
 
         self.__gate.setLevel(512)
         self.__shift_forward()
-        self.__gate.setLevel(0)
-        self.__compressor.setLevel(0)
+        self.__gate_close()
 
     def calibrate(self):
-        self.__slide_crane_near()
-        self.__gate.setLevel(512)
+        self.__slide_crane_furth()
+        self.__gate_open()
         self.__shift_backward()
         self.__shift_forward()
-        self.__gate.setLevel(0)
+        self.__gate_close()
 
     def deliver(self):
         self.__pick_up()
