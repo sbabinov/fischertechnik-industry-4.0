@@ -60,12 +60,12 @@ class ShipmentCenter(Stage):
 
         self.__throwOut.setLevel(0)
         self.__compressor.setLevel(0)
-        self.__rotate_forward()
         self.__tape.setLevel(512)
         while self.__sensorTape.value() != 15000:
             pass
         time.sleep(2)
         self.__tape.setLevel(0)
+        self.__rotate_forward()
 
     def get_compressor(self):
         return self.__compressor

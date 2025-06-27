@@ -2,7 +2,7 @@ import time
 from .stage import Motor, Stage
 from .shipment_center import ShipmentCenter
 
-class PaintingCenter(Stage):
+class qPaintingCenter(Stage):
     def __init__(self, shipmentCenter: ShipmentCenter, host: str, port: int = 65000):
         super().__init__(host, port)
         # Initialization of motors
