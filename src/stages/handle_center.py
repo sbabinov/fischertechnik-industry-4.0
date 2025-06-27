@@ -45,27 +45,22 @@ class ShipmentCenter(Stage):
         self.__rotate_forward()
 
     def stand(self):
-        self.__rotate_forward()
         self.__rotate_to_polish()
         self.__polishing.setLevel(512)
         time.sleep(3)
         self.__polishing.setLevel(0)
         self.__rotate_backward()
 
-        self.__rotate_backward()
         self.__compressor.setLevel(512)
         self.__throwOut.setLevel(512)
 
-        time.sleep(0.5)
+        time.sleep(0.75)
 
         self.__throwOut.setLevel(0)
         self.__compressor.setLevel(0)
         self.__tape.setLevel(512)
-        while self.__sensorTape.value() != 15000:
-            pass
-        time.sleep(2)
-        self.__tape.setLevel(0)
         self.__rotate_forward()
+        self.__tape.setLevel(0)
 
     def get_compressor(self):
         return self.__compressor
