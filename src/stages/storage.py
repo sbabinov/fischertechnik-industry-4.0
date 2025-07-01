@@ -162,6 +162,9 @@ class Storage(Stage):
     def getData(self):
         return self._data
 
+    def write_data(self, matrix):
+        self._data = matrix
+
     def calibrate(self):
         self.__pull_manipulator()
         self.__move_delta(-2500, -2500, 0)
