@@ -177,15 +177,15 @@ class Factory:
             self.__processes = await asyncio.gather(
                 loop.run_in_executor(executor, _run_process, _storage_process,
                     (self.__storage_ip, arr, [[]], self.__queues['crane_storage'], self.__queues['sort_storage'],
-                     self.__queues['storage_crane'])),
+                     self.__queues['storage_crane'], self.__stop_event)),
                 loop.run_in_executor(executor, _run_process, _crane_process,
                     (self.__crane_ip, self.__queues['storage_crane'], self.__queues['sort_crane'],
-                     self.__queues['crane_storage'], self.__queues['crane_handle'])),
+                     self.__queues['crane_storage'], self.__queues['crane_handle'], self.__stop_event)),
                 loop.run_in_executor(executor, _run_process, _handle_process,
-                    (self.__handle_ips, self.__queues['crane_handle'], self.__queues['handle_sort'])),
+                    (self.__handle_ips, self.__queues['crane_handle'], self.__queues['handle_sort'], self.__stop_event)),
                 loop.run_in_executor(executor, _run_process, _sort_process,
                     (self.__sort_ip, False, [[]], self.__queues['handle_sort'], self.__queues['sort_storage'],
-                     self.__queues['sort_crane']))
+                     self.__queues['sort_crane'], self.__stop_event))
             )
 
     async def return_cargo(self, new_storage) -> None:
@@ -198,12 +198,12 @@ class Factory:
             self.__processes = await asyncio.gather(
                 loop.run_in_executor(executor, _run_process, _storage_process,
                     (self.__storage_ip, [], new_storage, self.__queues['crane_storage'], self.__queues['sort_storage'],
-                     self.__queues['storage_crane'])),
+                     self.__queues['storage_crane'], self.__stop_event)),
                 loop.run_in_executor(executor, _run_process, _crane_process,
                     (self.__crane_ip, self.__queues['storage_crane'], self.__queues['sort_crane'],
-                     self.__queues['crane_storage'], self.__queues['crane_handle'])),
+                     self.__queues['crane_storage'], self.__queues['crane_handle'], self.__stop_event)),
                 loop.run_in_executor(executor, _run_process, _return_process,
-                    (self.__sort_ip, new_storage, self.__queues['sort_storage'], self.__queues['sort_crane']))
+                    (self.__sort_ip, new_storage, self.__queues['sort_storage'], self.__queues['sort_crane'], self.__stop_event))
             )
 
     def __calibrate(self):
