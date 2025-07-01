@@ -144,7 +144,7 @@ class Factory:
     async def sort(self, new_storage) -> None:
         self.__clear_queues()
         self.__stop_event.clear()
-        await self.__calibrate()
+        self.__calibrate()
 
         with ProcessPoolExecutor() as executor:
             loop = asyncio.get_event_loop()
