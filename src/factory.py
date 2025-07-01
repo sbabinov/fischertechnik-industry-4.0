@@ -144,7 +144,7 @@ class Factory:
     async def sort(self, new_storage) -> None:
         self.__clear_queues()
         self.__stop_event.clear()
-        self.__calibrate()
+        await self.__calibrate()
 
         with ProcessPoolExecutor() as executor:
             loop = asyncio.get_event_loop()
@@ -215,17 +215,10 @@ class Factory:
         storage_obj = Storage(self.__storage_ip)
         crane_obj = Crane(self.__crane_ip)
         handle_obj = HandleCenter(self.__handle_ips[0], self.__handle_ips[1])
-        components = [
-            storage_obj,
-            crane_obj,
-            handle_obj
-        ]
 
-        with ProcessPoolExecutor() as executor:
-            futures = [executor.submit(component.calibrate) for component in components]
-
-            for future in concurrent.futures.as_completed(futures):
-                future.result()
+        storage_obj.calibrate()
+        crane_obj.calibrate()
+        handle_obj.calibrate()
 
     async def stop_processes(self):
         self.__stop_event.set()
