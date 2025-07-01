@@ -158,7 +158,7 @@ class Factory:
                 loop.run_in_executor(executor, _run_process, _handle_process,
                     (self.__handle_ips, self.__queues['crane_handle'], self.__queues['handle_sort'])),
                 loop.run_in_executor(executor, _run_process, _sort_process,
-                    (self.__sort_ip, True, new_storage, self.__queues['handle_sort'], self.__queues['sort_storage'],
+                    (self.__sort_ip, True, self.__queues['handle_sort'], self.__queues['sort_storage'],
                      self.__queues['sort_crane']))
             )
 
@@ -179,7 +179,7 @@ class Factory:
                 loop.run_in_executor(executor, _run_process, _handle_process,
                     (self.__handle_ips, self.__queues['crane_handle'], self.__queues['handle_sort'])),
                 loop.run_in_executor(executor, _run_process, _sort_process,
-                    (self.__sort_ip, False, [[]], self.__queues['handle_sort'], self.__queues['sort_storage'],
+                    (self.__sort_ip, False, self.__queues['handle_sort'], self.__queues['sort_storage'],
                      self.__queues['sort_crane']))
             )
 
@@ -198,7 +198,7 @@ class Factory:
                     (self.__crane_ip, self.__queues['storage_crane'], self.__queues['sort_crane'],
                      self.__queues['crane_storage'], self.__queues['crane_handle'])),
                 loop.run_in_executor(executor, _run_process, _return_process,
-                    (self.__sort_ip, new_storage, self.__queues['sort_storage'], self.__queues['sort_crane']))
+                    (new_storage, self.__queues['sort_storage'], self.__queues['sort_crane']))
             )
 
     def __calibrate(self):
