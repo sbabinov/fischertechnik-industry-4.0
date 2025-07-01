@@ -52,16 +52,16 @@ class Factory:
             self.__processes = await asyncio.gather(
                 loop.run_in_executor(executor, _run_process, self.__storageProcess,
                     ([], storage, self.__queues['crane_storage'], self.__queues['sort_storage'],
-                     self.__queues['storage_crane'])),
-                loop.run_in_executor(executor, _run_process, self.__craneProcess,
-                    (self.__queues['storage_crane'], self.__queues['sort_crane'],
-                     self.__queues['crane_storage'], self.__queues['crane_handle'])),
-                loop.run_in_executor(executor, _run_process, self.__handleProcess,
-                    (self.__queues['crane_handle'], self.__queues['handle_sort'])),
-                loop.run_in_executor(executor, _run_process, self.__sortProcess,
-                    (True, storage, self.__queues['handle_sort'], self.__queues['sort_storage'],
-                     self.__queues['sort_crane']))
-            )
+                     self.__queues['storage_crane'])))
+            #     loop.run_in_executor(executor, _run_process, self.__craneProcess,
+            #         (self.__queues['storage_crane'], self.__queues['sort_crane'],
+            #          self.__queues['crane_storage'], self.__queues['crane_handle'])),
+            #     loop.run_in_executor(executor, _run_process, self.__handleProcess,
+            #         (self.__queues['crane_handle'], self.__queues['handle_sort'])),
+            #     loop.run_in_executor(executor, _run_process, self.__sortProcess,
+            #         (True, storage, self.__queues['handle_sort'], self.__queues['sort_storage'],
+            #          self.__queues['sort_crane']))
+            # )
 
     async def processCargo(self, arr) -> None:
         self.__clearQueues()
@@ -73,16 +73,16 @@ class Factory:
             self.__processes = await asyncio.gather(
                 loop.run_in_executor(executor, _run_process, self.__storageProcess,
                     ([], [[]], self.__queues['crane_storage'], self.__queues['sort_storage'],
-                     self.__queues['storage_crane'])),
-                loop.run_in_executor(executor, _run_process, self.__craneProcess,
-                    (self.__queues['storage_crane'], self.__queues['sort_crane'],
-                     self.__queues['crane_storage'], self.__queues['crane_handle'])),
-                loop.run_in_executor(executor, _run_process, self.__handleProcess,
-                    (self.__queues['crane_handle'], self.__queues['handle_sort'])),
-                loop.run_in_executor(executor, _run_process, self.__sortProcess,
-                    (False, [[]], self.__queues['handle_sort'], self.__queues['sort_storage'],
-                     self.__queues['sort_crane']))
-            )
+                     self.__queues['storage_crane'])))
+            #     loop.run_in_executor(executor, _run_process, self.__craneProcess,
+            #         (self.__queues['storage_crane'], self.__queues['sort_crane'],
+            #          self.__queues['crane_storage'], self.__queues['crane_handle'])),
+            #     loop.run_in_executor(executor, _run_process, self.__handleProcess,
+            #         (self.__queues['crane_handle'], self.__queues['handle_sort'])),
+            #     loop.run_in_executor(executor, _run_process, self.__sortProcess,
+            #         (False, [[]], self.__queues['handle_sort'], self.__queues['sort_storage'],
+            #          self.__queues['sort_crane']))
+            # )
 
     async def returnCargo(self, storage) -> None:
         self.__clearQueues()
