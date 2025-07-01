@@ -13,13 +13,13 @@ class Storage(Stage):
         self._delivery_motor = self._stage.motor(1)
         self._coords_map = dict()
         self._coords_map.update({(1, 1): (780, 0)})
-        self._coords_map.update({(1, 2): (1380, 0)})
-        self._coords_map.update({(1, 3): (1990, 0)})
-        self._coords_map.update({(2, 1): (780, 380)})
+        self._coords_map.update({(2, 1): (1380, 0)})
+        self._coords_map.update({(3, 1): (1990, 0)})
+        self._coords_map.update({(1, 2): (780, 380)})
         self._coords_map.update({(2, 2): (1380, 380)})
-        self._coords_map.update({(2, 3): (1990, 380)})
-        self._coords_map.update({(3, 1): (780, 780)})
-        self._coords_map.update({(3, 2): (1380, 780)})
+        self._coords_map.update({(3, 2): (1990, 380)})
+        self._coords_map.update({(1, 3): (780, 780)})
+        self._coords_map.update({(2, 3): (1380, 780)})
         self._coords_map.update({(3, 3): (1990, 780)})
         self._data = [[Cargo.UNDEFINED for _ in range(3)] for _ in range(3)]
         self.__reset_sensors()
@@ -139,7 +139,7 @@ class Storage(Stage):
         self.__move_delta(0, -50, 0)
 
     def get_cargo(self, x: int, y: int):
-        coords = self._coords_map.get((x, y))
+        coords = self._coords_map.get((y, x))
         self.__move_to(coords[0], coords[1])
         self.__pick_up_cargo()
         self.__move_to(0, 650)
@@ -150,7 +150,7 @@ class Storage(Stage):
 
     def put_cargo(self, x: int, y: int, color: int):
         self.__move_to(0, 650)
-        coords = self._coords_map.get((x, y))
+        coords = self._coords_map.get((y, x))
         self.__move_to(0, 650, -1)
         self.__pick_up_cargo()
         self.__move_to(coords[0], coords[1])
