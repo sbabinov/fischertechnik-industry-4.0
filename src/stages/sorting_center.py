@@ -4,9 +4,9 @@ import time
 class SortingCenter(Stage):
     def __init__(self, host: str, port: int = 65000):
         super().__init__(host, port)
-        self.__whiteCount = 0
-        self.__blueCount = 0
-        self.__redCount = 0
+        self.__white_count = 0
+        self.__blue_count = 0
+        self.__red_count = 0
 
     def sort(self) -> None:
         """ Determine the color of the cargo and sort it. """
@@ -30,15 +30,15 @@ class SortingCenter(Stage):
         if minColorValue > 1400:
             out = self._stage.output(6)
             conveyor.setDistance(8)
-            self.__blueCount += 1
+            self.__blue_count += 1
         elif minColorValue > 1000:
             out = self._stage.output(5)
             conveyor.setDistance(13)
-            self.__redCount += 1
+            self.__red_count += 1
         else:
             out = self._stage.output(4)
             conveyor.setDistance(3)
-            self.__whiteCount += 1
+            self.__white_count += 1
 
         self._wait(conveyor)
 
@@ -51,26 +51,26 @@ class SortingCenter(Stage):
         out.setLevel(0)
         compressor.stop()
 
-    def decWhite(self) -> None:
+    def dec_white(self) -> None:
         """ Reduce the number of white goods. """
-        self.__whiteCount -= 1
+        self.__white_count -= 1
 
-    def decBlue(self) -> None:
+    def dec_blue(self) -> None:
         """ Reduce the number of blue goods. """
-        self.__blueCount -= 1
+        self.__blue_count -= 1
 
-    def decRed(self) -> None:
+    def dec_red(self) -> None:
         """ Reduce the number of red goods. """
-        self.__redCount -= 1
+        self.__red_count -= 1
 
-    def getWhite(self) -> int:
+    def get_white(self) -> int:
         """ Return the number of white goods. """
-        return self.__whiteCount
+        return self.__white_count
 
-    def getBlue(self) -> int:
+    def get_blue(self) -> int:
         """ Return the number of blue goods. """
-        return self.__blueCount
+        return self.__blue_count
 
-    def getRed(self) -> int:
+    def get_red(self) -> int:
         """ Return the number of red goods. """
-        return self.__redCount
+        return self.__red_count
