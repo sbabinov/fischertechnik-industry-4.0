@@ -214,8 +214,9 @@ class Factory:
     def __calibrate(self):
         storage_obj = Storage(self.__storage_ip)
         crane_obj = Crane(self.__crane_ip)
+        print("podnimat")
         handle_obj = HandleCenter(self.__handle_ips[0], self.__handle_ips[1])
-
+        print("sosat")
         storage_obj.calibrate()
         crane_obj.calibrate()
         handle_obj.calibrate()
