@@ -143,6 +143,7 @@ class Factory:
 
     def __storageProcess(self, arr, storage, inputQ2, inputQ4, outputQ2):
         storageObj = Storage(self.__storageIp)
+        storageObj.write_data(self.__storageData.get())
 
         for cell in arr:
             storageObj.getCargo(cell[0], cell[1])
