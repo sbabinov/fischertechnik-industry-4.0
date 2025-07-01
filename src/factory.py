@@ -224,6 +224,10 @@ class Factory:
         handle_obj.calibrate()
         print("3")
 
+        storage_obj._stage.stopOnline()
+        crane_obj._stage.stopOnline()
+        handle_obj._stage.stopOnline()
+
     async def stop_processes(self):
         self.__stop_event.set()
 
