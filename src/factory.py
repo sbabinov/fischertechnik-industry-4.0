@@ -151,7 +151,7 @@ class Factory:
 
             self.__processes.append(executor.submit(
                 _storage_process,
-                self.__storage_ip, [], new_storage,
+                self.__storage_ip, [[1,1],[1,2],[1,3],[2,1], [2,2], [2,3], [3,1], [3,2], [3,3]], new_storage,
                 self.__queues['crane_storage'], self.__queues['sort_storage'],
                 self.__queues['storage_crane']
             ))
