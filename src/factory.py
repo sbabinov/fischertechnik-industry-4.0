@@ -215,12 +215,10 @@ class Factory:
         storage_obj = Storage(self.__storage_ip)
         crane_obj = Crane(self.__crane_ip)
         handle_obj = HandleCenter(self.__handle_ips[0], self.__handle_ips[1])
-        sort_obj = SortCenter(self.__sort_ip)
         components = [
             storage_obj,
             crane_obj,
-            handle_obj,
-            sort_obj
+            handle_obj
         ]
 
         with ProcessPoolExecutor() as executor:
