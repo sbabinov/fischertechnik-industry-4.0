@@ -178,7 +178,7 @@ class PaintingCenter(Stage):
         self.__compressor.setLevel(0)
 
 
-class HandleCenter():
+class HandleCenter:
     def __init__(self, ship_ip: str, paint_ip: str):
         self.__shipment = ShipmentCenter(ship_ip)
         self.__painting = PaintingCenter(self.__shipment, paint_ip)

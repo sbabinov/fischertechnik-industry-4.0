@@ -40,7 +40,7 @@ class Factory:
 
     async def __runProcess(self, target, args):
         """Запускает процесс и добавляет его в список."""
-        process = multiprocessing.Process(target=target, args=args)
+        process = multiprocessing.Process(target = target, args = args)
         process.start()
         self.__processes.append(process)
         return process
@@ -201,7 +201,7 @@ class Factory:
             if item is None:
                 break
             else:
-                self.__handleCenter.run()
+                self.__handleCenter.process()
                 outputQ4.put(item)
         outputQ4.put(None)
 
