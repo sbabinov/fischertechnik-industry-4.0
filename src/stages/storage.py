@@ -139,7 +139,7 @@ class Storage(Stage):
         self.__move_delta(0, -50, 0)
 
     def get_cargo(self, x: int, y: int):
-        coords = self._coords_map.get((y, x))
+        coords = self._coords_map.get((x, y))
         self.__move_to(coords[0], coords[1])
         self.__pick_up_cargo()
         self.__move_to(0, 650)
@@ -150,7 +150,7 @@ class Storage(Stage):
 
     def put_cargo(self, x: int, y: int, color: int):
         self.__move_to(0, 650)
-        coords = self._coords_map.get((y, x))
+        coords = self._coords_map.get((x, y))
         self.__move_to(0, 650, -1)
         self.__pick_up_cargo()
         self.__move_to(coords[0], coords[1])
