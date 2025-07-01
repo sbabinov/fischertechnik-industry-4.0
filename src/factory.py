@@ -144,13 +144,13 @@ class Factory:
     async def sort(self, new_storage) -> None:
         self.__clear_queues()
         self.__stop_event.clear()
-        self.__calibrate()
+        # self.__calibrate()
 
         with ProcessPoolExecutor() as executor:
             self.__processes = [
                 executor.submit(
                     _storage_process,
-                    self.__storage_ip, [], new_storage,
+                    self.__storage_ip, [[1, 1], [1, 2], [1,3],[2,1],[2,2],[2,3],[3,1],[3,2],[3,3]], new_storage,
                     self.__queues['crane_storage'], self.__queues['sort_storage'],
                     self.__queues['storage_crane']
                 ),
