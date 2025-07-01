@@ -5,6 +5,11 @@ import concurrent
 import multiprocessing
 from concurrent.futures import ProcessPoolExecutor
 
+def _run_process(target, args):
+    process = multiprocessing.Process(target=target, args=args)
+    process.start()
+    return process
+
 class Factory:
     def __init__(self):
         self.__storageIp = '192.168.12.37'
@@ -32,16 +37,10 @@ class Factory:
         }
 
     async def writeStorage(self, storage: list[list[int]]) -> None:
-        self.__storageData = storage
+        self.__storageData.update(storage)
 
     async def getStorage(self, row: int, column: int) -> Cargo:
-        return self.__storageData.get(row, column)
-
-    async def __runProcess(self, target, args):
-        process = multiprocessing.Process(target = target, args = args)
-        process.start()
-        self.__processes.append(process)
-        return process
+        return self.__storageData.get((row, column), Cargo.EMPTY)
 
     async def sort(self, storage) -> None:
         self.__clearQueues()
@@ -51,15 +50,15 @@ class Factory:
             loop = asyncio.get_event_loop()
 
             self.__processes = await asyncio.gather(
-                loop.run_in_executor(executor, self.__runProcess, self.__storageProcess,
+                loop.run_in_executor(executor, _run_process, self.__storageProcess,
                     ([], storage, self.__queues['crane_storage'], self.__queues['sort_storage'],
                      self.__queues['storage_crane'])),
-                loop.run_in_executor(executor, self.__runProcess, self.__craneProcess,
+                loop.run_in_executor(executor, _run_process, self.__craneProcess,
                     (self.__queues['storage_crane'], self.__queues['sort_crane'],
                      self.__queues['crane_storage'], self.__queues['crane_handle'])),
-                loop.run_in_executor(executor, self.__runProcess, self.__handleProcess,
+                loop.run_in_executor(executor, _run_process, self.__handleProcess,
                     (self.__queues['crane_handle'], self.__queues['handle_sort'])),
-                loop.run_in_executor(executor, self.__runProcess, self.__sortProcess,
+                loop.run_in_executor(executor, _run_process, self.__sortProcess,
                     (True, storage, self.__queues['handle_sort'], self.__queues['sort_storage'],
                      self.__queues['sort_crane']))
             )
@@ -72,15 +71,15 @@ class Factory:
             loop = asyncio.get_event_loop()
 
             self.__processes = await asyncio.gather(
-                loop.run_in_executor(executor, self.__runProcess, self.__storageProcess,
+                loop.run_in_executor(executor, _run_process, self.__storageProcess,
                     ([], [[]], self.__queues['crane_storage'], self.__queues['sort_storage'],
                      self.__queues['storage_crane'])),
-                loop.run_in_executor(executor, self.__runProcess, self.__craneProcess,
+                loop.run_in_executor(executor, _run_process, self.__craneProcess,
                     (self.__queues['storage_crane'], self.__queues['sort_crane'],
                      self.__queues['crane_storage'], self.__queues['crane_handle'])),
-                loop.run_in_executor(executor, self.__runProcess, self.__handleProcess,
+                loop.run_in_executor(executor, _run_process, self.__handleProcess,
                     (self.__queues['crane_handle'], self.__queues['handle_sort'])),
-                loop.run_in_executor(executor, self.__runProcess, self.__sortProcess,
+                loop.run_in_executor(executor, _run_process, self.__sortProcess,
                     (False, [[]], self.__queues['handle_sort'], self.__queues['sort_storage'],
                      self.__queues['sort_crane']))
             )
@@ -93,13 +92,13 @@ class Factory:
             loop = asyncio.get_event_loop()
 
             self.__processes = await asyncio.gather(
-                loop.run_in_executor(executor, self.__runProcess, self.__storageProcess,
+                loop.run_in_executor(executor, _run_process, self.__storageProcess,
                     ([], storage, self.__queues['crane_storage'], self.__queues['sort_storage'],
                      self.__queues['storage_crane'])),
-                loop.run_in_executor(executor, self.__runProcess, self.__craneProcess,
+                loop.run_in_executor(executor, _run_process, self.__craneProcess,
                     (self.__queues['storage_crane'], self.__queues['sort_crane'],
                      self.__queues['crane_storage'], self.__queues['crane_handle'])),
-                loop.run_in_executor(executor, self.__runProcess, self.__returnProcess,
+                loop.run_in_executor(executor, _run_process, self.__returnProcess,
                     (storage, self.__queues['sort_storage'], self.__queues['sort_crane']))
             )
 
