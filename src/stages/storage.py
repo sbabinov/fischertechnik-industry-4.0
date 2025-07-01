@@ -1,5 +1,3 @@
-from time import sleep
-
 from .stage import Stage, Cargo, resetConfigCounter
 
 class Storage(Stage):
@@ -138,7 +136,7 @@ class Storage(Stage):
         self.__pull_manipulator()
         self.__move_delta(0, -50, 0)
 
-    def getCargo(self, x: int, y: int):
+    def get_cargo(self, x: int, y: int):
         coords = self._coords_map.get((x, y))
         self.__move_to(coords[0], coords[1])
         self.__pick_up_cargo()
@@ -148,7 +146,7 @@ class Storage(Stage):
         self.calibrate()
         self._data[x - 1][y - 1] = Cargo.EMPTY
 
-    def putCargo(self, x: int, y: int, color: int):
+    def put_cargo(self, x: int, y: int, color: int):
         self.__move_to(0, 650)
         coords = self._coords_map.get((x, y))
         self.__move_to(0, 650, -1)
@@ -156,11 +154,12 @@ class Storage(Stage):
         self.__move_to(coords[0], coords[1])
         self.__drop_cargo()
         self._data[x - 1][y - 1] = color
-        self.__move_to(0, 0)
-        self.calibrate()
 
-    def getData(self):
+    def get_data(self):
         return self._data
+
+    def write_data(self, matrix):
+        self._data = matrix
 
     def calibrate(self):
         self.__pull_manipulator()

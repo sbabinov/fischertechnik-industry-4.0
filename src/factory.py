@@ -1,9 +1,7 @@
 from .stages import *
 from .stages.stage import Cargo
-from .singleton import singleton
 import threading
 
-@singleton
 class Factory:
     """ Class for controlling the Fischertechnik factory layout. """
     def __init__(self):
