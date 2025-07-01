@@ -1,44 +1,33 @@
 from .stages import *
 from .stages.stage import Cargo
 import threading
+from concurrent.futures import ThreadPoolExecutor, wait
 
 class Factory:
     def __init__(self):
         self.__storage = Storage('192.168.12.37')
         self.__crane = Crane('192.168.12.162')
-        self.__shipmentCenter = ShipmentCenter('192.168.12.232')
-        self.__paintingCenter = PaintingCenter(self.__shipmentCenter, '192.168.12.182')
-        self.__sortCenter = SortCenter('192.168.12.187')
-        self.__storageLock = threading.Lock()
-        self.__craneLock = threading.Lock()
-        self.__threadPool = []
+        self.__shipment_center = ShipmentCenter('192.168.12.232')
+        self.__painting_center = PaintingCenter(self.__shipment_center, '192.168.12.182')
+        self.__sort_center = SortCenter('192.168.12.187')
+        self.__storage_lock = threading.Lock()
+        self.__crane_lock = threading.Lock()
+        self.__executor = ThreadPoolExecutor(max_workers=10)
 
     def __calibrate(self) -> None:
-        self.__threadPool.clear()
-        self.__threadPool.append(threading.Thread(target=self.__storage.calibrate))
-        self.__threadPool.append(threading.Thread(target=self.__crane.calibrate))
-        self.__threadPool.append(threading.Thread(target=self.__paintingCenter.calibrate))
-        self.__threadPool.append(threading.Thread(target=self.__shipmentCenter.calibrate))
-        self.__startAll()
-        self.__waitAll()
-
-    def __waitAll(self):
-        for thread in self.__threadPool:
-            thread.join()
-        self.__threadPool.clear()
-
-    def __startAll(self):
-        for thread in self.__threadPool:
-            thread.start()
-
-    def wait(self):
-        self.__waitAll()
+        futures = [
+            self.__executor.submit(self.__storage.calibrate),
+            self.__executor.submit(self.__crane.calibrate),
+            self.__executor.submit(self.__painting_center.calibrate),
+            self.__executor.submit(self.__shipment_center.calibrate)
+        ]
+        wait(futures)
 
     def write_storage(self, new_storage: list[list[int]]) -> None:
         self.__storage.write_data(new_storage)
 
-    def get_storage(self, row: int, column: int) -> Cargo:
-        return self.__storage.get_data()[row][column]
+    def get_storage(self) -> list[list[int]]:
+        return self.__storage.get_data()
 
     def getStatus(self, id: bool) -> bool:
         if id == 0:
@@ -46,140 +35,159 @@ class Factory:
         elif id == 1:
             return self.__crane.isRunning()
         elif id == 2:
-            return self.__paintingCenter.isRunning()
+            return self.__painting_center.isRunning()
         elif id == 3:
-            return self.__shipmentCenter.isRunning()
+            return self.__shipment_center.isRunning()
         elif id == 4:
-            return self.__sortCenter.isRunning()
+            return self.__sort_center.isRunning()
         else:
             return False
 
-    def processCargo(self, row: int, column: int, wait: bool = True) -> None:
+    def process_cargo(self, row: int, column: int, wait_for_sorting: bool = True) -> None:
         """ Proces one cargo from storage and put it back. """
         self.__calibrate()
-        self.__threadPool.append(threading.Thread(target=self.__processCargo, args=[row, column], daemon=True))
-        self.__startAll()
-        if wait:
-            self.__waitAll()
+        future = self.__executor.submit(self.__process_cargo, row, column)
+        if wait_for_sorting:
+            future.result()
 
-    def sort(self, wait: bool = True) -> None:
+    def sort(self, wait_for_ending: bool = True) -> None:
         """ Sort storage cargo. """
         self.__calibrate()
-        self.__threadPool.append(threading.Thread(target=self.__takeFromStorage, daemon=True))
-        self.__threadPool.append(threading.Thread(target=self.__takeFromSorting, daemon=True))
-        self.__startAll()
-        if wait:
-            self.__waitAll()
+        futures = [
+            self.__executor.submit(self.__take_from_storage),
+            self.__executor.submit(self.__take_from_sorting)
+        ]
+        if wait_for_ending:
+            wait(futures)
 
-    def __processCargo(self, row: int, column: int) -> None:
+    def __process_cargo(self, row: int, column: int) -> None:
+        """Process single cargo item using ThreadPoolExecutor."""
+        # Set initial statuses
         self.__storage._isRunning = True
         self.__storage.get_cargo(column + 1, row + 1)
         self.__storage._isRunning = False
+
         self.__crane._isRunning = True
         self.__crane.take_from_storage()
 
-        thread = threading.Thread(target=self.__storage.put_cargo, args=[column + 1, row + 1, Cargo.EMPTY], daemon=True)
+        # Start parallel operations
+        storage_future = self.__executor.submit(
+            self.__storage.put_cargo, column + 1, row + 1, Cargo.EMPTY
+        )
         self.__storage._isRunning = True
-        thread.start()
-        thread1 = threading.Thread(target=self.__paintingCenter.run, daemon=True)
-        self.__paintingCenter._isRunning = True
-        thread1.start()
+
+        painting_future = self.__executor.submit(self.__painting_center.run)
+        self.__painting_center._isRunning = True
+
         self.__crane.put_in_painting_center()
-        thread2 = threading.Thread(target=self.__crane.calibrate, daemon=True)
-        thread2.start()
-        thread1.join()
+        crane_calibrate_future = self.__executor.submit(self.__crane.calibrate)
+
+        # Wait for necessary operations
+        painting_future.result()
         self.__crane._isRunning = False
-        self.__paintingCenter._isRunning = False
+        self.__painting_center._isRunning = False
 
-        thread1 = threading.Thread(target=self.__sortCenter.sort, daemon=True)
-        thread1.start()
-        self.__shipmentCenter._isRunning = True
-        self.__shipmentCenter.run()
-        thread.join()
+        sort_future = self.__executor.submit(self.__sort_center.sort)
+        self.__shipment_center._isRunning = True
+        self.__shipment_center.run()
+
+        storage_future.result()
         self.__storage._isRunning = False
-        self.__shipmentCenter._isRunning = False
-        self.__sortCenter._isRunning = True
-        thread.join()
-        self.__sortCenter._isRunning = False
+        self.__shipment_center._isRunning = False
 
-    def __takeFromStorage(self) -> None:
-        with self.__storageLock:
+        sort_future.result()
+        self.__sort_center._isRunning = False
+
+    def __take_from_storage(self) -> None:
+        """Process all cargo from storage using ThreadPoolExecutor."""
+        with self.__storage_lock:
+            futures = []
             for i in range(1, 4):
                 for j in range(1, 4):
                     self.__storage.get_cargo(i, j)
-                    with self.__craneLock:
+
+                    with self.__crane_lock:
                         self.__crane.take_from_storage()
                         self.__crane._isRunning = True
-                    thread = threading.Thread(target=self.__process, daemon=True)
-                    thread.start()
 
-                    cargo = Cargo.UNDEFINED
-                    if j == Cargo.WHITE and self.__sortCenter.get_color_count(Cargo.WHITE):
-                        cargo = Cargo.WHITE
-                        self.__sortCenter.dec_color_count(cargo)
-                    elif j == Cargo.BLUE and self.__sortCenter.get_color_count(Cargo.BLUE):
-                        cargo = Cargo.BLUE
-                        self.__sortCenter.dec_color_count(cargo)
-                    elif j == Cargo.RED and self.__sortCenter.get_color_count(Cargo.RED):
-                        cargo = Cargo.RED
-                        self.__sortCenter.dec_color_count(cargo)
+                    # Submit processing task
+                    future = self.__executor.submit(self.__process_cargo_task, i, j)
+                    futures.append(future)
 
+            # Wait for all tasks to complete
+            for future in futures:
+                future.result()
 
-                    if cargo != Cargo.UNDEFINED:
-                        with self.__craneLock:
-                            self.__crane.take_from_sorting_center(cargo)
-                            self.__crane.put_in_storage()
-                            thread = threading.Thread(target=self.__crane.calibrate, daemon=True)
-                            thread.start()
-                            self.__storage.put_cargo(i, j, cargo)
-                    else:
-                        self.__storage.put_cargo(i, j, Cargo.EMPTY)
+    def __process_cargo_task(self, i: int, j: int) -> None:
+        """Helper method for processing cargo in parallel."""
+        cargo = Cargo.UNDEFINED
+        if j == Cargo.WHITE and self.__sort_center.get_color_count(Cargo.WHITE):
+            cargo = Cargo.WHITE
+            self.__sort_center.dec_color_count(cargo)
+        elif j == Cargo.BLUE and self.__sort_center.get_color_count(Cargo.BLUE):
+            cargo = Cargo.BLUE
+            self.__sort_center.dec_color_count(cargo)
+        elif j == Cargo.RED and self.__sort_center.get_color_count(Cargo.RED):
+            cargo = Cargo.RED
+            self.__sort_center.dec_color_count(cargo)
+
+        if cargo != Cargo.UNDEFINED:
+            with self.__crane_lock:
+                self.__crane.take_from_sorting_center(cargo)
+                self.__crane.put_in_storage()
+                self.__executor.submit(self.__crane.calibrate)
+                self.__storage.put_cargo(i, j, cargo)
+        else:
+            self.__storage.put_cargo(i, j, Cargo.EMPTY)
 
     def __process(self) -> None:
-        thread = {}
-        with self.__craneLock:
-            thread = threading.Thread(target=self.__paintingCenter.run, daemon=True)
-            thread.start()
+        """Process cargo through painting and sorting centers."""
+        with self.__crane_lock:
+            painting_future = self.__executor.submit(self.__painting_center.run)
             self.__crane.put_in_painting_center()
-            thread1 = threading.Thread(target=self.__crane.calibrate, daemon=True)
-            thread1.start()
+            calibrate_future = self.__executor.submit(self.__crane.calibrate)
             self.__crane._isRunning = False
-            thread1.join()
-        thread.join()
+            calibrate_future.result()
 
-        thread = threading.Thread(target=self.__sortCenter.sort, daemon=True)
-        thread.start()
-        self.__shipmentCenter.run()
-        thread.join()
+        painting_future.result()
 
-    def __takeFromSorting(self) -> None:
-        with self.__storageLock:
-            while (self.__sortCenter.get_color_count(Cargo.WHITE) or self.__sortCenter.get_color_count(Cargo.BLUE) or
-                self.__sortCenter.get_color_count(Cargo.RED)):
+        sort_future = self.__executor.submit(self.__sort_center.sort)
+        self.__shipment_center.run()
+        sort_future.result()
+
+    def __take_from_sorting(self) -> None:
+        """Process cargo from sorting center back to storage."""
+        with self.__storage_lock:
+            while (self.__sort_center.get_color_count(Cargo.WHITE) or
+                   self.__sort_center.get_color_count(Cargo.BLUE) or
+                   self.__sort_center.get_color_count(Cargo.RED)):
+
                 cargo = Cargo.UNDEFINED
-                if self.__sortCenter.get_color_count(Cargo.WHITE):
+                if self.__sort_center.get_color_count(Cargo.WHITE):
                     cargo = Cargo.WHITE
-                    self.__sortCenter.dec_color_count(Cargo.WHITE)
-                elif self.__sortCenter.get_color_count(Cargo.BLUE):
+                    self.__sort_center.dec_color_count(Cargo.WHITE)
+                elif self.__sort_center.get_color_count(Cargo.BLUE):
                     cargo = Cargo.BLUE
-                    self.__sortCenter.dec_color_count(Cargo.BLUE)
+                    self.__sort_center.dec_color_count(Cargo.BLUE)
                 else:
                     cargo = Cargo.RED
-                    self.__sortCenter.dec_color_count(Cargo.RED)
+                    self.__sort_center.dec_color_count(Cargo.RED)
 
-                j = self.__findCell(cargo)
+                j = self.__find_cell(cargo)
 
-                with self.__craneLock:
-                    thread = threading.Thread(target=self.__crane.take_from_sorting_center, args=[cargo], daemon=True)
-                    thread.start()
+                with self.__crane_lock:
+                    take_future = self.__executor.submit(
+                        self.__crane.take_from_sorting_center, cargo
+                    )
                     self.__storage.get_cargo(j + 1, cargo)
-                    thread.join()
+                    take_future.result()
+
                     self.__crane.put_in_storage()
-                    thread = threading.Thread(target=self.__crane.calibrate, daemon=True)
-                    thread.start()
+                    self.__executor.submit(self.__crane.calibrate)
+
                 self.__storage.put_cargo(j + 1, cargo, cargo)
 
-    def __findCell(self, cargo: Cargo) -> int:
+    def __find_cell(self, cargo: Cargo) -> int:
         for j in range(3):
             if self.__storage.get_data()[j][cargo - 1] == Cargo.EMPTY:
                 return j
