@@ -1,12 +1,10 @@
-from .stage import Stage
+from .stage import Stage, Cargo
 import time
 
-class SortingCenter(Stage):
+class SortCenter(Stage):
     def __init__(self, host: str, port: int = 65000):
         super().__init__(host, port)
-        self.__white_count = 0
-        self.__blue_count = 0
-        self.__red_count = 0
+        self.__colors_count = [0, 0, 0]
 
     def sort(self) -> None:
         """ Determine the color of the cargo and sort it. """
@@ -30,15 +28,15 @@ class SortingCenter(Stage):
         if minColorValue > 1400:
             out = self._stage.output(6)
             conveyor.setDistance(8)
-            self.__blue_count += 1
+            self.__colors_count[1] += 1
         elif minColorValue > 1000:
             out = self._stage.output(5)
             conveyor.setDistance(13)
-            self.__red_count += 1
+            self.__colors_count[2] += 1
         else:
             out = self._stage.output(4)
             conveyor.setDistance(3)
-            self.__white_count += 1
+            self.__colors_count[0] += 1
 
         self._wait(conveyor)
 
@@ -51,26 +49,18 @@ class SortingCenter(Stage):
         out.setLevel(0)
         compressor.stop()
 
-    def dec_white(self) -> None:
-        """ Reduce the number of white goods. """
-        self.__white_count -= 1
+    def dec_color_count(self, cargo: Cargo) -> None:
+        if cargo == Cargo.WHITE:
+            self.__colors_count[0] -= 1
+        elif cargo == Cargo.BLUE:
+            self.__colors_count[1] -= 1
+        else:
+            self.__colors_count[2] -= 1
 
-    def dec_blue(self) -> None:
-        """ Reduce the number of blue goods. """
-        self.__blue_count -= 1
-
-    def dec_red(self) -> None:
-        """ Reduce the number of red goods. """
-        self.__red_count -= 1
-
-    def get_white(self) -> int:
-        """ Return the number of white goods. """
-        return self.__white_count
-
-    def get_blue(self) -> int:
-        """ Return the number of blue goods. """
-        return self.__blue_count
-
-    def get_red(self) -> int:
-        """ Return the number of red goods. """
-        return self.__red_count
+    def get_color_count(self, cargo: Cargo) -> int:
+        if cargo == Cargo.WHITE:
+            return self.__colors_count[0]
+        elif cargo == Cargo.BLUE:
+            return self.__colors_count[1]
+        else:
+            return self.__colors_count[2]

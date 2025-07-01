@@ -8,7 +8,7 @@ class Factory:
         self.__crane = Crane('192.168.12.162')
         self.__shipmentCenter = ShipmentCenter('192.168.12.232')
         self.__paintingCenter = PaintingCenter(self.__shipmentCenter, '192.168.12.182')
-        self.__sortingCenter = SortingCenter('192.168.12.187')
+        self.__sortCenter = SortCenter('192.168.12.187')
         self.__storageLock = threading.Lock()
         self.__craneLock = threading.Lock()
         self.__threadPool = []
@@ -50,7 +50,7 @@ class Factory:
         elif id == 3:
             return self.__shipmentCenter.isRunning()
         elif id == 4:
-            return self.__sortingCenter.isRunning()
+            return self.__sortCenter.isRunning()
         else:
             return False
 
@@ -91,16 +91,16 @@ class Factory:
         self.__crane._isRunning = False
         self.__paintingCenter._isRunning = False
 
-        thread1 = threading.Thread(target=self.__sortingCenter.sort, daemon=True)
+        thread1 = threading.Thread(target=self.__sortCenter.sort, daemon=True)
         thread1.start()
         self.__shipmentCenter._isRunning = True
         self.__shipmentCenter.run()
         thread.join()
         self.__storage._isRunning = False
         self.__shipmentCenter._isRunning = False
-        self.__sortingCenter._isRunning = True
+        self.__sortCenter._isRunning = True
         thread.join()
-        self.__sortingCenter._isRunning = False
+        self.__sortCenter._isRunning = False
 
     def __takeFromStorage(self) -> None:
         with self.__storageLock:
@@ -114,15 +114,16 @@ class Factory:
                     thread.start()
 
                     cargo = Cargo.UNDEFINED
-                    if j == Cargo.WHITE and self.__sortingCenter.get_white():
+                    if j == Cargo.WHITE and self.__sortCenter.get_color_count(Cargo.WHITE):
                         cargo = Cargo.WHITE
-                        self.__sortingCenter.dec_white()
-                    elif j == Cargo.BLUE and self.__sortingCenter.get_blue():
+                        self.__sortCenter.dec_color_count(cargo)
+                    elif j == Cargo.BLUE and self.__sortCenter.get_color_count(Cargo.BLUE):
                         cargo = Cargo.BLUE
-                        self.__sortingCenter.dec_blue()
-                    elif j == Cargo.RED and self.__sortingCenter.get_red():
+                        self.__sortCenter.dec_color_count(cargo)
+                    elif j == Cargo.RED and self.__sortCenter.get_color_count(Cargo.RED):
                         cargo = Cargo.RED
-                        self.__sortingCenter.dec_red()
+                        self.__sortCenter.dec_color_count(cargo)
+
 
                     if cargo != Cargo.UNDEFINED:
                         with self.__craneLock:
@@ -146,25 +147,25 @@ class Factory:
             thread1.join()
         thread.join()
 
-        thread = threading.Thread(target=self.__sortingCenter.sort, daemon=True)
+        thread = threading.Thread(target=self.__sortCenter.sort, daemon=True)
         thread.start()
         self.__shipmentCenter.run()
         thread.join()
 
     def __takeFromSorting(self) -> None:
         with self.__storageLock:
-            while (self.__sortingCenter.get_white() or self.__sortingCenter.get_blue() or
-                self.__sortingCenter.get_red()):
+            while (self.__sortCenter.get_color_count(Cargo.WHITE) or self.__sortCenter.get_color_count(Cargo.BLUE) or
+                self.__sortCenter.get_color_count(Cargo.RED)):
                 cargo = Cargo.UNDEFINED
-                if self.__sortingCenter.get_white():
+                if self.__sortCenter.get_color_count(Cargo.WHITE):
                     cargo = Cargo.WHITE
-                    self.__sortingCenter.dec_white()
-                elif self.__sortingCenter.getBlue():
+                    self.__sortCenter.dec_color_count(Cargo.WHITE)
+                elif self.__sortCenter.get_color_count(Cargo.BLUE):
                     cargo = Cargo.BLUE
-                    self.__sortingCenter.dec_blue()
+                    self.__sortCenter.dec_color_count(Cargo.BLUE)
                 else:
                     cargo = Cargo.RED
-                    self.__sortingCenter.dec_red()
+                    self.__sortCenter.dec_color_count(Cargo.RED)
 
                 j = self.__findCell(cargo)
 
