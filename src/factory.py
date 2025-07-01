@@ -10,101 +10,96 @@ def _run_process(target, args):
     process.start()
     return process
 
-def _storage_process(storage_ip, arr, new_storage, input_q2, input_q4, output_q2, stop_event):
+def _storage_process(storage_ip, arr, new_storage, input_q2, input_q4, output_q2):
     storage_obj = Storage(storage_ip)
-    while not stop_event.is_set():
+    for cell in arr:
+        storage_obj.get_cargo(cell[0], cell[1])
+        output_q2.put(1)
+        storage_obj.put_cargo(cell[0], cell[1], Cargo.EMPTY)
+    output_q2.put(None)
 
-        for cell in arr:
+    while True:
+        cargo = input_q4.get()
+        if cargo is None:
+            break
+        else:
+            cell = []
+            for i in range(3):
+                for j in range(3):
+                    if new_storage[i][j] == cargo and storage_obj.get_data()[i][j] == Cargo.EMPTY:
+                        cell = [i, j]
+                        break
             storage_obj.get_cargo(cell[0], cell[1])
             output_q2.put(1)
-            storage_obj.put_cargo(cell[0], cell[1], Cargo.EMPTY)
-        output_q2.put(None)
+            while True:
+                item = input_q2.get()
+                if item is None:
+                    break
+                else:
+                    storage_obj.put_cargo(cell[0], cell[1], cargo)
 
-        while True:
-            cargo = input_q4.get()
-            if cargo is None:
-                break
-            else:
-                cell = []
-                for i in range(3):
-                    for j in range(3):
-                        if new_storage[i][j] == cargo and storage_obj.get_data()[i][j] == Cargo.EMPTY:
-                            cell = [i, j]
-                            break
-                storage_obj.get_cargo(cell[0], cell[1])
-                output_q2.put(1)
-                while True:
-                    item = input_q2.get()
-                    if item is None:
-                        break
-                    else:
-                        storage_obj.put_cargo(cell[0], cell[1], cargo)
-
-def _crane_process(crane_ip, input_q1, input_q4, output_q1, output_q3, stop_event):
+def _crane_process(crane_ip, input_q1, input_q4, output_q1, output_q3):
     crane_obj = Crane(crane_ip)
-    while not stop_event.is_set():
-        while True:
-            item = input_q1.get()
-            if item is None:
-                break
-            else:
-                crane_obj.takeFromStorage()
-                crane_obj.putInPaintingCenter()
-                output_q3.put(item)
-                crane_obj.calibrate()
-        output_q3.put(None)
+    while True:
+        item = input_q1.get()
+        if item is None:
+            break
+        else:
+            crane_obj.takeFromStorage()
+            crane_obj.putInPaintingCenter()
+            output_q3.put(item)
+            crane_obj.calibrate()
+    output_q3.put(None)
 
-        while True:
-            cargo = input_q4.get()
-            if cargo is None:
-                break
-            else:
-                crane_obj.takeFromSortingCenter(cargo)
-                output_q1.put(1)
-                while True:
-                    item = input_q1.get()
-                    if item is None:
-                        break
-                    else:
-                        crane_obj.putInStorage()
-                        crane_obj.calibrate()
+    while True:
+        cargo = input_q4.get()
+        if cargo is None:
+            break
+        else:
+            crane_obj.takeFromSortingCenter(cargo)
+            output_q1.put(1)
+            while True:
+                item = input_q1.get()
+                if item is None:
+                    break
+                else:
+                    crane_obj.putInStorage()
+                    crane_obj.calibrate()
 
-def _handle_process(handle_ips, input_q2, output_q4, stop_event):
+def _handle_process(handle_ips, input_q2, output_q4):
     handle_obj = HandleCenter(handle_ips[0], handle_ips[1])
-    while not stop_event.is_set():
-        while True:
-            item = input_q2.get()
-            if item is None:
-                break
-            else:
-                handle_obj.process()
-                output_q4.put(item)
-        output_q4.put(None)
+    while True:
+        item = input_q2.get()
+        if item is None:
+            break
+        else:
+            handle_obj.process()
+            output_q4.put(item)
+    output_q4.put(None)
 
-def _sort_process(sort_ip, should_return, input_q3, output_q1, output_q2, stop_event):
+def _sort_process(sort_ip, should_return, input_q3, output_q1, output_q2):
     sort_obj = SortCenter(sort_ip)
-    while not stop_event.is_set():
-        while True:
-            item = input_q3.get()
-            if item is None:
-                break
-            else:
-                sort_obj.sort()
-                if should_return:
-                    if sort_obj.getWhite() != 0:
-                        sort_obj.decWhite()
-                        output_q1.put(Cargo.WHITE)
-                        output_q2.put(Cargo.WHITE)
-                    elif sort_obj.getBlue() != 0:
-                        sort_obj.decBlue()
-                        output_q1.put(Cargo.BLUE)
-                        output_q2.put(Cargo.BLUE)
-                    else:
-                        sort_obj.decRed()
-                        output_q1.put(Cargo.RED)
-                        output_q2.put(Cargo.RED)
-        output_q1.put(None)
-        output_q2.put(None)
+    while True:
+        item = input_q3.get()
+        if item is None:
+            break
+        else:
+            sort_obj.sort()
+            if should_return:
+                if sort_obj.getWhite() != 0:
+                    sort_obj.decWhite()
+                    output_q1.put(Cargo.WHITE)
+                    output_q2.put(Cargo.WHITE)
+                elif sort_obj.getBlue() != 0:
+                    sort_obj.decBlue()
+                    output_q1.put(Cargo.BLUE)
+                    output_q2.put(Cargo.BLUE)
+                else:
+                    sort_obj.decRed()
+                    output_q1.put(Cargo.RED)
+                    output_q2.put(Cargo.RED)
+    output_q1.put(None)
+    output_q2.put(None)
 
 def _return_process(new_storage, output_q1, output_q2):
     for i in range(3):
@@ -156,15 +151,15 @@ class Factory:
             self.__processes = await asyncio.gather(
                 loop.run_in_executor(executor, _run_process, _storage_process,
                     (self.__storage_ip, [], new_storage, self.__queues['crane_storage'], self.__queues['sort_storage'],
-                     self.__queues['storage_crane'], self.__stop_event)),
+                     self.__queues['storage_crane'])),
                 loop.run_in_executor(executor, _run_process, _crane_process,
                     (self.__crane_ip, self.__queues['storage_crane'], self.__queues['sort_crane'],
-                     self.__queues['crane_storage'], self.__queues['crane_handle'], self.__stop_event)),
+                     self.__queues['crane_storage'], self.__queues['crane_handle'])),
                 loop.run_in_executor(executor, _run_process, _handle_process,
-                    (self.__handle_ips, self.__queues['crane_handle'], self.__queues['handle_sort'], self.__stop_event)),
+                    (self.__handle_ips, self.__queues['crane_handle'], self.__queues['handle_sort'])),
                 loop.run_in_executor(executor, _run_process, _sort_process,
                     (self.__sort_ip, True, new_storage, self.__queues['handle_sort'], self.__queues['sort_storage'],
-                     self.__queues['sort_crane'], self.__stop_event))
+                     self.__queues['sort_crane']))
             )
 
     async def process_cargo(self, arr) -> None:
@@ -177,15 +172,15 @@ class Factory:
             self.__processes = await asyncio.gather(
                 loop.run_in_executor(executor, _run_process, _storage_process,
                     (self.__storage_ip, arr, [[]], self.__queues['crane_storage'], self.__queues['sort_storage'],
-                     self.__queues['storage_crane'], self.__stop_event)),
+                     self.__queues['storage_crane'])),
                 loop.run_in_executor(executor, _run_process, _crane_process,
                     (self.__crane_ip, self.__queues['storage_crane'], self.__queues['sort_crane'],
-                     self.__queues['crane_storage'], self.__queues['crane_handle'], self.__stop_event)),
+                     self.__queues['crane_storage'], self.__queues['crane_handle'])),
                 loop.run_in_executor(executor, _run_process, _handle_process,
-                    (self.__handle_ips, self.__queues['crane_handle'], self.__queues['handle_sort'], self.__stop_event)),
+                    (self.__handle_ips, self.__queues['crane_handle'], self.__queues['handle_sort'])),
                 loop.run_in_executor(executor, _run_process, _sort_process,
                     (self.__sort_ip, False, [[]], self.__queues['handle_sort'], self.__queues['sort_storage'],
-                     self.__queues['sort_crane'], self.__stop_event))
+                     self.__queues['sort_crane']))
             )
 
     async def return_cargo(self, new_storage) -> None:
@@ -198,12 +193,12 @@ class Factory:
             self.__processes = await asyncio.gather(
                 loop.run_in_executor(executor, _run_process, _storage_process,
                     (self.__storage_ip, [], new_storage, self.__queues['crane_storage'], self.__queues['sort_storage'],
-                     self.__queues['storage_crane'], self.__stop_event)),
+                     self.__queues['storage_crane'])),
                 loop.run_in_executor(executor, _run_process, _crane_process,
                     (self.__crane_ip, self.__queues['storage_crane'], self.__queues['sort_crane'],
-                     self.__queues['crane_storage'], self.__queues['crane_handle'], self.__stop_event)),
+                     self.__queues['crane_storage'], self.__queues['crane_handle'])),
                 loop.run_in_executor(executor, _run_process, _return_process,
-                    (self.__sort_ip, new_storage, self.__queues['sort_storage'], self.__queues['sort_crane'], self.__stop_event))
+                    (self.__sort_ip, new_storage, self.__queues['sort_storage'], self.__queues['sort_crane']))
             )
 
     def __calibrate(self):
