@@ -218,8 +218,11 @@ class Factory:
         handle_obj = HandleCenter(self.__handle_ips[0], self.__handle_ips[1])
         print("sosat")
         storage_obj.calibrate()
+        print("1")
         crane_obj.calibrate()
+        print("2")
         handle_obj.calibrate()
+        print("3")
 
     async def stop_processes(self):
         self.__stop_event.set()
