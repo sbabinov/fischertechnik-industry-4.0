@@ -71,4 +71,8 @@ class Stage:
         while not motor.finished():
             self._stage.updateWait()
 
+    @property
+    def stage(self):
+        return self._stage
+
 

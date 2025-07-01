@@ -226,7 +226,8 @@ class Factory:
 
         storage_obj._stage.stopOnline()
         crane_obj._stage.stopOnline()
-        handle_obj._stage.stopOnline()
+        handle_obj._HandleCenter__ShipmentCenter._stage.stopOnline()
+        handle_obj._HandleCenter__PaintingCenter._stage.stopOnline()
 
     async def stop_processes(self):
         self.__stop_event.set()
