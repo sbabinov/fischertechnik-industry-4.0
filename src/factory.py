@@ -144,23 +144,33 @@ class Factory:
     async def sort(self, new_storage) -> None:
         self.__clear_queues()
         self.__stop_event.clear()
+        self.__calibrate()
 
         with ProcessPoolExecutor() as executor:
             loop = asyncio.get_event_loop()
 
-            self.__processes = await asyncio.gather(
-                loop.run_in_executor(executor, _run_process, _storage_process,
-                    (self.__storage_ip, [], new_storage, self.__queues['crane_storage'], self.__queues['sort_storage'],
-                     self.__queues['storage_crane'])),
-                loop.run_in_executor(executor, _run_process, _crane_process,
-                    (self.__crane_ip, self.__queues['storage_crane'], self.__queues['sort_crane'],
-                     self.__queues['crane_storage'], self.__queues['crane_handle'])),
-                loop.run_in_executor(executor, _run_process, _handle_process,
-                    (self.__handle_ips, self.__queues['crane_handle'], self.__queues['handle_sort'])),
-                loop.run_in_executor(executor, _run_process, _sort_process,
-                    (self.__sort_ip, True, self.__queues['handle_sort'], self.__queues['sort_storage'],
-                     self.__queues['sort_crane']))
-            )
+            self.__processes.append(executor.submit(
+                _storage_process,
+                self.__storage_ip, [], new_storage,
+                self.__queues['crane_storage'], self.__queues['sort_storage'],
+                self.__queues['storage_crane']
+            ))
+            self.__processes.append(executor.submit(
+                _crane_process,
+                self.__crane_ip, self.__queues['storage_crane'],
+                self.__queues['sort_crane'], self.__queues['crane_storage'],
+                self.__queues['crane_handle']
+            ))
+            self.__processes.append(executor.submit(
+                _handle_process,
+                self.__handle_ips, self.__queues['crane_handle'],
+                self.__queues['handle_sort']
+            ))
+            self.__processes.append(executor.submit(
+                _sort_process,
+                self.__sort_ip, True, self.__queues['handle_sort'],
+                self.__queues['sort_storage'], self.__queues['sort_crane']
+            ))
 
     async def process_cargo(self, arr) -> None:
         self.__clear_queues()
