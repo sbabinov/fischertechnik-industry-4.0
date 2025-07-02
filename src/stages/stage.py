@@ -1,6 +1,7 @@
 import ftrobopy
+from enum import Enum
 
-class Cargo:
+class Cargo(int, Enum):
     WHITE = 1
     BLUE = 2
     RED = 3
