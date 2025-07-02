@@ -19,21 +19,17 @@ class Factory:
         return self.__storage.get_data()
 
     async def write_storage(self, new_storage: list[list[Cargo]]) -> None:
-        await asyncio.sleep(30)
         await asyncio.get_event_loop().run_in_executor(self.__executor, self.__storage.write_data, new_storage)
 
     async def process_cargos(self, coords: list[list[int]]) -> None:
-        await asyncio.sleep(30)
         await asyncio.get_event_loop().run_in_executor(self.__executor, self.__calibrate)
         await asyncio.get_event_loop().run_in_executor(self.__executor, self.__process_cargos, coords)
 
     async def return_cargos(self, new_storage: list[list[Cargo]]) -> None:
-        await asyncio.sleep(30)
         await asyncio.get_event_loop().run_in_executor(self.__executor, self.__calibrate)
         await asyncio.get_event_loop().run_in_executor(self.__executor, self.__return_cargos, new_storage)
 
     async def sort_cargos(self, new_storage: list[list[Cargo]]) -> None:
-        await asyncio.sleep(30)
         await asyncio.get_event_loop().run_in_executor(self.__executor, self.__calibrate)
         await asyncio.get_event_loop().run_in_executor(self.__executor, self.__sort_cargos, new_storage)
 
