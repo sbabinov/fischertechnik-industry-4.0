@@ -15,10 +15,10 @@ class Factory:
         self.__crane_lock = threading.Lock()
         self.__executor = ThreadPoolExecutor(max_workers=10)
 
-    def get_storage(self) -> list[list[int]]:
+    def get_storage(self) -> list[list[Cargo]]:
         return self.__storage.get_data()
 
-    async def write_storage(self, new_storage: list[list[int]]) -> None:
+    async def write_storage(self, new_storage: list[list[Cargo]]) -> None:
         await asyncio.get_event_loop().run_in_executor(self.__executor, self.__storage.write_data, new_storage)
 
     async def process_cargos(self, arr: list[list[int]]) -> None:
