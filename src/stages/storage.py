@@ -136,7 +136,7 @@ class Storage(Stage):
         self.__pull_manipulator()
         self.__move_delta(0, -50, 0)
 
-    def get_cargo(self, x: int, y: int):
+    def get_cargo(self, x: int, y: int) -> None:
         coords = self._coords_map.get((x, y))
         self.__move_to(coords[0], coords[1])
         self.__pick_up_cargo()
@@ -146,7 +146,7 @@ class Storage(Stage):
         self.calibrate()
         self._data[x - 1][y - 1] = Cargo.EMPTY
 
-    def put_cargo(self, x: int, y: int, color: int):
+    def put_cargo(self, x: int, y: int, color: Cargo) -> None:
         self.__move_to(0, 650)
         coords = self._coords_map.get((x, y))
         self.__move_to(0, 650, -1)
@@ -155,13 +155,13 @@ class Storage(Stage):
         self.__drop_cargo()
         self._data[x - 1][y - 1] = color
 
-    def get_data(self):
+    def get_data(self) -> list[list[Cargo]]:
         return self._data
 
-    def write_data(self, matrix):
+    def write_data(self, matrix: list[list[Cargo]]) -> None:
         self._data = matrix
 
-    def calibrate(self):
+    def calibrate(self) -> None:
         self.__pull_manipulator()
         self.__move_delta(-2500, -2500, 0)
         self._x = 0

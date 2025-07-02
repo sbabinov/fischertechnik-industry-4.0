@@ -7,7 +7,6 @@ class SortCenter(Stage):
         self.__colors_count = [0, 0, 0]
 
     def sort(self) -> None:
-        """ Determine the color of the cargo and sort it. """
         sensorIn = self._stage.resistor(1)
         sensorOut = self._stage.resistor(3)
         colorSensor = self._stage.colorsensor(2)
