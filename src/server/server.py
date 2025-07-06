@@ -2,9 +2,16 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import List
+
+import sys
+from pathlib import Path
+
+# Добавляем родительскую папку (fischer-technik) в PYTHONPATH
+sys.path.append(str(Path(__file__).parent.parent))
+
+from factory import Factory
+from stages.stage import Cargo
 import uvicorn
-from src.stages.stage import Cargo
-from src.factory import Factory
 import asyncio
 import json
 
@@ -16,7 +23,7 @@ class CoordsListRequest(BaseModel):
 
 with open("config.json", 'r') as file:
     ips = json.load(file)
-factory = Factory([])
+factory = Factory(ips)
 
 task_queue = asyncio.Queue()
 stop_flag = False
@@ -42,6 +49,16 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
+@app.on_event("startup")
+async def startup_event():
+    asyncio.create_task(async_worker())
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    global stop_flag
+    stop_flag = True
+    await task_queue.join()
+
 @app.post("/write_storage")
 async def run_task1(request: CargoListRequest):
     await task_queue.put((factory.write_storage, { "new_storage": request.cargos }))
@@ -66,5 +83,12 @@ async def run_task4(request: CargoListRequest):
 def get_storage():
     return factory.get_storage()
 
+@app.get("/queue_status")
+async def queue_status():
+    return {
+        "queue_size": task_queue.qsize(),
+        "tasks_in_progress": task_queue._unfinished_tasks
+    }
+
 if __name__ == "__main__":
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    uvicorn.run(app, host="10.160.58.154", port=8000)

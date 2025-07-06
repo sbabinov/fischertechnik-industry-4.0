@@ -75,5 +75,3 @@ class Stage:
     @property
     def stage(self):
         return self._stage
-
-

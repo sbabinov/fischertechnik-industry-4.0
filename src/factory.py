@@ -19,6 +19,7 @@ class Factory:
         return self.__storage.get_data()
 
     async def write_storage(self, new_storage: list[list[Cargo]]) -> None:
+        print("OK")
         await asyncio.get_event_loop().run_in_executor(self.__executor, self.__storage.write_data, new_storage)
 
     async def process_cargos(self, coords: list[list[int]]) -> None:
@@ -63,7 +64,8 @@ class Factory:
                 self.__take_cargo([i, j])
                 self.__process_cargo()
                 if self.__sort_center.get_color_count(new_storage[i][j]):
-                    self.__return_cargo(new_storage[i][j], [i, j])
+                    arr = [i, j]
+                    self.__return_cargo(new_storage[i][j], arr)
                 else:
                     self.__storage.put_cargo(i, j, Cargo.EMPTY)
         self.__return_cargos(new_storage)

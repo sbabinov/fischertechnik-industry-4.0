@@ -137,23 +137,23 @@ class Storage(Stage):
         self.__move_delta(0, -50, 0)
 
     def get_cargo(self, x: int, y: int) -> None:
-        coords = self._coords_map.get((x, y))
+        coords = self._coords_map.get((x + 1, y + 1))
         self.__move_to(coords[0], coords[1])
         self.__pick_up_cargo()
         self.__move_to(0, 650)
         self.__drop_cargo()
         self.__move_to(0, 0, 1)
         self.calibrate()
-        self._data[x - 1][y - 1] = Cargo.EMPTY
+        self._data[x][y] = Cargo.EMPTY
 
     def put_cargo(self, x: int, y: int, color: Cargo) -> None:
         self.__move_to(0, 650)
-        coords = self._coords_map.get((x, y))
+        coords = self._coords_map.get((x + 1, y + 1))
         self.__move_to(0, 650, -1)
         self.__pick_up_cargo()
         self.__move_to(coords[0], coords[1])
         self.__drop_cargo()
-        self._data[x - 1][y - 1] = color
+        self._data[x][y] = color
 
     def get_data(self) -> list[list[Cargo]]:
         return self._data
