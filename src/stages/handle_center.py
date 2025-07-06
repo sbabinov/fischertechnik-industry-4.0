@@ -182,12 +182,19 @@ class HandleCenter:
     def __init__(self, ship_ip: str, paint_ip: str):
         self.__shipment = ShipmentCenter(ship_ip)
         self.__painting = PaintingCenter(self.__shipment, paint_ip)
+        self.status = "Ожидаю"
 
     def calibrate(self) -> None:
+        self.status = "Калибруюсь"
         self.__shipment.calibrate()
         self.__painting.calibrate()
+        self.status = "Ожидаю"
 
     def process(self) -> None:
+        self.status = "Крашу"
         self.__painting.paint()
+        self.status = "Передаю на шлифовку"
         self.__painting.deliver()
+        self.status = "Шлифую"
         self.__shipment.stand()
+        self.status = "Ожидаю"

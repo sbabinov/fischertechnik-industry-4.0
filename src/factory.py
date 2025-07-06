@@ -18,8 +18,15 @@ class Factory:
     def get_storage(self) -> list[list[Cargo]]:
         return self.__storage.get_data()
 
+    def get_status(self) -> dict[str: str]:
+        return {
+            "storage": self.__storage.status,
+            "crane": self.__crane.status,
+            "handle_center": self.__handle_center.status,
+            "sort_center": self.__sort_center.status
+        }
+
     async def write_storage(self, new_storage: list[list[Cargo]]) -> None:
-        print("OK")
         await asyncio.get_event_loop().run_in_executor(self.__executor, self.__storage.write_data, new_storage)
 
     async def process_cargos(self, coords: list[list[int]]) -> None:

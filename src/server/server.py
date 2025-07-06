@@ -1,4 +1,3 @@
-from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import List
@@ -6,7 +5,6 @@ from typing import List
 import sys
 from pathlib import Path
 
-# Добавляем родительскую папку (fischer-technik) в PYTHONPATH
 sys.path.append(str(Path(__file__).parent.parent))
 
 from factory import Factory
@@ -39,15 +37,7 @@ async def async_worker():
         except Exception as e:
             print(f"STATUS:\t  Task failed: {e}")
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    asyncio.create_task(async_worker())
-    yield
-    global stop_flag
-    stop_flag = True
-    await task_queue.join()
-
-app = FastAPI(lifespan=lifespan)
+app = FastAPI()
 
 @app.on_event("startup")
 async def startup_event():
@@ -82,6 +72,10 @@ async def run_task4(request: CargoListRequest):
 @app.get("/get_storage")
 def get_storage():
     return factory.get_storage()
+
+@app.get("/get_status")
+def get_status():
+    return factory.get_status()
 
 @app.get("/queue_status")
 async def queue_status():

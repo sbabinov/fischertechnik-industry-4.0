@@ -5,6 +5,7 @@ class SortCenter(Stage):
     def __init__(self, host: str, port: int = 65000):
         super().__init__(host, port)
         self.__colors_count = [0, 0, 0]
+        self.status = "Ожидаю"
 
     def sort(self) -> None:
         sensorIn = self._stage.resistor(1)
@@ -13,6 +14,7 @@ class SortCenter(Stage):
 
         while sensorIn.value() < 1000:
             pass
+        self.status = "Анализирую цвет"
 
         conveyor = self._stage.motor(1)
         conveyor.setSpeed(-512)
@@ -25,14 +27,17 @@ class SortCenter(Stage):
         out = self._stage.output(5)
 
         if minColorValue > 1400:
+            self.status = "Сортирую синюю заготовку"
             out = self._stage.output(6)
             conveyor.setDistance(8)
             self.__colors_count[1] += 1
         elif minColorValue > 1000:
+            self.status = "Сортирую красную заготовку"
             out = self._stage.output(5)
             conveyor.setDistance(13)
             self.__colors_count[2] += 1
         else:
+            self.status = "Сортирую белую заготовку"
             out = self._stage.output(4)
             conveyor.setDistance(3)
             self.__colors_count[0] += 1
@@ -47,6 +52,7 @@ class SortCenter(Stage):
         time.sleep(0.25)
         out.setLevel(0)
         compressor.stop()
+        self.status = "Ожидаю"
 
     def dec_color_count(self, cargo: Cargo) -> None:
         if cargo == Cargo.WHITE:
