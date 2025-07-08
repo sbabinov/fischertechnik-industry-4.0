@@ -69,7 +69,7 @@ class Factory:
         for i in range(3):
             for j in range(3):
                 self.__take_cargo([i, j])
-                self.__process_cargo()
+                self.__executor.submit(self.__process_cargo)
                 if self.__sort_center.get_color_count(new_storage[i][j]) != 0:
                     print("Has")
                     self.__return_cargo_without_get(new_storage[i][j], [i, j])
