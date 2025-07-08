@@ -71,10 +71,10 @@ class Factory:
                 self.__take_cargo([i, j])
                 self.__process_cargo()
                 if self.__sort_center.get_color_count(new_storage[i][j]) != 0:
+                    print("Has")
                     self.__return_cargo_without_get(new_storage[i][j], [i, j])
                 else:
                     self.__return_empty_cargo([i, j])
-                    self.__storage.put_cargo(i, j, Cargo.EMPTY)
         self.__return_cargos(new_storage)
 
     def __take_cargo(self, coords: list[int]):
