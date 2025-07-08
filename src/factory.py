@@ -1,5 +1,5 @@
-from .stages import *
-from .stages.stage import Cargo
+from stages import *
+from stages.stage import Cargo
 import threading
 import asyncio
 from concurrent.futures import ThreadPoolExecutor, wait
