@@ -70,10 +70,10 @@ class Factory:
             for j in range(3):
                 self.__take_cargo([i, j])
                 self.__process_cargo()
-                if self.__sort_center.get_color_count(new_storage[i][j]):
-                    arr = [i, j]
-                    self.__return_cargo(new_storage[i][j], arr)
+                if self.__sort_center.get_color_count(new_storage[i][j]) != 0:
+                    self.__return_cargo_without_get(new_storage[i][j], [i, j])
                 else:
+                    self.__return_empty_cargo([i, j])
                     self.__storage.put_cargo(i, j, Cargo.EMPTY)
         self.__return_cargos(new_storage)
 
@@ -93,6 +93,14 @@ class Factory:
     def __return_empty_cargo(self, coords):
         with self.__storage_lock:
             self.__storage.put_cargo(coords[0], coords[1], Cargo.EMPTY)
+
+    def __return_cargo_without_get(self, color: Cargo, coords: list[int]):
+        with self.__storage_lock:
+            with self.__crane_lock:
+                self.__crane.take_from_sort_center(color)
+                self.__crane.put_in_storage()
+                self.__executor.submit(self.__crane.calibrate)
+            self.__storage.put_cargo(coords[0], coords[1], color)
 
     def __return_cargo(self, color: Cargo, coords: list[int]):
         with self.__storage_lock:
