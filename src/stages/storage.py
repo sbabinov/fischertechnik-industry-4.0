@@ -1,5 +1,3 @@
-from time import sleep
-
 from .stage import Stage, Cargo, resetConfigCounter
 
 class Storage(Stage):
@@ -23,6 +21,7 @@ class Storage(Stage):
         self._coords_map.update({(3, 3): (1990, 780)})
         self._data = [[Cargo.UNDEFINED for _ in range(3)] for _ in range(3)]
         self.__reset_sensors()
+        self.status = "Ожидаю"
 
     def __reset_sensors(self):
         for i in range(1, 10):
@@ -138,32 +137,39 @@ class Storage(Stage):
         self.__pull_manipulator()
         self.__move_delta(0, -50, 0)
 
-    def getCargo(self, x: int, y: int):
-        coords = self._coords_map.get((x, y))
+    def get_cargo(self, x: int, y: int) -> None:
+        self.status = f"Беру заготовку из ячейки [{x}, {y}]"
+        coords = self._coords_map.get((x + 1, y + 1))
         self.__move_to(coords[0], coords[1])
         self.__pick_up_cargo()
         self.__move_to(0, 650)
         self.__drop_cargo()
         self.__move_to(0, 0, 1)
         self.calibrate()
-        self._data[x - 1][y - 1] = Cargo.EMPTY
+        self._data[x][y] = Cargo.EMPTY
+        self.status = "Ожидаю"
 
-    def putCargo(self, x: int, y: int, color: int):
+    def put_cargo(self, x: int, y: int, color: Cargo) -> None:
+        self.status = f"Кладу {color} заготовку в ячейку [{x}, {y}]"
         self.__move_to(0, 650)
-        coords = self._coords_map.get((x, y))
+        coords = self._coords_map.get((x + 1, y + 1))
         self.__move_to(0, 650, -1)
         self.__pick_up_cargo()
         self.__move_to(coords[0], coords[1])
         self.__drop_cargo()
-        self._data[x - 1][y - 1] = color
-        self.__move_to(0, 0)
-        self.calibrate()
+        self._data[x][y] = color
+        self.status = "Ожидаю"
 
-    def getData(self):
+    def get_data(self) -> list[list[Cargo]]:
         return self._data
 
-    def calibrate(self):
+    def write_data(self, matrix: list[list[Cargo]]) -> None:
+        self._data = matrix
+
+    def calibrate(self) -> None:
+        self.status = "Калибруюсь"
         self.__pull_manipulator()
         self.__move_delta(-2500, -2500, 0)
         self._x = 0
         self._y = 0
+        self.status = "Ожидаю"
