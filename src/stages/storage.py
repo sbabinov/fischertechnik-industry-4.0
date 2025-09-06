@@ -109,10 +109,12 @@ class Storage(Stage):
                 self._vert_motor.stop()
                 vert_stopped = True
             if z > 0 and self.__safety_resistor(1).value() == 15000:
+                sleep(1)
                 self._delivery_motor.stop()
                 conveyer_stopped = True
 
             if z < 0 and self.__safety_resistor(4).value() == 15000:
+                sleep(1)
                 self._delivery_motor.stop()
                 conveyer_stopped = True
             rail_stopped = rail_stopped or self._rail_motor.finished()
