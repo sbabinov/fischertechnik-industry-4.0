@@ -1,3 +1,5 @@
+from time import sleep
+
 from stages import *
 from stages.stage import Cargo
 import threading
@@ -70,8 +72,8 @@ class Factory:
             for j in range(3):
                 self.__take_cargo([i, j])
                 self.__executor.submit(self.__process_cargo)
+                sleep(1)
                 if self.__sort_center.get_color_count(new_storage[i][j]) != 0:
-                    print("Has")
                     self.__return_cargo_without_get(new_storage[i][j], [i, j])
                 else:
                     self.__return_empty_cargo([i, j])
