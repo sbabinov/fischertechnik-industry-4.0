@@ -32,7 +32,7 @@ class Crane(Stage):
 
     def take_from_storage(self) -> None:
         self.status = "Беру заготовку со склада"
-        distances = (-480, -250, -170)
+        distances = (-480, -250, -180)
 
         self.__move(distances)
         self.generator.move(wait=False)
