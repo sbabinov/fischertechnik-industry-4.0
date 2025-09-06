@@ -100,6 +100,7 @@ class Storage(Stage):
         if z != 0:
             self._delivery_motor.setSpeed(conveyer_speed)
             self._delivery_motor.setDistance(1000)
+            sleep(10)
             conveyer_stopped = False
 
         motors_stopped = rail_stopped and vert_stopped and conveyer_stopped
@@ -111,12 +112,10 @@ class Storage(Stage):
                 self._vert_motor.stop()
                 vert_stopped = True
             if z > 0 and self.__safety_resistor(1).value() == 15000:
-                sleep(1)
                 self._delivery_motor.stop()
                 conveyer_stopped = True
 
             if z < 0 and self.__safety_resistor(4).value() == 15000:
-                sleep(1)
                 self._delivery_motor.stop()
                 conveyer_stopped = True
             rail_stopped = rail_stopped or self._rail_motor.finished()
