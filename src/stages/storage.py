@@ -1,5 +1,3 @@
-from anyio import sleep
-
 from .stage import Stage, Cargo, resetConfigCounter
 
 class Storage(Stage):
@@ -100,7 +98,6 @@ class Storage(Stage):
         if z != 0:
             self._delivery_motor.setSpeed(conveyer_speed)
             self._delivery_motor.setDistance(1000)
-            sleep(10)
             conveyer_stopped = False
 
         motors_stopped = rail_stopped and vert_stopped and conveyer_stopped
