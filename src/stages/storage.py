@@ -1,3 +1,5 @@
+from anyio import sleep
+
 from .stage import Stage, Cargo, resetConfigCounter
 
 class Storage(Stage):
@@ -36,11 +38,13 @@ class Storage(Stage):
     def __should_horizont_backward_stop(self):
         sensor_backward = self.__safety_resistor(6)
         if sensor_backward.value() != 15000:
+            sleep(1)
             return True
 
     def __should_horizont_forward_stop(self):
         sensor_forward = self.__safety_resistor(7)
         if sensor_forward.value() != 15000:
+            sleep(1)
             return True
 
     def __should_vertical_stop(self):
