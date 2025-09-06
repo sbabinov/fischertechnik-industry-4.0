@@ -74,14 +74,14 @@ class Storage(Stage):
     @resetConfigCounter
     def __move_delta(self, x: int, y: int, z: int):
         rail_speed = -512
-        vert_speed = -400
+        vert_speed = -512
         conveyer_speed = -512
         if x < 0:
             rail_speed = 512
         if y < 0:
             vert_speed = 512
         if z < 0:
-            conveyer_speed = 400
+            conveyer_speed = 512
 
         rail_stopped = True
         vert_stopped = True
