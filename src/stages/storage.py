@@ -38,13 +38,11 @@ class Storage(Stage):
     def __should_horizont_backward_stop(self):
         sensor_backward = self.__safety_resistor(6)
         if sensor_backward.value() != 15000:
-            sleep(100)
             return True
 
     def __should_horizont_forward_stop(self):
         sensor_forward = self.__safety_resistor(7)
         if sensor_forward.value() != 15000:
-            sleep(100)
             return True
 
     def __should_vertical_stop(self):
@@ -113,10 +111,12 @@ class Storage(Stage):
                 self._vert_motor.stop()
                 vert_stopped = True
             if z > 0 and self.__safety_resistor(1).value() == 15000:
+                sleep(1)
                 self._delivery_motor.stop()
                 conveyer_stopped = True
 
             if z < 0 and self.__safety_resistor(4).value() == 15000:
+                sleep(1)
                 self._delivery_motor.stop()
                 conveyer_stopped = True
             rail_stopped = rail_stopped or self._rail_motor.finished()
