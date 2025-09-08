@@ -7,6 +7,8 @@ services:
       dockerfile: Dockerfile
     container_name: fastapi_app
     restart: always
+    volumes:
+      - ./src/server/config.json:/app/config.json
     networks:
       - app-network
 

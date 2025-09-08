@@ -74,14 +74,14 @@ class Storage(Stage):
     @resetConfigCounter
     def __move_delta(self, x: int, y: int, z: int):
         rail_speed = -512
-        vert_speed = -400
+        vert_speed = -512
         conveyer_speed = -512
         if x < 0:
             rail_speed = 512
         if y < 0:
             vert_speed = 512
         if z < 0:
-            conveyer_speed = 400
+            conveyer_speed = 512
 
         rail_stopped = True
         vert_stopped = True
@@ -161,7 +161,8 @@ class Storage(Stage):
         self.status = "Ожидаю"
 
     def get_data(self) -> list[list[Cargo]]:
-        return self._data
+        transposed = [[self._data[j][i] for j in range(len(self._data))] for i in range(len(self._data[0]))]
+        return transposed
 
     def write_data(self, matrix: list[list[Cargo]]) -> None:
         self._data = matrix

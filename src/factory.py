@@ -1,3 +1,5 @@
+from time import sleep
+
 from stages import *
 from stages.stage import Cargo
 import threading
@@ -52,29 +54,29 @@ class Factory:
     def __process_cargos(self, arr: list[list[int]]):
         for coords in arr:
             self.__take_cargo(coords)
-            self.__executor.submit(self.__return_empty_cargo, coords)
             self.__executor.submit(self.__process_cargo)
+            self.__return_empty_cargo(coords)
 
     def __return_cargos(self, new_storage: list[list[Cargo]]):
-            for i in range(3):
-                for j in range(3):
-                    color = new_storage[i][j]
-                    current_color = self.__storage.get_data()[i][j]
-                    if current_color == color or current_color != Cargo.EMPTY:
-                        continue
-                    else:
-                        self.__return_cargo(color, [i, j])
+        for i in range(3):
+            for j in range(3):
+                color = new_storage[i][j]
+                current_color = self.__storage.get_data()[i][j]
+                if current_color == color or current_color != Cargo.EMPTY:
+                    continue
+                else:
+                    self.__return_cargo(color, [j, i])
 
     def __sort_cargos(self, new_storage: list[list[Cargo]]):
         for i in range(3):
             for j in range(3):
                 self.__take_cargo([i, j])
                 self.__executor.submit(self.__process_cargo)
-                if self.__sort_center.get_color_count(new_storage[i][j]) != 0:
-                    print("Has")
-                    self.__return_cargo_without_get(new_storage[i][j], [i, j])
-                else:
-                    self.__return_empty_cargo([i, j])
+                self.__return_empty_cargo([i, j])
+                # if self.__sort_center.get_color_count(new_storage[i][j]) != 0:
+                #     self.__return_cargo_without_get(new_storage[i][j], [i, j])
+                # else:
+                #     self.__return_empty_cargo([i, j])
         self.__return_cargos(new_storage)
 
     def __take_cargo(self, coords: list[int]):
@@ -98,6 +100,7 @@ class Factory:
         with self.__storage_lock:
             with self.__crane_lock:
                 self.__crane.take_from_sort_center(color)
+                self.__sort_center.dec_color_count(color)
                 self.__crane.put_in_storage()
                 self.__executor.submit(self.__crane.calibrate)
             self.__storage.put_cargo(coords[0], coords[1], color)
@@ -107,6 +110,7 @@ class Factory:
             future = self.__executor.submit(self.__storage.get_cargo, coords[0], coords[1])
             with self.__crane_lock:
                 self.__crane.take_from_sort_center(color)
+                self.__sort_center.dec_color_count(color)
                 future.result()
                 self.__crane.put_in_storage()
                 self.__executor.submit(self.__crane.calibrate)
