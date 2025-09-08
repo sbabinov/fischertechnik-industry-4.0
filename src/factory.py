@@ -65,7 +65,7 @@ class Factory:
                 if current_color == color or current_color != Cargo.EMPTY:
                     continue
                 else:
-                    self.__return_cargo(color, [i, j])
+                    self.__return_cargo(color, [j, i])
 
     def __sort_cargos(self, new_storage: list[list[Cargo]]):
         for i in range(3):
