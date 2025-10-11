@@ -1,5 +1,5 @@
-from .stage import Stage, Cargo
 import time
+from .stage import Stage, Cargo
 
 class SortCenter(Stage):
     def __init__(self, host: str, port: int = 65000):

@@ -1,6 +1,5 @@
-from .stage import Stage
 import time
-
+from .stage import Stage
 
 class ShipmentCenter(Stage):
     def __init__(self, id: str, port: int = 65000):
