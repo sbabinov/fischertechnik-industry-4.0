@@ -11,7 +11,7 @@ from factory import Factory
 from stages.stage import Cargo
 import uvicorn
 import asyncio
-import json
+from config import Config
 
 class CargoListRequest(BaseModel):
     cargos: List[List[Cargo]]
@@ -19,9 +19,14 @@ class CargoListRequest(BaseModel):
 class CoordsListRequest(BaseModel):
     coords: List[List[int]]
 
-with open("config.json", 'r') as file:
-    ips = json.load(file)
-factory = Factory(ips)
+config = Config.from_env()
+factory = Factory({
+    'storage_ip': config.storage_ip,
+    'crane_ip': config.crane_ip,
+    'sort_center_ip': config.sort_center_ip,
+    'shipment_center_ip': config.shipment_center_ip,
+    'paint_center_ip': config.paint_center_ip
+})
 
 task_queue = asyncio.Queue()
 stop_flag = False
