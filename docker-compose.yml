@@ -7,8 +7,12 @@ services:
       dockerfile: Dockerfile
     container_name: fastapi_app
     restart: always
-    volumes:
-      - ./src/server/config.json:/app/config.json
+    environment:
+      - STORAGE_IP=192.168.1.10
+      - CRANE_IP=192.168.1.11
+      - SORT_CENTER_IP=192.168.1.12
+      - SHIPMENT_CENTER_IP=192.168.1.13
+      - PAINT_CENTER_IP=192.168.1.14
     networks:
       - app-network
 
