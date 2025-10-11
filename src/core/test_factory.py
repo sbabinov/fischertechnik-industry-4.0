@@ -1,7 +1,6 @@
 from time import sleep
-
-from stages import *
-from stages.stage import Cargo
+from .stages import Storage, Crane, SortCenter, HandleCenter
+from .stages.stage import Cargo
 import threading
 import asyncio
 from concurrent.futures import ThreadPoolExecutor, wait
