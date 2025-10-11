@@ -161,8 +161,7 @@ class Storage(Stage):
         self.status = "Ожидаю"
 
     def get_data(self) -> list[list[Cargo]]:
-        transposed = [[self._data[j][i] for j in range(len(self._data))] for i in range(len(self._data[0]))]
-        return transposed
+        return self._data
 
     def write_data(self, matrix: list[list[Cargo]]) -> None:
         self._data = matrix
