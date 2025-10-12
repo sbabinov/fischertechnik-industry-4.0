@@ -2,3 +2,4 @@ fastapi==0.115.12
 ftrobopy==2.0.0
 pydantic==2.11.3
 uvicorn==0.34.0
+pytest==8.4.2
