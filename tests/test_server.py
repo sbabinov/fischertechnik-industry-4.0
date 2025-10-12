@@ -65,7 +65,7 @@ class TestServerEndpoints:
 
 class TestServerValidation:
     def test_cargo_list_request_validation(self):
-        from ..src.models import CargoListRequest
+        from src.models import CargoListRequest
 
         valid_data = {"cargos": [[1, 2, 3], [4, 5, 6]]}
         request = CargoListRequest(**valid_data)
@@ -76,7 +76,7 @@ class TestServerValidation:
             CargoListRequest(**invalid_data)
 
     def test_coords_list_request_validation(self):
-        from ..src.models import CoordsListRequest
+        from src.models import CoordsListRequest
 
         valid_data = {"coords": [[0, 0], [1, 1], [2, 2]]}
         request = CoordsListRequest(**valid_data)

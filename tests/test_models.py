@@ -1,6 +1,6 @@
 import pytest
-from ..src.models import CargoListRequest, CoordsListRequest
-from ..src.core.stages.stage import Cargo
+from src.models import CargoListRequest, CoordsListRequest
+from src.core.stages.stage import Cargo
 
 class TestModels:
     def test_cargo_list_request_valid(self):

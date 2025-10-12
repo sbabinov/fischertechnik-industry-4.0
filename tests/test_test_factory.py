@@ -1,11 +1,11 @@
 import pytest
-from test_factory import TestFactory
-from ..src.core.stages.stage import Cargo
+from tests.mock_factory import MockFactory
+from src.core.stages.stage import Cargo
 
-class TestTestFactory:
+class TestMockFactory:
     @pytest.fixture
     def test_factory(self):
-        return TestFactory({})
+        return MockFactory({})
 
     def test_initial_state(self, test_factory):
         storage = test_factory.get_storage()
