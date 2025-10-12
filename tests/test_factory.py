@@ -1,11 +1,9 @@
 from time import sleep
-from .stages import Storage, Crane, SortCenter, HandleCenter
-from .stages.stage import Cargo
-import threading
+from ..src.core.stages.stage import Cargo
 import asyncio
 from concurrent.futures import ThreadPoolExecutor, wait
 
-class Factory:
+class TestFactory:
     def __init__(self, ips):
         self.__data = [[Cargo.UNDEFINED for _ in range(3)] for _ in range(3)]
         self.__storage_status = "Ожидаю"
@@ -36,7 +34,7 @@ class Factory:
         self.__crane_status = "Работаю"
         self.__handle_center_status = "Работаю"
         self.__sort_center_status = "Работаю"
-        sleep(10)
+        sleep(5)
         self.__storage_status = "Ожидаю"
         self.__crane_status = "Ожидаю"
         self.__handle_center_status = "Ожидаю"
