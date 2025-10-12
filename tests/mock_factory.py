@@ -1,9 +1,9 @@
 from time import sleep
-from ..src.core.stages.stage import Cargo
+from src.core.stages.stage import Cargo
 import asyncio
 from concurrent.futures import ThreadPoolExecutor, wait
 
-class TestFactory:
+class MockFactory:
     def __init__(self, ips):
         self.__data = [[Cargo.UNDEFINED for _ in range(3)] for _ in range(3)]
         self.__storage_status = "Ожидаю"
