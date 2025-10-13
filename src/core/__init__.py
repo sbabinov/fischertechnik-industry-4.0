@@ -1,7 +1,9 @@
 from .factory import Factory
-# from .test_factory import TestFactory
+from .mock_factory import MockFactory
+from .stages import Cargo
 
 __all__ = [
     'Factory',
-    'TestFactory'
+    'MockFactory',
+    'Cargo'
 ]
