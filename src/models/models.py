@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from typing import List
-from ..core.stages.stage import Cargo
+from ..core import Cargo
 
 class CargoListRequest(BaseModel):
     cargos: List[List[Cargo]]
