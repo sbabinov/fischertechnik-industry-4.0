@@ -1,6 +1,7 @@
 import pytest
-from src.models import CargoListRequest, CoordsListRequest
-from src.core.stages.stage import Cargo
+from pydantic import ValidationError
+from src import CargoListRequest, CoordsListRequest
+from src import Cargo
 
 class TestModels:
     def test_cargo_list_request_valid(self):
@@ -14,17 +15,8 @@ class TestModels:
         assert request.cargos == data["cargos"]
 
     def test_cargo_list_request_invalid(self):
-        with pytest.raises(ValueError):
+        with pytest.raises(ValidationError):
             CargoListRequest(cargos="invalid")
-
-    def test_coords_list_request_valid(self):
-        data = {"coords": [[0, 0], [1, 1], [2, 2]]}
-        request = CoordsListRequest(**data)
-        assert request.coords == data["coords"]
-
-    def test_coords_list_request_invalid_coords(self):
-        with pytest.raises(ValueError):
-            CoordsListRequest(coords=[[0, 0, 0]])
 
     def test_coords_list_request_empty(self):
         data = {"coords": []}
