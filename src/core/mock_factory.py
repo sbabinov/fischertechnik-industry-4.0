@@ -1,7 +1,7 @@
 from time import sleep
-from src.core.stages.stage import Cargo
+from .stages import Cargo
 import asyncio
-from concurrent.futures import ThreadPoolExecutor, wait
+from concurrent.futures import ThreadPoolExecutor
 
 class MockFactory:
     def __init__(self, ips):
@@ -34,7 +34,7 @@ class MockFactory:
         self.__crane_status = "Работаю"
         self.__handle_center_status = "Работаю"
         self.__sort_center_status = "Работаю"
-        sleep(5)
+        sleep(1)
         self.__storage_status = "Ожидаю"
         self.__crane_status = "Ожидаю"
         self.__handle_center_status = "Ожидаю"

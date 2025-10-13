@@ -1,6 +1,6 @@
 import pytest
-from tests.mock_factory import MockFactory
-from src.core.stages.stage import Cargo
+from src import MockFactory
+from src import Cargo
 
 class TestMockFactory:
     @pytest.fixture
