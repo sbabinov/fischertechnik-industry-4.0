@@ -4,27 +4,46 @@ services:
   fastapi:
     build:
       context: .
-      dockerfile: Dockerfile
-    container_name: fastapi_app
-    restart: always
-    volumes:
-      - ./src/server/config.json:/app/config.json
+      dockerfile: dockerfile
+    container_name: factory-fastapi
+    environment:
+      - FACTORY_MODE=mock
+      - SERVER_HOST=0.0.0.0
+      - SERVER_PORT=8000
+      - STORAGE_IP=192.168.1.10
+      - CRANE_IP=192.168.1.11
+      - SORT_CENTER_IP=192.168.1.12
+      - SHIPMENT_CENTER_IP=192.168.1.13
+      - PAINT_CENTER_IP=192.168.1.14
+    expose:
+      - "8000"
     networks:
-      - app-network
+      - factory-network
 
   nginx:
     image: nginx:alpine
-    container_name: nginx_proxy
+    container_name: factory-nginx
     ports:
       - "80:80"
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
       - fastapi
-    restart: always
     networks:
-      - app-network
+      - factory-network
+
+  tests:
+    build:
+      context: .
+      dockerfile: dockerfile.test
+    container_name: factory-tests
+    environment:
+      - PYTHONPATH=/app
+    networks:
+      - factory-network
+    depends_on:
+      - fastapi
 
 networks:
-  app-network:
+  factory-network:
     driver: bridge

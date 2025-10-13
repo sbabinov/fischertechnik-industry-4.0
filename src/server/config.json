@@ -1,7 +1,0 @@
-{
-  "sort_center_ip": "192.168.1.44",
-  "paint_center_ip": "192.168.1.43",
-  "crane_ip": "192.168.1.39",
-  "storage_ip": "192.168.1.38",
-  "shipment_center_ip": "192.168.1.42"
-}
