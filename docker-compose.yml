@@ -2,7 +2,9 @@ version: '3.8'
 
 services:
   fastapi:
-    build: .
+    build:
+      context: .
+      dockerfile: dockerfile
     container_name: factory-fastapi
     environment:
       - FACTORY_MODE=mock
@@ -29,6 +31,18 @@ services:
       - fastapi
     networks:
       - factory-network
+
+  tests:
+    build:
+      context: .
+      dockerfile: dockerfile.test
+    container_name: factory-tests
+    environment:
+      - PYTHONPATH=/app
+    networks:
+      - factory-network
+    depends_on:
+      - fastapi
 
 networks:
   factory-network:
