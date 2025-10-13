@@ -5,11 +5,16 @@ services:
     build: .
     container_name: factory-fastapi
     environment:
+      - FACTORY_MODE=mock
+      - SERVER_HOST=0.0.0.0
+      - SERVER_PORT=8000
       - STORAGE_IP=192.168.1.10
       - CRANE_IP=192.168.1.11
       - SORT_CENTER_IP=192.168.1.12
       - SHIPMENT_CENTER_IP=192.168.1.13
       - PAINT_CENTER_IP=192.168.1.14
+    expose:
+      - "8000"
     networks:
       - factory-network
 
