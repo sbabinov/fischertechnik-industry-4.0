@@ -1,9 +1,26 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 import asyncio
-from ..models.models import CargoListRequest, CoordsListRequest
+from ..models import CargoListRequest, CoordsListRequest
 
-def create_app(factory, host: str = "0.0.0.0", port: int = 8000):
-    app = FastAPI()
+def create_app(factory, host: str = "127.0.0.1", port: int = 8000):
+    @asynccontextmanager
+    async def lifespan(app: FastAPI):
+        print("start")
+        worker_task = asyncio.create_task(async_worker())
+        yield
+
+        nonlocal stop_flag
+        stop_flag = True
+        await task_queue.join()
+        worker_task.cancel()
+        try:
+            await worker_task
+        except asyncio.CancelledError:
+            pass
+        print("stop")
+
+    app = FastAPI(lifespan=lifespan)
     task_queue = asyncio.Queue()
     stop_flag = False
 
@@ -17,16 +34,6 @@ def create_app(factory, host: str = "0.0.0.0", port: int = 8000):
                 task_queue.task_done()
             except Exception as e:
                 print(f"STATUS:\t  Task failed: {e}")
-
-    @app.on_event("startup")
-    async def startup_event():
-        asyncio.create_task(async_worker())
-
-    @app.on_event("shutdown")
-    async def shutdown_event():
-        global stop_flag
-        stop_flag = True
-        await task_queue.join()
 
     @app.post("/write_storage")
     async def run_task1(request: CargoListRequest):
