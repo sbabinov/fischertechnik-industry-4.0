@@ -3,9 +3,6 @@ REST API for controlling Fischertechnik Industry 4.0 factory automation system. 
 
 ## Table of Contents
 - [Overview](#table-of-contents)
-- [Developing stages](#developing-stages)
-  - [Problem](#problem) 
-  - [Requirments](#requirments)
 - [API Guide](#api-guide)
   - [Get Storage State](#get-storage-state)
   - [Get System Status](#get-system-status)
@@ -16,19 +13,6 @@ REST API for controlling Fischertechnik Industry 4.0 factory automation system. 
   - [Get Queue Status](#get-queue-status)
   - [Error Responses](#error-responses)
 - [Quick Start](#build)
-
-# Developing stages
-## Problem
-Workers of non-IT companies are often inflexible in term of comprehending new software. Thus, unavoidable need in learning programs leed to decreasing efficiency and losing income of business.
-
-## Requirments
-
-- As user, I want to utilize something what i used to
-- As company, I want to reduce spending money to hire a developers team for one product or finding solution on out-source 
-- As developer, I want to ?
-
-
-
 # API Guide
 Base URL
 ```
