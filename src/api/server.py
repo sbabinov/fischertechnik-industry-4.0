@@ -6,7 +6,6 @@ from ..models import CargoListRequest, CoordsListRequest
 def create_app(factory, host: str = "127.0.0.1", port: int = 8000):
     @asynccontextmanager
     async def lifespan(app: FastAPI):
-        print("start")
         worker_task = asyncio.create_task(async_worker())
         yield
 
@@ -18,7 +17,6 @@ def create_app(factory, host: str = "127.0.0.1", port: int = 8000):
             await worker_task
         except asyncio.CancelledError:
             pass
-        print("stop")
 
     app = FastAPI(lifespan=lifespan)
     task_queue = asyncio.Queue()
